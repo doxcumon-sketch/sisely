@@ -33,7 +33,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <p className="eyebrow mb-2">{g.kicker} · อ่าน {g.readMin} นาที</p>
         <h1 className="font-editorial text-3xl font-bold leading-tight sm:text-4xl">{g.title}</h1>
         <p className="mt-3 text-lg leading-relaxed text-muted">{g.summary}</p>
-        <div className="mt-4"><ShareButton path={`/guide/${g.slug}`} title={g.title} className="press inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2.5 font-semibold hover:border-gold" label="แชร์ไกด์นี้" /></div>
+        <div className="mt-4"><ShareButton path={`/guide/${g.slug}`} title={g.title} className="press inline-flex items-center gap-1.5 rounded-sm border border-line px-4 py-2.5 font-semibold hover:border-gold" label="แชร์ไกด์นี้" /></div>
       </header>
       {g.sections.map((s, i) => (
         <section key={i}>

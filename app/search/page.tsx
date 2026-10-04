@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "ค้นหา", description: "ค�
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="skeleton mx-auto h-14 max-w-3xl rounded-full" />}>
+    <Suspense fallback={<div className="skeleton mx-auto h-14 max-w-3xl rounded-sm" />}>
       <SearchView />
     </Suspense>
   );

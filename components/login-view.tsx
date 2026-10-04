@@ -37,7 +37,7 @@ export function LoginView({ returnTo, error, line, dev }: { returnTo: string; er
         <a
           href={line ? `/api/auth/line?returnTo=${encodeURIComponent(returnTo)}` : undefined}
           aria-disabled={!line}
-          className={`press mt-6 flex items-center justify-center gap-3 rounded-full bg-[#06c755] px-6 py-4 text-[1.05rem] font-semibold text-white ${line ? "" : "pointer-events-none opacity-50"}`}
+          className={`press mt-6 flex items-center justify-center gap-3 rounded-sm bg-[#06c755] px-6 py-4 text-[1.05rem] font-semibold text-white ${line ? "" : "pointer-events-none opacity-50"}`}
         >
           <MessageCircle className="h-5 w-5" /> เข้าสู่ระบบด้วย LINE
         </a>
@@ -48,7 +48,7 @@ export function LoginView({ returnTo, error, line, dev }: { returnTo: string; er
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gold">โหมดทดลอง (ปิดอยู่บนเว็บจริง)</p>
             <label htmlFor="devname" className="sr-only">ชื่อที่แสดง</label>
             <input id="devname" value={name} onChange={(e) => setName(e.target.value)} maxLength={40} placeholder="ชื่อที่แสดง" className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-[1rem] outline-none focus:border-gold" />
-            <button type="button" onClick={devLogin} disabled={busy} className="press mt-2 w-full rounded-full border border-line py-3 font-semibold hover:border-gold disabled:opacity-50">เข้าแบบทดลอง</button>
+            <button type="button" onClick={devLogin} disabled={busy} className="press mt-2 w-full rounded-sm border border-line py-3 font-semibold hover:border-gold disabled:opacity-50">เข้าแบบทดลอง</button>
           </div>
         )}
 

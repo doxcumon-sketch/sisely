@@ -10,8 +10,7 @@ import { Avatar } from "@/components/ui";
 import { LoginPrompt } from "@/components/login-prompt";
 import { actions, loadViewer, useSise } from "@/lib/store";
 
-const SIDE_NAV = [
-  { href: "/", label: "หน้าแรก", icon: Home },
+const TOP_NAV = [
   { href: "/discover", label: "ค้นพบ", icon: Compass },
   { href: "/rooms", label: "ห้อง", icon: LayoutGrid },
   { href: "/events", label: "งาน", icon: Ticket },
@@ -45,10 +44,10 @@ export function Wordmark({ className, light }: { className?: string; light?: boo
 function BellButton() {
   const unread = useSise((s) => s.unread);
   return (
-    <Link href="/notifications" className="press relative rounded-full p-2.5 text-ink-2 hover:bg-paper-2" aria-label={unread ? `การแจ้งเตือน ${unread} รายการใหม่` : "การแจ้งเตือน"}>
+    <Link href="/notifications" className="press relative rounded-sm p-2.5 text-ink-2 hover:bg-paper-2" aria-label={unread ? `การแจ้งเตือน ${unread} รายการใหม่` : "การแจ้งเตือน"}>
       <Bell className="h-5 w-5" />
       {unread > 0 && (
-        <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-laterite px-1 text-[10px] font-bold leading-none text-white">
+        <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-sm bg-laterite px-1 text-[10px] font-bold leading-none text-white">
           {unread}
         </span>
       )}
@@ -124,90 +123,87 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <KeyboardWatcher />
       <PwaRegister />
 
-      <header className="sticky top-0 z-40 border-b border-line-soft bg-paper/85 backdrop-blur-xl lg:pl-60">
-        <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4 lg:h-16 lg:px-8">
-          <Link href="/" className="lg:hidden" aria-label="SISE หน้าแรก">
-            <Wordmark />
+      <header className="sticky top-0 z-40 bg-paper/90 backdrop-blur-xl">
+        <div className="mx-auto flex h-14 max-w-[1360px] items-center gap-3 px-4 lg:h-[4.25rem] lg:gap-8 lg:px-8">
+          <Link href="/" className="shrink-0" aria-label="SISE หน้าแรก">
+            <Wordmark className="lg:text-[1.9rem]" />
           </Link>
+
+          <nav className="hidden flex-1 items-center gap-0.5 lg:flex" aria-label="เมนูหลัก">
+            {TOP_NAV.map(({ href, label }) => {
+              const active = isActive(pathname, href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={active ? "page" : undefined}
+                  className={cx(
+                    "press relative px-3.5 py-2 text-[0.95rem] font-medium tracking-wide transition-colors",
+                    active ? "text-ink" : "text-muted hover:text-ink",
+                  )}
+                >
+                  {label}
+                  <span className={cx("absolute inset-x-3.5 -bottom-[7px] h-[2px] bg-gold transition-transform", active ? "scale-x-100" : "scale-x-0")} />
+                </Link>
+              );
+            })}
+          </nav>
+
           <Link
             href="/search"
-            className="press mx-1 flex h-10 min-w-0 flex-1 items-center gap-2 rounded-full border border-line bg-card px-4 text-sm text-faint hover:border-gold/60 lg:mx-0 lg:max-w-xl"
+            className="press flex h-10 min-w-0 flex-1 items-center gap-2 rounded-sm border border-line bg-card px-3.5 text-sm text-faint hover:border-gold lg:max-w-[15rem] lg:flex-none xl:max-w-[18rem]"
           >
-            <Search className="h-4 w-4 shrink-0" />
+            <Search className="h-4 w-4 shrink-0 text-gold" />
             <span className="truncate">วันนี้กำลังหาอะไร?</span>
           </Link>
-          <div className="ml-auto flex items-center lg:gap-1">
+
+          <div className="flex shrink-0 items-center gap-1">
             <button
               type="button"
               onClick={() => actions.setTheme(theme === "dark" ? "light" : "dark")}
-              className="press hidden rounded-full p-2.5 text-ink-2 hover:bg-paper-2 sm:block"
+              className="press hidden rounded-sm p-2.5 text-ink-2 hover:bg-paper-2 sm:block"
               aria-label={theme === "dark" ? "สลับเป็นโหมดสว่าง" : "สลับเป็นโหมดมืด"}
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
             {me && <BellButton />}
             {ready && !me && (
-              <Link href={`/login?returnTo=${encodeURIComponent(pathname)}`} className="press ml-1 rounded-full border border-line bg-card px-4 py-2 text-sm font-semibold hover:border-gold">เข้าสู่ระบบ</Link>
+              <Link href={`/login?returnTo=${encodeURIComponent(pathname)}`} className="press rounded-sm border border-line bg-card px-4 py-2 text-sm font-semibold hover:border-gold">เข้าสู่ระบบ</Link>
+            )}
+            {me && me.role !== "MEMBER" && (
+              <Link href="/admin" className={cx("press hidden rounded-sm p-2.5 hover:bg-paper-2 lg:block", admin ? "text-gold" : "text-ink-2")} aria-label="หลังบ้านผู้ดูแล"><Shield className="h-5 w-5" /></Link>
             )}
             {me && (
               <Link href="/me" className="ml-1 hidden rounded-full lg:block" aria-label="โปรไฟล์ของฉัน"><Avatar name={me.name} tone="gold" size={36} src={me.pictureUrl} /></Link>
             )}
-            <Link href="/create" className="press ml-1 hidden items-center gap-2 rounded-full bg-night px-5 py-2.5 text-sm font-semibold text-on-night hover:bg-night-2 lg:flex">
+            <Link href="/create" className="press ml-2 hidden items-center gap-2 rounded-sm bg-night px-5 py-2.5 text-sm font-semibold text-on-night hover:bg-night-2 lg:flex">
               <PenLine className="h-4 w-4" /> โพสต์
             </Link>
           </div>
         </div>
+        <div className="hairline-gold" />
       </header>
 
-      <aside className="fixed inset-y-0 left-0 z-50 hidden w-60 flex-col border-r border-line-soft bg-paper px-5 py-6 lg:flex" aria-label="เมนูหลัก">
-        <Link href="/" className="mb-8 block px-2">
-          <Wordmark className="text-3xl" />
-          <span className="mt-1 block text-xs text-muted">ศรีสะเกษในแบบของเรา</span>
-        </Link>
-        <nav className="flex flex-1 flex-col gap-0.5">
-          {SIDE_NAV.map(({ href, label, icon: Icon }) => {
-            const active = isActive(pathname, href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={cx(
-                  "press flex items-center gap-3 rounded-xl px-3 py-2.5 text-[0.95rem] font-medium",
-                  active ? "bg-night text-on-night" : "text-ink-2 hover:bg-paper-2",
-                )}
-              >
-                <Icon className="h-[18px] w-[18px]" />
-                {label}
-              </Link>
-            );
-          })}
-          <div className="hairline-gold my-3" />
-          <Link href="/me" className={cx("press flex items-center gap-3 rounded-xl px-3 py-2.5 text-[0.95rem] font-medium", isActive(pathname, "/me") ? "bg-night text-on-night" : "text-ink-2 hover:bg-paper-2")}>
-            <User className="h-[18px] w-[18px]" /> โปรไฟล์
-          </Link>
-          <Link href="/notifications" className="press flex items-center gap-3 rounded-xl px-3 py-2.5 text-[0.95rem] font-medium text-ink-2 hover:bg-paper-2">
-            <Bell className="h-[18px] w-[18px]" /> แจ้งเตือน
-          </Link>
-        </nav>
-        {me && me.role !== "MEMBER" && <Link href="/admin" className={cx("press mt-3 flex items-center gap-3 rounded-xl px-3 py-2 text-sm", admin ? "bg-night text-on-night" : "text-faint hover:bg-paper-2")}>
-          <Shield className="h-4 w-4" /> หลังบ้าน (ผู้ดูแล)
-        </Link>}
-      </aside>
-
-      <main id="main" className="mx-auto max-w-6xl px-4 pb-28 pt-5 lg:pl-[calc(15rem+2rem)] lg:pr-8 lg:pb-16 lg:pt-8">
+      <main id="main" className="mx-auto max-w-[1360px] px-4 pb-28 pt-5 lg:px-8 lg:pb-16 lg:pt-8">
         {children}
       </main>
 
+      <footer className="hidden border-t border-line bg-card lg:block">
+        <div className="mx-auto flex max-w-[1360px] items-center justify-between gap-6 px-8 py-8 text-sm text-muted">
+          <div className="flex items-center gap-4"><Wordmark /><span>ศรีสะเกษในแบบของเรา · Local stories. Local places. Local people.</span></div>
+          <p>ข้อมูลร้านและงานบางส่วนเป็นตัวอย่างระหว่างช่วงทดลอง</p>
+        </div>
+      </footer>
+
       {!composing && (
-        <nav className="kb-hide pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/92 backdrop-blur-xl lg:hidden" aria-label="เมนูหลัก">
+        <nav className="kb-hide pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/95 backdrop-blur-xl lg:hidden" aria-label="เมนูหลัก">
           <ul className="mx-auto grid max-w-md grid-cols-5 items-end">
             {TABS.map(({ href, label, icon: Icon, primary }) => {
               const active = isActive(pathname, href);
               return (
                 <li key={href} className="flex justify-center">
                   {primary ? (
-                    <Link href={href} className="press -mt-5 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#e6c77a] via-[#c9a043] to-[#a67a22] text-night shadow-[0_10px_24px_-8px_rgba(184,140,52,0.8)]" aria-label="โพสต์ใหม่">
+                    <Link href={href} className="press -mt-5 flex h-14 w-14 items-center justify-center rounded-md bg-gradient-to-br from-[#efd28a] via-[#c9a043] to-[#9a7220] text-night shadow-[0_10px_24px_-8px_rgba(169,124,31,0.8)]" aria-label="โพสต์ใหม่">
                       <Icon className="h-7 w-7" strokeWidth={2.4} />
                     </Link>
                   ) : (

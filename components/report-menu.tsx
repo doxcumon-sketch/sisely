@@ -45,7 +45,7 @@ export function ReportMenu({
 
   return (
     <>
-      <button type="button" onClick={() => setMenu(true)} className="press rounded-full p-2 text-faint hover:bg-paper-2 hover:text-ink" aria-label="ตัวเลือกเพิ่มเติม">
+      <button type="button" onClick={() => setMenu(true)} className="press rounded-sm p-2 text-faint hover:bg-paper-2 hover:text-ink" aria-label="ตัวเลือกเพิ่มเติม">
         <MoreHorizontal className="h-5 w-5" />
       </button>
 
@@ -82,7 +82,7 @@ export function ReportMenu({
         </fieldset>
         <label className="mt-3 block text-sm font-medium" htmlFor="report-note">หมายเหตุ (ไม่บังคับ)</label>
         <textarea id="report-note" value={note} onChange={(e) => setNote(e.target.value)} rows={2} maxLength={300} className="mt-1 w-full rounded-xl border border-line bg-paper p-3 text-[1rem] outline-none focus:border-gold" />
-        <button type="button" onClick={submit} className="press mt-4 w-full rounded-full bg-night py-3 font-semibold text-on-night">ส่งรายงาน</button>
+        <button type="button" onClick={submit} className="press mt-4 w-full rounded-sm bg-night py-3 font-semibold text-on-night">ส่งรายงาน</button>
       </Sheet>
     </>
   );

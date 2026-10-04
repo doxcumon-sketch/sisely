@@ -59,7 +59,7 @@ export default async function DiscoverPage() {
           {places.slice(0, 4).map((p) => <div key={p.id} className="w-[78%] shrink-0 snap-start sm:w-72 lg:w-auto"><PlaceCard place={p} /></div>)}
         </div>
         <div className="scrollbar-none mt-3 flex gap-2 overflow-x-auto">
-          {PLACE_CATEGORIES.map((c) => <Link key={c.key} href={`/places?cat=${c.key}`} className="press shrink-0 rounded-full border border-line bg-card px-4 py-2 text-sm font-medium hover:border-gold">{c.label}</Link>)}
+          {PLACE_CATEGORIES.map((c) => <Link key={c.key} href={`/places?cat=${c.key}`} className="press shrink-0 rounded-sm border border-line bg-card px-4 py-2 text-sm font-medium hover:border-gold">{c.label}</Link>)}
         </div>
       </section>
 

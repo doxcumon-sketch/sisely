@@ -99,7 +99,7 @@ export function Composer({ rooms, places }: { rooms: RoomOpt[]; places: { slug: 
     <div className="mx-auto max-w-2xl pb-28">
       <header className="mb-5 flex items-center justify-between">
         <h1 className="font-editorial text-2xl font-bold sm:text-3xl">กำลังคิดอะไรอยู่?</h1>
-        <Link href="/" className="press rounded-full p-2 text-muted hover:bg-paper-2" aria-label="ยกเลิก"><X className="h-5 w-5" /></Link>
+        <Link href="/" className="press rounded-sm p-2 text-muted hover:bg-paper-2" aria-label="ยกเลิก"><X className="h-5 w-5" /></Link>
       </header>
 
       <fieldset className="mb-5 min-w-0">
@@ -111,7 +111,7 @@ export function Composer({ rooms, places }: { rooms: RoomOpt[]; places: { slug: 
               type="button"
               onClick={() => pickType(t.key)}
               aria-pressed={type === t.key}
-              className={cx("press inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-[0.95rem] font-semibold", type === t.key ? "border-night bg-night text-on-night" : "border-line bg-card text-ink-2")}
+              className={cx("press inline-flex shrink-0 items-center gap-1.5 rounded-sm border px-4 py-2 text-[0.95rem] font-semibold", type === t.key ? "border-night bg-night text-on-night" : "border-line bg-card text-ink-2")}
             >
               <RoomIcon name={t.icon} className="h-4 w-4" /> {t.label}
             </button>
@@ -169,7 +169,7 @@ export function Composer({ rooms, places }: { rooms: RoomOpt[]; places: { slug: 
               <li key={src.id} className="relative aspect-square overflow-hidden rounded-xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src.url} alt={`รูปที่ ${i + 1}`} className="h-full w-full object-cover" />
-                <button type="button" onClick={() => setPhotos((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white" aria-label="ลบรูป"><X className="h-3.5 w-3.5" /></button>
+                <button type="button" onClick={() => setPhotos((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-sm bg-black/60 p-1 text-white" aria-label="ลบรูป"><X className="h-3.5 w-3.5" /></button>
               </li>
             ))}
           </ul>
@@ -188,7 +188,7 @@ export function Composer({ rooms, places }: { rooms: RoomOpt[]; places: { slug: 
           </div>
         </div>
 
-        <label className={cx("press inline-flex cursor-pointer items-center gap-2 rounded-full border border-dashed border-line px-4 py-2.5 text-sm font-medium text-ink-2 hover:border-gold", photos.length >= 4 && "pointer-events-none opacity-50")}>
+        <label className={cx("press inline-flex cursor-pointer items-center gap-2 rounded-sm border border-dashed border-line px-4 py-2.5 text-sm font-medium text-ink-2 hover:border-gold", photos.length >= 4 && "pointer-events-none opacity-50")}>
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />} เพิ่มรูป ({photos.length}/4)
           <input type="file" accept="image/*" multiple className="sr-only" onChange={(e) => { void addPhotos(e.target.files); e.target.value = ""; }} />
         </label>
@@ -199,7 +199,7 @@ export function Composer({ rooms, places }: { rooms: RoomOpt[]; places: { slug: 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl lg:left-60">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
           <p className="hidden flex-1 text-sm text-muted sm:block">โพสต์ในห้อง <b className="text-ink">{rooms.find((r) => r.slug === room)?.name}</b></p>
-          <button type="button" onClick={submit} disabled={!canSubmit} className="press ml-auto w-full rounded-full bg-night px-8 py-3.5 text-[1.05rem] font-semibold text-on-night disabled:opacity-40 sm:w-auto">
+          <button type="button" onClick={submit} disabled={!canSubmit} className="press ml-auto w-full rounded-sm bg-night px-8 py-3.5 text-[1.05rem] font-semibold text-on-night disabled:opacity-40 sm:w-auto">
             โพสต์เลย
           </button>
         </div>

@@ -61,10 +61,10 @@ export function SearchView() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <form role="search" onSubmit={(e) => { e.preventDefault(); remember(q); inputRef.current?.blur(); }} className="sticky top-16 z-20 -mx-1 bg-paper/90 px-1 py-2 backdrop-blur-xl lg:top-[4.5rem]">
-        <div className="flex h-14 items-center gap-3 rounded-full border border-line bg-card px-5 shadow-[var(--shadow-card)] focus-within:border-gold">
+        <div className="flex h-14 items-center gap-3 rounded-sm border border-line bg-card px-5 shadow-[var(--shadow-card)] focus-within:border-gold">
           <SearchIcon className="h-5 w-5 shrink-0 text-gold" />
           <input ref={inputRef} type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="วันนี้กำลังหาอะไร?" aria-label="ค้นหาใน SISE" enterKeyHint="search" autoComplete="off" className="min-w-0 flex-1 bg-transparent text-[1.05rem] outline-none placeholder:text-faint" />
-          {q && <button type="button" onClick={() => { setQ(""); setResults(null); inputRef.current?.focus(); }} className="press rounded-full p-1.5 text-muted hover:bg-paper-2" aria-label="ล้างคำค้น"><X className="h-4 w-4" /></button>}
+          {q && <button type="button" onClick={() => { setQ(""); setResults(null); inputRef.current?.focus(); }} className="press rounded-sm p-1.5 text-muted hover:bg-paper-2" aria-label="ล้างคำค้น"><X className="h-4 w-4" /></button>}
         </div>
       </form>
 
@@ -80,7 +80,7 @@ export function SearchView() {
       {error && <p role="alert" className="rounded-xl bg-laterite-soft p-3 text-sm text-laterite">{error}</p>}
 
       {shown && shown.total === 0 && guideHits.length === 0 && (
-        <EmptyState icon="pin" title={`ไม่พบผลลัพธ์สำหรับ “${q.trim()}”`} hint="ลองคำที่สั้นลง หรือถามคนศรีสะเกษในห้องถามตอบได้เลย" action={<Link href="/create?type=question&room=qa" className="press rounded-full bg-night px-5 py-2.5 font-semibold text-on-night">ตั้งคำถาม</Link>} />
+        <EmptyState icon="pin" title={`ไม่พบผลลัพธ์สำหรับ “${q.trim()}”`} hint="ลองคำที่สั้นลง หรือถามคนศรีสะเกษในห้องถามตอบได้เลย" action={<Link href="/create?type=question&room=qa" className="press rounded-sm bg-night px-5 py-2.5 font-semibold text-on-night">ตั้งคำถาม</Link>} />
       )}
 
       {shown && (shown.total > 0 || guideHits.length > 0) && (

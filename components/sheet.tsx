@@ -24,7 +24,7 @@ export function Sheet({ open, onClose, title, children }: { open: boolean; onClo
       <div className="rise relative max-h-[88dvh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-card p-5 pb-8 shadow-[var(--shadow-pop)] lg:rounded-3xl lg:pb-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 id={titleId} className="font-editorial text-lg font-semibold">{title}</h2>
-          <button type="button" onClick={onClose} className="press rounded-full p-2 text-muted hover:bg-paper-2" aria-label="ปิด">
+          <button type="button" onClick={onClose} className="press rounded-sm p-2 text-muted hover:bg-paper-2" aria-label="ปิด">
             <X className="h-5 w-5" />
           </button>
         </div>

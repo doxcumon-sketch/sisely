@@ -17,7 +17,7 @@ export function RoomCard({ room, compact }: { room: Room; compact?: boolean }) {
           <RoomIcon name={room.icon} className="h-5 w-5" />
         </span>
         {room.trending && (
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-sm bg-black/35 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">
             <Flame className="h-3 w-3" /> Trending
           </span>
         )}
@@ -38,7 +38,7 @@ export function PlaceCard({ place, className }: { place: Place; className?: stri
   return (
     <Link href={`/places/${place.slug}`} className={cx("surface press group block overflow-hidden transition-shadow hover:shadow-[var(--shadow-pop)]", className)}>
       <Cover tone={place.tone} icon={place.category === "restaurant" ? "food" : place.category === "cafe" ? "cafe" : place.category === "attraction" ? "travel" : place.category === "hotel" ? "hotel" : place.category === "shopping" ? "shopping" : place.category === "nightlife" ? "nightlife" : place.category === "service" ? "service" : "activity"} className="aspect-[16/10]">
-        <span className="absolute left-3 top-3 rounded-full bg-black/35 px-2.5 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">{placeCategoryLabel(place.category)}</span>
+        <span className="absolute left-3 top-3 rounded-sm bg-black/35 px-2.5 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">{placeCategoryLabel(place.category)}</span>
       </Cover>
       <div className="p-4">
         <h3 className="font-editorial text-lg font-semibold leading-tight group-hover:text-gold">{place.name}</h3>
@@ -103,7 +103,7 @@ export function ListingCard({ listing, sellerName }: { listing: Listing; sellerN
   return (
     <Link href={`/market/${listing.id}`} className="surface press group block overflow-hidden transition-shadow hover:shadow-[var(--shadow-pop)]">
       <Cover tone={listing.tone} icon="market" className="aspect-square">
-        {listing.promoted && <span className="absolute left-3 top-3 rounded-full bg-gold px-2.5 py-0.5 text-[11px] font-bold text-night">โปรโมต</span>}
+        {listing.promoted && <span className="absolute left-3 top-3 rounded-sm bg-gold px-2.5 py-0.5 text-[11px] font-bold text-night">โปรโมต</span>}
       </Cover>
       <div className="p-3.5">
         <p className="font-editorial text-lg font-bold text-ink">{formatBaht(listing.price)}{listing.category === "agriculture" || listing.category === "services" ? <span className="text-xs font-normal text-muted"> เริ่มต้น</span> : null}</p>

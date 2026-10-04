@@ -79,7 +79,7 @@ export default async function PlacePage({ params }: { params: Promise<{ slug: st
           <div className="flex flex-wrap items-center gap-2">
             <FollowButton kind="places" id={p.slug} />
             <SaveButton kind="places" id={p.slug} />
-            <ShareButton path={`/places/${p.slug}`} title={p.name} className="press inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2.5 text-[0.95rem] font-semibold hover:border-gold" label="แชร์" />
+            <ShareButton path={`/places/${p.slug}`} title={p.name} className="press inline-flex items-center gap-1.5 rounded-sm border border-line px-4 py-2.5 text-[0.95rem] font-semibold hover:border-gold" label="แชร์" />
           </div>
         </div>
       </header>
@@ -89,7 +89,7 @@ export default async function PlacePage({ params }: { params: Promise<{ slug: st
           <section>
             <h2 className="font-editorial mb-2 text-xl font-semibold">เกี่ยวกับที่นี่</h2>
             <p className="leading-[1.85] text-ink-2">{p.description}</p>
-            <ul className="mt-3 flex flex-wrap gap-2">{p.highlights.map((h) => <li key={h} className="rounded-full bg-gold-soft px-3 py-1 text-sm font-medium">{h}</li>)}</ul>
+            <ul className="mt-3 flex flex-wrap gap-2">{p.highlights.map((h) => <li key={h} className="rounded-sm bg-gold-soft px-3 py-1 text-sm font-medium">{h}</li>)}</ul>
           </section>
 
           <section aria-labelledby="mentions">

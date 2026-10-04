@@ -31,8 +31,8 @@ export function InstallBanner() {
         <p className="font-editorial font-semibold">ติดตั้ง SISE ไว้บนหน้าจอ</p>
         <p className="text-sm text-muted">เปิดเร็วขึ้น เหมือนแอป ไม่ต้องจำลิงก์</p>
       </div>
-      <button type="button" onClick={async () => { await evt.prompt(); setEvt(null); }} className="press rounded-full bg-night px-4 py-2 text-sm font-semibold text-on-night">ติดตั้ง</button>
-      <button type="button" onClick={() => actions.dismissInstall()} className="press rounded-full p-2 text-muted hover:bg-paper-2" aria-label="ปิด"><X className="h-4 w-4" /></button>
+      <button type="button" onClick={async () => { await evt.prompt(); setEvt(null); }} className="press rounded-sm bg-night px-4 py-2 text-sm font-semibold text-on-night">ติดตั้ง</button>
+      <button type="button" onClick={() => actions.dismissInstall()} className="press rounded-sm p-2 text-muted hover:bg-paper-2" aria-label="ปิด"><X className="h-4 w-4" /></button>
     </div>
   );
 }

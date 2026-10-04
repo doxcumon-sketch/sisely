@@ -54,8 +54,8 @@ function CommentBox({ postId, parentId, onPosted, onCancel, autoFocus, placehold
         />
         {error && <p role="alert" className="mt-1 text-sm text-laterite">{error}</p>}
         <div className="mt-2 flex justify-end gap-2">
-          {onCancel && <button type="button" onClick={onCancel} className="press rounded-full px-4 py-2 text-sm text-muted hover:bg-paper-2">ยกเลิก</button>}
-          <button type="button" onClick={send} disabled={!text.trim() || busy} className="press rounded-full bg-night px-5 py-2 text-sm font-semibold text-on-night disabled:opacity-40">ส่ง</button>
+          {onCancel && <button type="button" onClick={onCancel} className="press rounded-sm px-4 py-2 text-sm text-muted hover:bg-paper-2">ยกเลิก</button>}
+          <button type="button" onClick={send} disabled={!text.trim() || busy} className="press rounded-sm bg-night px-5 py-2 text-sm font-semibold text-on-night disabled:opacity-40">ส่ง</button>
         </div>
       </div>
     </div>
@@ -88,16 +88,16 @@ function CommentItem({ c, replies, now, postId, depth = 0, onAdd, onRemove, like
           </div>
           <p className="mt-1 whitespace-pre-line break-words text-[0.98rem] leading-relaxed text-ink-2">{c.body}</p>
           <div className="-ml-2 mt-1 flex items-center">
-            <button type="button" onClick={() => onLike(c.id)} aria-pressed={liked} className={cx("press flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm", liked ? "text-laterite" : "text-muted hover:bg-paper-2")}>
+            <button type="button" onClick={() => onLike(c.id)} aria-pressed={liked} className={cx("press flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-sm", liked ? "text-laterite" : "text-muted hover:bg-paper-2")}>
               <Heart className={cx("h-4 w-4", liked && "fill-current")} /> <span className="tabular-nums">{likes[c.id] ?? c.likes}</span>
             </button>
             {depth === 0 && (
-              <button type="button" onClick={() => requireLogin() && setReplying((r) => !r)} className="press flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm text-muted hover:bg-paper-2">
+              <button type="button" onClick={() => requireLogin() && setReplying((r) => !r)} className="press flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-sm text-muted hover:bg-paper-2">
                 <CornerDownRight className="h-4 w-4" /> ตอบกลับ
               </button>
             )}
             {c.authorId === myId ? (
-              <button type="button" onClick={() => onRemove(c.id)} className="press rounded-full p-2 text-faint hover:bg-paper-2 hover:text-laterite" aria-label="ลบความเห็น"><Trash2 className="h-4 w-4" /></button>
+              <button type="button" onClick={() => onRemove(c.id)} className="press rounded-sm p-2 text-faint hover:bg-paper-2 hover:text-laterite" aria-label="ลบความเห็น"><Trash2 className="h-4 w-4" /></button>
             ) : (
               <ReportMenu targetType="comment" targetId={c.id} authorId={c.authorId} authorName={author.name} />
             )}
@@ -150,9 +150,9 @@ function Comments({ post, initial }: { post: Post; initial: Comment[] }) {
       <div className="mb-3 flex items-center justify-between">
         <h2 className="font-editorial text-xl font-semibold">ความคิดเห็น <span className="text-muted">({comments.length})</span></h2>
         {roots.length > 1 && (
-          <div className="flex rounded-full border border-line p-0.5 text-sm" role="group" aria-label="เรียงความเห็น">
+          <div className="flex rounded-sm border border-line p-0.5 text-sm" role="group" aria-label="เรียงความเห็น">
             {(["top", "new"] as const).map((k) => (
-              <button key={k} type="button" aria-pressed={sort === k} onClick={() => setSort(k)} className={cx("rounded-full px-3 py-1", sort === k ? "bg-night text-on-night" : "text-muted")}>{k === "top" ? "ยอดนิยม" : "ใหม่"}</button>
+              <button key={k} type="button" aria-pressed={sort === k} onClick={() => setSort(k)} className={cx("rounded-sm px-3 py-1", sort === k ? "bg-night text-on-night" : "text-muted")}>{k === "top" ? "ยอดนิยม" : "ใหม่"}</button>
             ))}
           </div>
         )}
@@ -202,7 +202,7 @@ export function PostDetail({ post, comments, related, place, event, deal, listin
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
-        <button type="button" onClick={() => (window.history.length > 1 ? router.back() : router.push("/"))} className="press -ml-2 mb-3 inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm text-muted hover:bg-paper-2">
+        <button type="button" onClick={() => (window.history.length > 1 ? router.back() : router.push("/"))} className="press -ml-2 mb-3 inline-flex items-center gap-1.5 rounded-sm px-2 py-1.5 text-sm text-muted hover:bg-paper-2">
           <ArrowLeft className="h-4 w-4" /> กลับ
         </button>
 
@@ -222,7 +222,7 @@ export function PostDetail({ post, comments, related, place, event, deal, listin
               </p>
             </div>
             {post.authorId === myId ? (
-              <button type="button" onClick={del} className="press rounded-full p-2 text-faint hover:bg-paper-2 hover:text-laterite" aria-label="ลบโพสต์"><Trash2 className="h-5 w-5" /></button>
+              <button type="button" onClick={del} className="press rounded-sm p-2 text-faint hover:bg-paper-2 hover:text-laterite" aria-label="ลบโพสต์"><Trash2 className="h-5 w-5" /></button>
             ) : (
               <ReportMenu targetType="post" targetId={post.id} authorId={post.authorId} authorName={author.name} />
             )}
