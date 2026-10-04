@@ -13,7 +13,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:make-admin": "tsx prisma/make-admin.ts",
     "db:clear-demo": "tsx prisma/clear-demo.ts",
-    "db:seed-starter": "tsx prisma/seed-starter.ts"
+    "db:seed-starter": "tsx prisma/seed-starter.ts",
+    "db:sync-rooms": "tsx prisma/sync-rooms.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",

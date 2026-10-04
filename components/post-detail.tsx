@@ -82,7 +82,7 @@ function CommentItem({ c, replies, now, postId, depth = 0, onAdd, onRemove, like
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 text-sm">
             <Link href={`/u/${author.handle}`} className="font-semibold hover:underline">{author.name}</Link>
-            {author.badge === "local-guide" && <span className="rounded bg-gold-soft px-1.5 py-px text-[10px] font-bold text-[#7a5a14] dark:text-gold">Local Guide</span>}
+            {author.badge === "local-guide" && <span className="rounded bg-gold-soft px-1.5 py-px text-[10px] font-bold text-[#8a4a30] dark:text-gold">Local Guide</span>}
             {author.badge === "moderator" && <span className="rounded bg-night px-1.5 py-px text-[10px] font-bold text-on-night">MOD</span>}
             {c.best && <span className="inline-flex items-center gap-1 text-xs font-semibold text-jade"><Award className="h-3.5 w-3.5" /> คำตอบที่เป็นประโยชน์</span>}
             <time className="text-xs text-muted" suppressHydrationWarning>{formatAge(ageOf(c, now))}</time>

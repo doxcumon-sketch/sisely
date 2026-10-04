@@ -2,6 +2,7 @@ import {
   Beef, Briefcase, Camera, Car, Coffee, Cpu, Flame, GraduationCap, Heart, Home, Landmark, Leaf, Map as MapIcon,
   MessageCircle, MessagesSquare, MapPin, Mountain, Music, Newspaper, Palette, PawPrint, Gamepad2, ShoppingBag,
   Store, Tag, Users, Utensils, HelpCircle, Sparkles, Ticket, Bed, ShoppingBasket, Activity, Wine, Wrench, Landmark as Temple,
+  Clapperboard,
   type LucideIcon,
 } from "lucide-react";
 
@@ -24,6 +25,7 @@ export const ICONS: Record<string, LucideIcon> = {
   travel: Mountain,
   agri: Leaf,
   games: Gamepad2,
+  movie: Clapperboard,
   art: Palette,
   news: Newspaper,
   qa: HelpCircle,

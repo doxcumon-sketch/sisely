@@ -23,7 +23,7 @@ function Reputation({ value }: { value: number }) {
   return (
     <div className="mt-4" aria-label={`SISE Reputation ${value} จาก 100`}>
       <div className="mb-1 flex justify-between text-xs text-muted"><span>SISE Reputation</span><span className="font-semibold text-ink">{value}</span></div>
-      <div className="h-1.5 overflow-hidden rounded-sm bg-paper-2"><div className="h-full rounded-sm bg-gradient-to-r from-[#b88c34] to-[#e6c77a]" style={{ width: `${Math.min(100, value)}%` }} /></div>
+      <div className="h-1.5 overflow-hidden rounded-sm bg-paper-2"><div className="h-full rounded-sm bg-gradient-to-r from-[#b9714f] to-[#e8b9a0]" style={{ width: `${Math.min(100, value)}%` }} /></div>
       <p className="mt-1 text-[11px] text-faint">มาจากความเห็นที่เป็นประโยชน์ คำตอบที่ได้รับเลือก และการไม่ถูกรายงาน</p>
     </div>
   );
@@ -182,7 +182,7 @@ export function ProfileView({ data }: { data: ProfileData }) {
             <>
               <h1 className="font-editorial mt-3 flex flex-wrap items-center gap-2 text-2xl font-bold">
                 {profile.name}
-                {profile.badge && <span className="rounded-sm bg-gold-soft px-2.5 py-0.5 text-xs font-semibold text-[#7a5a14] dark:text-gold">{BADGE[profile.badge]}</span>}
+                {profile.badge && <span className="rounded-sm bg-gold-soft px-2.5 py-0.5 text-xs font-semibold text-[#8a4a30] dark:text-gold">{BADGE[profile.badge]}</span>}
               </h1>
               <p className="text-sm text-muted">@{profile.handle}</p>
               {profile.bio ? <p className="mt-2 text-ink-2">{profile.bio}</p> : isMe && <button type="button" onClick={() => { resetDraft(); setEditing(true); }} className="mt-2 text-sm text-gold hover:underline">+ เพิ่มคำแนะนำตัว ให้คนรู้จักคุณมากขึ้น</button>}

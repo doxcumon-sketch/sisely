@@ -8,7 +8,7 @@
  */
 export type SceneId =
   | "city" | "market" | "street-food" | "cafe" | "pha-mo-i-daeng" | "sa-kamphaeng-yai" | "temple"
-  | "durian" | "shallot" | "silk" | "rice-field" | "lamduan" | "river-mun" | "festival" | "night" | "countryside";
+  | "durian" | "shallot" | "silk" | "rice-field" | "lamduan" | "river-mun" | "festival" | "night" | "countryside" | "cinema";
 
 export interface CoverPhoto {
   scene: SceneId;
@@ -37,6 +37,7 @@ export const COVER_PHOTOS: CoverPhoto[] = [
   { scene: "river-mun", src: "/covers/river-mun.jpg", alt: "แสงทองบนแม่น้ำมูล", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
   { scene: "festival", src: "/covers/festival.jpg", alt: "พลุเฉลิมฉลองในงานเทศกาล", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
   { scene: "night", src: "/covers/night.jpg", alt: "โคมไฟไนท์มาร์เก็ต", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "cinema", src: "/covers/cinema.jpg", alt: "โรงภาพยนตร์และแสงจากจอ", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
   { scene: "countryside", src: "/covers/countryside.jpg", alt: "บ้านใต้ถุนยามพลบค่ำ", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
 ];
 
@@ -66,6 +67,7 @@ export const ROOM_SCENES: Record<string, SceneId[]> = {
   news: ["city", "temple"],
   qa: ["temple", "lamduan"],
   community: ["countryside", "temple"],
+  movies: ["cinema", "night"],
 };
 
 /** Scenes for specific real places (by slug). Only attach real landmarks here — never a stand-in for a business. */

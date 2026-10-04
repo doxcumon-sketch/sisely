@@ -24,7 +24,7 @@ export function Onboarding({ rooms }: { rooms: RoomLite[] }) {
           const on = follows.includes(r.slug);
           return (
             <button key={r.slug} type="button" aria-pressed={on} onClick={() => actions.follow("rooms", r.slug)} className={cx("press inline-flex items-center gap-2 border px-3.5 py-2 text-sm font-medium", on ? "border-night bg-night text-on-night" : "border-line bg-card text-ink-2 hover:border-gold")}>
-              {on ? <Check className="h-4 w-4 text-[#f4c542]" /> : <RoomIcon name={r.icon} className="h-4 w-4 text-gold" />} {r.name}
+              {on ? <Check className="h-4 w-4 text-rose" /> : <RoomIcon name={r.icon} className="h-4 w-4 text-gold" />} {r.name}
             </button>
           );
         })}
