@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+/*
+ * SISE design system.
+ * Palette is drawn from Sisaket itself: lamduan (ดอกลำดวน) cream & gold, Khmer-temple
+ * laterite red, deep rice-field jade, night ink. Light, editorial, warm — never blue/white SaaS.
+ */
+:root {
+  --paper: #f6f1e7;
+  --paper-2: #efe8d9;
+  --card: #fffdf8;
+  --ink: #16201c;
+  --ink-2: #34403a;
+  --muted: #6a6f66;
+  --faint: #928d80;
+  --line: #e3dac7;
+  --line-soft: #ece4d3;
+  --gold: #b88c34;
+  --gold-soft: #f4e7c3;
+  --jade: #1d4a40;
+  --jade-soft: #e1ede7;
+  --laterite: #a4472b;
+  --laterite-soft: #f6e2da;
+  --night: #0f1916;
+  --night-2: #17251f;
+  --on-night: #f3ecdc;
+  --on-night-muted: #b7b3a3;
+  --ring: #b88c34;
+  --shadow-card: 0 1px 0 rgb(22 32 28 / 0.04), 0 8px 24px -12px rgb(60 45 20 / 0.18);
+  --shadow-pop: 0 18px 48px -16px rgb(30 22 8 / 0.35);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --paper: #0f1916;
+  --paper-2: #14211c;
+  --card: #18261f;
+  --ink: #f3ecdc;
+  --ink-2: #dcd5c2;
+  --muted: #a8a898;
+  --faint: #7f8576;
+  --line: #2a3a32;
+  --line-soft: #22322a;
+  --gold: #d8ae56;
+  --gold-soft: #3a3320;
+  --jade: #7fc2ae;
+  --jade-soft: #1b3a31;
+  --laterite: #e58a6c;
+  --laterite-soft: #3d2a22;
+  --night: #0a120f;
+  --night-2: #101c17;
+  --shadow-card: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 28px -14px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-jade: var(--jade);
+  --color-jade-soft: var(--jade-soft);
+  --color-laterite: var(--laterite);
+  --color-laterite-soft: var(--laterite-soft);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-on-night: var(--on-night);
+  --color-on-night-muted: var(--on-night-muted);
+  --font-sans: var(--font-sans-th), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif-th), "Noto Serif Thai", Georgia, serif;
+  --font-display: var(--font-display-latin), Georgia, serif;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+}
+
+html {
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
+@media (max-width: 1023px) {
+  html {
+    font-size: 16.5px;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--gold-soft);
+  color: var(--ink);
+}
+
+/* ---------- Editorial type ---------- */
+.font-editorial {
+  font-family: var(--font-serif), serif;
+  letter-spacing: -0.005em;
+}
+.wordmark {
+  font-family: var(--font-display), serif;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* ---------- Surfaces ---------- */
+.surface {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+.surface-flat {
+  background: var(--card);
+  border: 1px solid var(--line-soft);
+  border-radius: 1.25rem;
+}
+.hairline-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.55;
+}
+.night-surface {
+  background:
+    radial-gradient(120% 90% at 85% -10%, rgb(184 140 52 / 0.22), transparent 55%),
+    radial-gradient(90% 70% at -10% 110%, rgb(29 74 64 / 0.55), transparent 60%),
+    var(--night);
+  color: var(--on-night);
+}
+.text-gold-gradient {
+  background: linear-gradient(100deg, #8a6420 0%, #d8ae56 40%, #f4e2a8 55%, #b88c34 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Art covers (no stock photos: generated tonal art) ---------- */
+.tone-jade { --a: #1d4a40; --b: #3f8a73; --c: #d9c27a; }
+.tone-laterite { --a: #7d2f1a; --b: #c0623f; --c: #f1cf9b; }
+.tone-gold { --a: #8b6420; --b: #d8ae56; --c: #fff1c7; }
+.tone-indigo { --a: #1e2a4a; --b: #4a5f9c; --c: #e8c98a; }
+.tone-plum { --a: #43203a; --b: #8d4a7a; --c: #f0c8b0; }
+.tone-sky { --a: #1f4f63; --b: #5aa3b8; --c: #fbe7b8; }
+.tone-ink { --a: #0f1916; --b: #2a3f36; --c: #d8ae56; }
+
+.cover {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(80% 90% at 80% 10%, color-mix(in srgb, var(--c) 55%, transparent), transparent 60%),
+    radial-gradient(90% 100% at 0% 100%, color-mix(in srgb, var(--b) 80%, transparent), transparent 70%),
+    linear-gradient(140deg, var(--a), color-mix(in srgb, var(--a) 70%, var(--b)));
+}
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='white' stroke-opacity='.10' stroke-width='1'%3E%3Cpath d='M36 6 L66 36 L36 66 L6 36 Z'/%3E%3Cpath d='M36 20 L52 36 L36 52 L20 36 Z'/%3E%3Ccircle cx='36' cy='36' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  z-index: -1;
+}
+
+/* ---------- Motion ---------- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.8); }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+.rise { animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
+.pop { animation: pop 0.32s ease-out; }
+.live-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+.skeleton {
+  background: linear-gradient(90deg, var(--line-soft) 25%, var(--paper-2) 50%, var(--line-soft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: 0.75rem;
+}
+.press { transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease; }
+.press:active { transform: scale(0.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Utilities ---------- */
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 0.25rem); }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.kb-open .kb-hide { display: none !important; }
