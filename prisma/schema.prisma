@@ -1,0 +1,577 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum UserBadge {
+  FOUNDER
+  LOCAL_GUIDE
+  BUSINESS
+  MODERATOR
+}
+
+enum Tone {
+  jade
+  laterite
+  gold
+  indigo
+  plum
+  sky
+  ink
+}
+
+enum RoomGroup {
+  city
+  life
+  money
+  interest
+}
+
+enum PostType {
+  discussion
+  question
+  recommendation
+  event
+  deal
+  marketplace
+  story
+  poll
+  announcement
+}
+
+enum ContentStatus {
+  PUBLISHED
+  PENDING_REVIEW
+  HIDDEN
+}
+
+enum ReactionKind {
+  like
+  love
+  helpful
+  wow
+}
+
+enum FollowTarget {
+  USER
+  ROOM
+  PLACE
+  EVENT
+}
+
+enum SaveTarget {
+  POST
+  PLACE
+  EVENT
+  LISTING
+}
+
+enum PlaceCategory {
+  restaurant
+  cafe
+  hotel
+  attraction
+  shopping
+  activity
+  nightlife
+  service
+}
+
+enum EventCategory {
+  concert
+  festival
+  market
+  sports
+  workshop
+  exhibition
+  community
+  food
+  culture
+}
+
+enum ListingCategory {
+  electronics
+  cars
+  motorcycles
+  furniture
+  local_products
+  agriculture
+  services
+  second_hand
+}
+
+enum ListingCondition {
+  new
+  like_new
+  used
+  na
+}
+
+enum BusinessPlan {
+  FREE
+  PRO
+  FEATURED
+  SPONSORED
+}
+
+enum NotificationKind {
+  comment
+  reply
+  mention
+  room
+  event
+  place
+  market
+  system
+}
+
+enum ReportTarget {
+  POST
+  COMMENT
+  USER
+  LISTING
+}
+
+enum ReportReason {
+  spam
+  abuse
+  scam
+  misinfo
+  other
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum ModAction {
+  HIDE
+  RESTORE
+  WARN
+  SUSPEND
+  BAN
+  DISMISS
+  FEATURE
+}
+
+model User {
+  id          String     @id @default(cuid())
+  lineUserId  String?    @unique
+  handle      String     @unique
+  name        String
+  pictureUrl  String?
+  bio         String     @default("")
+  area        String     @default("ศรีสะเกษ")
+  tone        Tone       @default(gold)
+  role        UserRole   @default(MEMBER)
+  status      UserStatus @default(ACTIVE)
+  badge       UserBadge?
+  reputation  Int        @default(10)
+  createdAt   DateTime   @default(now())
+  lastSeenAt  DateTime   @default(now())
+
+  posts          Post[]
+  comments       Comment[]
+  reactions      Reaction[]
+  commentLikes   CommentLike[]
+  pollVotes      PollVote[]
+  follows        Follow[]
+  saves          Save[]
+  notifications  Notification[] @relation("NotificationRecipient")
+  actedNotifications Notification[] @relation("NotificationActor")
+  reportsMade    Report[]
+  blocking       Block[]    @relation("Blocker")
+  blockedBy      Block[]    @relation("Blocked")
+  listings       Listing[]
+  businesses     Business[]
+  modActions     ModerationAction[]
+  photos         PostPhoto[]
+}
+
+model Room {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  icon        String
+  tone        Tone
+  tagline     String
+  description String
+  group       RoomGroup
+  trending    Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  memberCount Int       @default(0)
+  postCount   Int       @default(0)
+  createdAt   DateTime  @default(now())
+
+  posts Post[]
+}
+
+model Post {
+  id            String        @id @default(cuid())
+  type          PostType
+  roomId        String
+  authorId      String
+  title         String
+  body          String        @default("")
+  status        ContentStatus @default(PUBLISHED)
+  covers        Tone[]
+  location      String?
+  placeId       String?
+  eventId       String?
+  dealId        String?
+  listingId     String?
+  pinned        Boolean       @default(false)
+  featured      Boolean       @default(false)
+  solved        Boolean       @default(false)
+  pollEndsAt    DateTime?
+  fingerprint   String
+  viewCount     Int           @default(0)
+  commentCount  Int           @default(0)
+  reactionCount Int           @default(0)
+  saveCount     Int           @default(0)
+  shareCount    Int           @default(0)
+  velocity      Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  room      Room         @relation(fields: [roomId], references: [id])
+  author    User         @relation(fields: [authorId], references: [id])
+  place     Place?       @relation(fields: [placeId], references: [id])
+  event     Event?       @relation(fields: [eventId], references: [id])
+  deal      Deal?        @relation(fields: [dealId], references: [id])
+  listing   Listing?     @relation(fields: [listingId], references: [id])
+  photos    PostPhoto[]
+  options   PollOption[]
+  votes     PollVote[]
+  comments  Comment[]
+  reactions Reaction[]
+
+  @@index([roomId, status, createdAt])
+  @@index([status, createdAt])
+  @@index([authorId, createdAt])
+  @@index([placeId])
+  @@index([eventId])
+}
+
+model PostPhoto {
+  id        String   @id @default(cuid())
+  postId    String?
+  ownerId   String
+  mime      String   @default("image/jpeg")
+  data      Bytes
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  post  Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+  owner User  @relation(fields: [ownerId], references: [id])
+
+  @@index([postId])
+}
+
+model PollOption {
+  id       String @id @default(cuid())
+  postId   String
+  label    String
+  votes    Int    @default(0)
+  position Int    @default(0)
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  pollVotes PollVote[]
+
+  @@index([postId])
+}
+
+model PollVote {
+  postId   String
+  userId   String
+  optionId String
+  createdAt DateTime @default(now())
+
+  post   Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  option PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+}
+
+model Comment {
+  id        String        @id @default(cuid())
+  postId    String
+  parentId  String?
+  authorId  String
+  body      String
+  status    ContentStatus @default(PUBLISHED)
+  likeCount Int           @default(0)
+  isBest    Boolean       @default(false)
+  createdAt DateTime      @default(now())
+
+  post   Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent Comment?      @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[]    @relation("Replies")
+  author User          @relation(fields: [authorId], references: [id])
+  likes  CommentLike[]
+
+  @@index([postId, createdAt])
+  @@index([authorId, createdAt])
+}
+
+model CommentLike {
+  commentId String
+  userId    String
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([commentId, userId])
+}
+
+model Reaction {
+  userId String
+  postId String
+  kind   ReactionKind @default(like)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+}
+
+model Follow {
+  followerId String
+  targetType FollowTarget
+  targetId   String
+  createdAt  DateTime @default(now())
+
+  follower User @relation(fields: [followerId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, targetType, targetId])
+  @@index([targetType, targetId])
+}
+
+model Save {
+  userId     String
+  targetType SaveTarget
+  targetId   String
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, targetType, targetId])
+}
+
+model Place {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  category    PlaceCategory
+  tone        Tone
+  tagline     String
+  description String
+  address     String
+  district    String
+  lat         Float
+  lng         Float
+  hours       Json
+  phone       String?
+  facebook    String?
+  line        String?
+  priceLevel  Int           @default(2)
+  ratingAvg   Float         @default(0)
+  ratingCount Int           @default(0)
+  mentions    String[]
+  highlights  String[]
+  followerCount Int         @default(0)
+  businessId  String?
+  createdAt   DateTime      @default(now())
+
+  business Business? @relation(fields: [businessId], references: [id])
+  posts    Post[]
+  events   Event[]
+  deals    Deal[]
+}
+
+model Business {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  name        String
+  tagline     String
+  description String
+  category    String
+  tone        Tone
+  plan        BusinessPlan @default(FREE)
+  verified    Boolean      @default(false)
+  address     String
+  phone       String
+  line        String?
+  hours       String
+  offerings   Json
+  ownerId     String?
+  followerCount Int        @default(0)
+  mentionCount Int         @default(0)
+  createdAt   DateTime     @default(now())
+
+  owner  User?   @relation(fields: [ownerId], references: [id])
+  places Place[]
+  deals  Deal[]
+}
+
+model Event {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  category    EventCategory
+  tone        Tone
+  summary     String
+  description String
+  startDate   DateTime      @db.Date
+  endDate     DateTime      @db.Date
+  startTime   String
+  endTime     String?
+  venue       String
+  placeId     String?
+  address     String
+  price       String
+  organizer   String
+  contact     String
+  ticketInfo  String
+  interestedCount Int       @default(0)
+  goingCount  Int           @default(0)
+  createdAt   DateTime      @default(now())
+
+  place Place? @relation(fields: [placeId], references: [id])
+  posts Post[]
+
+  @@index([startDate])
+}
+
+model Deal {
+  id           String   @id @default(cuid())
+  title        String
+  businessName String
+  placeId      String?
+  businessId   String?
+  tone         Tone
+  description  String
+  discount     String
+  endsAt       DateTime
+  terms        String
+  claimedCount Int      @default(0)
+  sponsored    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  place    Place?    @relation(fields: [placeId], references: [id])
+  business Business? @relation(fields: [businessId], references: [id])
+  posts    Post[]
+}
+
+model Listing {
+  id          String           @id @default(cuid())
+  title       String
+  category    ListingCategory
+  price       Int
+  negotiable  Boolean          @default(false)
+  condition   ListingCondition @default(na)
+  location    String
+  description String
+  sellerId    String
+  tone        Tone
+  contact     String
+  promoted    Boolean          @default(false)
+  status      ContentStatus    @default(PUBLISHED)
+  saveCount   Int              @default(0)
+  viewCount   Int              @default(0)
+  createdAt   DateTime         @default(now())
+
+  seller User   @relation(fields: [sellerId], references: [id])
+  posts  Post[]
+
+  @@index([category, createdAt])
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  recipientId String
+  actorId     String?
+  kind        NotificationKind
+  text        String
+  detail      String?
+  href        String
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  recipient User  @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  actor     User? @relation("NotificationActor", fields: [actorId], references: [id])
+
+  @@index([recipientId, createdAt])
+}
+
+model Report {
+  id         String       @id @default(cuid())
+  reporterId String
+  targetType ReportTarget
+  targetId   String
+  reason     ReportReason
+  note       String?
+  status     ReportStatus @default(OPEN)
+  createdAt  DateTime     @default(now())
+
+  reporter User               @relation(fields: [reporterId], references: [id])
+  actions  ModerationAction[]
+
+  @@index([status, createdAt])
+  @@unique([reporterId, targetType, targetId])
+}
+
+model ModerationAction {
+  id          String       @id @default(cuid())
+  moderatorId String
+  reportId    String?
+  targetType  ReportTarget
+  targetId    String
+  action      ModAction
+  reason      String?
+  createdAt   DateTime     @default(now())
+
+  moderator User    @relation(fields: [moderatorId], references: [id])
+  report    Report? @relation(fields: [reportId], references: [id])
+}
+
+model Block {
+  blockerId String
+  blockedId String
+  muteOnly  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  blocker User @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@id([blockerId, blockedId])
+}
+
+model RateEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  createdAt DateTime @default(now())
+
+  @@index([userId, action, createdAt])
+}
