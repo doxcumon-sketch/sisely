@@ -45,7 +45,7 @@ export function PlaceCard({ place, className }: { place: Place; className?: stri
         <h3 className="font-editorial text-lg font-semibold leading-tight group-hover:text-gold">{place.name}</h3>
         <p className="mt-1 line-clamp-2 text-sm text-muted">{place.tagline}</p>
         <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-          <span className="inline-flex items-center gap-1 font-semibold text-ink"><Star className="h-3.5 w-3.5 fill-gold text-gold" /> {place.rating.toFixed(1)} <span className="font-normal text-muted">({place.reviews})</span></span>
+          {place.reviews > 0 && <span className="inline-flex items-center gap-1 font-semibold text-ink"><Star className="h-3.5 w-3.5 fill-gold text-gold" /> {place.rating.toFixed(1)} <span className="font-normal text-muted">({place.reviews})</span></span>}
           <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {place.district}</span>
           <span>{"฿".repeat(place.priceLevel)}</span>
         </p>
