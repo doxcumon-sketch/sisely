@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Compass, Home, Moon, PenLine, Plus, Search, Sun, User, LayoutGrid, Ticket, MapPin, Tag, ShoppingBag, BookOpen, Shield } from "lucide-react";
+import { Bell, ChevronDown, Compass, Home, Moon, PenLine, Plus, Search, Sun, User, LayoutGrid, Ticket, MapPin, Tag, ShoppingBag, BookOpen, Shield } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
@@ -14,8 +14,10 @@ const TOP_NAV = [
   { href: "/discover", label: "ค้นพบ", icon: Compass },
   { href: "/rooms", label: "ห้องคุย", icon: LayoutGrid },
   { href: "/events", label: "อีเวนต์", icon: Ticket },
-  { href: "/places", label: "ที่เด็ด", icon: MapPin },
   { href: "/plan", label: "พาเที่ยว", icon: Compass },
+  { href: "/places", label: "ที่เด็ด", icon: MapPin },
+];
+const MORE_NAV = [
   { href: "/deals", label: "ดีลปัง", icon: Tag },
   { href: "/market", label: "ซื้อขาย", icon: ShoppingBag },
   { href: "/guide", label: "ไกด์เมือง", icon: BookOpen },
@@ -100,6 +102,34 @@ function KeyboardWatcher() {
   return null;
 }
 
+/** Tiny visual layer: scroll progress, "header firms up when scrolled", and the card spotlight following the pointer. */
+function FxProvider() {
+  useEffect(() => {
+    const root = document.documentElement;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const max = root.scrollHeight - window.innerHeight;
+        root.style.setProperty("--sp", max > 0 ? String(Math.min(1, window.scrollY / max)) : "0");
+        root.dataset.scrolled = window.scrollY > 8 ? "1" : "0";
+      });
+    };
+    const onMove = (e: PointerEvent) => {
+      const el = (e.target as Element | null)?.closest<HTMLElement>(".surface");
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("pointermove", onMove, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); document.removeEventListener("pointermove", onMove); cancelAnimationFrame(raf); };
+  }, []);
+  return null;
+}
+
 function PwaRegister() {
   useEffect(() => {
     if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
@@ -123,14 +153,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <ViewerSync />
       <KeyboardWatcher />
       <PwaRegister />
+      <FxProvider />
+      <div className="scroll-progress" aria-hidden="true" />
 
-      <header className="sticky top-0 z-40 bg-paper/90 backdrop-blur-xl">
+      <header className="site-header sticky top-0 z-40">
         <div className="mx-auto flex h-14 max-w-[1360px] items-center gap-3 px-4 lg:h-[4.25rem] lg:gap-8 lg:px-8">
           <Link href="/" className="shrink-0" aria-label="SISE หน้าแรก">
             <Wordmark className="lg:text-[1.9rem]" />
           </Link>
 
-          <nav className="hidden flex-1 items-center gap-0.5 lg:flex" aria-label="เมนูหลัก">
+          <nav className="hidden items-center gap-0.5 lg:flex" aria-label="เมนูหลัก">
             {TOP_NAV.map(({ href, label }) => {
               const active = isActive(pathname, href);
               return (
@@ -139,7 +171,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   href={href}
                   aria-current={active ? "page" : undefined}
                   className={cx(
-                    "press relative px-3.5 py-2 text-[0.95rem] font-medium tracking-wide transition-colors",
+                    "nav-link press relative px-3.5 py-2 text-[0.95rem] font-medium tracking-wide transition-colors",
                     active ? "text-ink" : "text-muted hover:text-ink",
                   )}
                 >
@@ -148,14 +180,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Link>
               );
             })}
+            <details className="more relative">
+              <summary className={cx("nav-link press flex items-center gap-1 px-3.5 py-2 text-[0.95rem] font-medium", MORE_NAV.some((m) => isActive(pathname, m.href)) ? "text-ink" : "text-muted hover:text-ink")}>
+                เพิ่มเติม <ChevronDown className="h-4 w-4" />
+              </summary>
+              <div className="surface absolute left-0 top-full z-50 mt-2 w-44 p-1.5 shadow-[var(--shadow-pop)]">
+                {MORE_NAV.map(({ href, label, icon: Icon }) => (
+                  <Link key={href} href={href} className="press flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-ink-2 hover:bg-paper-2 hover:text-ink"><Icon className="h-4 w-4 text-gold" /> {label}</Link>
+                ))}
+              </div>
+            </details>
           </nav>
 
           <Link
-            href="/search"
-            className="press flex h-10 min-w-0 flex-1 items-center gap-2 rounded-sm border border-line bg-card px-3.5 text-sm text-faint hover:border-gold lg:max-w-[15rem] lg:flex-none xl:max-w-[18rem]"
+            href="/search" aria-label="ค้นหา"
+            className="press flex h-10 min-w-0 flex-1 items-center gap-2 rounded-sm border border-line bg-card/80 px-3.5 text-sm text-faint hover:border-gold lg:ml-auto lg:w-10 lg:flex-none lg:justify-center lg:px-0 xl:w-72 xl:justify-start xl:px-3.5"
           >
             <Search className="h-4 w-4 shrink-0 text-gold" />
-            <span className="truncate">วันนี้อยากไปไหน กินอะไรดี?</span>
+            <span className="truncate lg:hidden xl:inline">วันนี้อยากไปไหน กินอะไรดี?</span>
           </Link>
 
           <div className="flex shrink-0 items-center gap-1">
@@ -177,13 +219,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {me && (
               <Link href="/me" className="ml-1 hidden rounded-full lg:block" aria-label="โปรไฟล์ของฉัน"><Avatar name={me.name} tone="gold" size={36} src={me.pictureUrl} /></Link>
             )}
-            <Link href="/create" className="press ml-2 hidden items-center gap-2 rounded-sm bg-cta px-5 py-2.5 text-sm font-bold text-on-cta shadow-[0_8px_18px_-10px_rgba(91,61,245,0.7)] hover:bg-cta-2 lg:flex">
+            <Link href="/create" className="press ml-2 hidden items-center gap-2 rounded-sm bg-cta px-5 py-2.5 text-sm font-bold text-on-cta shadow-[0_8px_18px_-10px_rgba(91,61,245,0.7)] btn-shine hover:bg-cta-2 lg:flex">
               <PenLine className="h-4 w-4" /> โพสต์
             </Link>
           </div>
         </div>
-        <div className="hairline-gold" />
-      </header>
+              </header>
 
       <main id="main" className="mx-auto max-w-[1360px] px-4 pb-28 pt-5 lg:px-8 lg:pb-16 lg:pt-8">
         {children}
@@ -191,7 +232,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <footer className="hidden border-t border-line bg-card lg:block">
         <div className="mx-auto flex max-w-[1360px] items-center justify-between gap-6 px-8 py-8 text-sm text-muted">
-          <div className="flex items-center gap-4"><Wordmark /><span>ศรีสะเกษเด็ดกว่าที่คิด · Local stories. Local places. Local people.</span></div>
+          <div className="flex items-center gap-4"><Wordmark /><span>ศรีสะเกษ เมืองเล็ก ไม่ธรรมดา · Local stories. Local places. Local people.</span></div>
           <p>ข้อมูลร้านและงานบางส่วนเป็นตัวอย่างระหว่างช่วงทดลอง · <Link href="/credits" className="underline hover:text-ink">เครดิตภาพ</Link></p>
         </div>
       </footer>

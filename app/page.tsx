@@ -22,7 +22,7 @@ import { ShareButton } from "@/components/share";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: { absolute: "SISE · ศรีสะเกษเด็ดกว่าที่คิด — ชุมชน ร้าน งาน ที่เที่ยว" },
+  title: { absolute: "SISE · ศรีสะเกษ เมืองเล็ก ไม่ธรรมดา — ชุมชน ร้าน งาน ที่เที่ยว" },
   description: "วันนี้ศรีสะเกษมีอะไร? คนศรีสะเกษกำลังคุยอะไรกัน? ค้นพบร้านอาหาร คาเฟ่ งาน ดีล และเข้าห้องพูดคุยกับคนในพื้นที่",
   alternates: { canonical: "/" },
 };
@@ -61,11 +61,12 @@ export default async function HomePage() {
 
       {/* HERO */}
       <section className="hero-bright px-5 py-12 sm:px-12 sm:py-20 lg:px-16" aria-labelledby="hero-title">
+        <div className="aurora" aria-hidden="true"><i /><i /><i /></div>
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
           <div className="min-w-0">
             <p className="eyebrow mb-4 flex items-center gap-3"><span className="gold-rule" /> Discover Sisaket</p>
             <h1 id="hero-title" className="font-editorial text-balance text-[2.6rem] font-semibold leading-[1.1] tracking-tight text-ink sm:text-6xl lg:text-[4.4rem]">
-              ศรีสะเกษ<br className="hidden sm:block" /> <span className="text-emerald-gradient whitespace-nowrap">เด็ดกว่าที่คิด</span>
+              <span className="hero-line">ศรีสะเกษ</span> <span className="hero-line"><span className="text-emerald-gradient">เมืองเล็ก ไม่ธรรมดา</span></span>
             </h1>
             <p className="mt-5 max-w-xl text-[1.02rem] leading-relaxed text-ink-2 sm:text-lg">
               รวมของกินเด็ด ที่เที่ยวชิล งานน่าไป และคนพื้นที่ตัวจริงไว้ที่เดียว เปิดมาแล้วรู้เลยว่าวันนี้ไปไหนดี
@@ -134,7 +135,17 @@ export default async function HomePage() {
       <InstallBanner />
 
       {/* THREE QUESTIONS */}
-      <section aria-label="สามคำถามของเมือง" className="grid gap-3 sm:grid-cols-3">
+      <div className="word-strip" aria-hidden="true">
+        <div className="marquee">
+          {[0, 1].map((k) => (
+            <div key={k} className="flex shrink-0 items-center">
+              {["EAT", "EXPLORE", "EVENTS", "TALK", "SHOP", "PLAN"].flatMap((w, i) => [<span key={`${k}${i}w`}>{w}</span>, <span key={`${k}${i}d`} className="dot">✦</span>])}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <section data-reveal aria-label="สามคำถามของเมือง" className="grid gap-3 sm:grid-cols-3">
         {[
           { href: "/events?when=today", icon: "events", q: "วันนี้ในเมืองมีอะไรเด็ด?", a: `${upcoming.length} งานที่น่าไป`, tone: "bg-laterite-soft" },
           { href: "#talking", icon: "talk", q: "ตอนนี้ชาวเมืองเม้าท์อะไรกัน?", a: "ส่องกระทู้ฮอตๆ", tone: "bg-jade-soft" },
@@ -152,7 +163,7 @@ export default async function HomePage() {
       </section>
 
       {/* TODAY */}
-      <section aria-labelledby="today-h">
+      <section data-reveal aria-labelledby="today-h">
         <SectionHeader eyebrow={today.length ? "วันนี้" : "เร็ว ๆ นี้"} title={today.length ? "วันนี้มีอะไร" : "งานที่กำลังจะมา"} href="/events" hrefLabel="ปฏิทินงาน" live={today.length > 0} />
         <div className="mb-3 flex gap-2 overflow-x-auto scrollbar-none" id="today-h">
           <Chip href="/events?when=today" tone="laterite">วันนี้</Chip>
@@ -169,25 +180,25 @@ export default async function HomePage() {
 
       {/* FEED + RAIL */}
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_21rem]">
-        <section aria-labelledby="foryou-h" className="min-w-0" id="talking">
+        <section data-reveal aria-labelledby="foryou-h" className="min-w-0" id="talking">
           <SectionHeader eyebrow="For You" title="ฟีดของคุณ" />
           <Onboarding rooms={rooms.slice(0, 12).map((r) => ({ slug: r.slug, name: r.name, icon: r.icon }))} />
           <QuickCompose />
           <HomeFeedTabs initial={forYou} />
         </section>
 
-        <aside className="space-y-8 xl:sticky xl:top-24 xl:self-start" aria-label="เมืองกำลังเป็นอย่างไร">
-          <section className="surface p-4">
+        <aside data-reveal className="space-y-8 xl:sticky xl:top-24 xl:self-start" aria-label="เมืองกำลังเป็นอย่างไร">
+          <section data-reveal className="surface p-4">
             <SectionHeader eyebrow="Trending" title="ฮอตตอนนี้" live />
             <TrendingList posts={trending.posts} />
           </section>
-          <section className="surface p-5">
+          <section data-reveal className="surface p-5">
             <p className="eyebrow mb-1">Invite</p>
             <h2 className="font-editorial text-lg font-semibold">ชวนเพื่อนมาแจม</h2>
             <p className="mt-1 text-sm text-muted">เมืองจะสนุกขึ้นเมื่อเพื่อนๆ อยู่ด้วย ส่งลิงก์ให้เพื่อนใน LINE หรือ Facebook ได้เลย</p>
             <div className="mt-3"><ShareButton path="/" title="SISE — พื้นที่ออนไลน์ของคนศรีสะเกษ มาคุยกันเถอะ" className="press inline-flex items-center gap-2 rounded-sm bg-cta px-5 py-2.5 font-bold text-on-cta hover:bg-cta-2" label="ชวนเพื่อน" /></div>
           </section>
-          <section>
+          <section data-reveal>
             <SectionHeader title="ดีลวันนี้" href="/deals" />
             <div className="space-y-3">
               {deals.slice(0, 2).map((d) => <DealCard key={d.id} deal={d} />)}
@@ -197,7 +208,7 @@ export default async function HomePage() {
       </div>
 
       {/* ROOMS */}
-      <section>
+      <section data-reveal>
         <SectionHeader eyebrow="Rooms" title="ห้องที่คึกคักที่สุด" href="/rooms" />
         <div className="scrollbar-none -mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 xl:grid-cols-4">
           {hotRooms.map((r) => (
@@ -207,7 +218,7 @@ export default async function HomePage() {
       </section>
 
       {/* FOOD + CAFE */}
-      <section>
+      <section data-reveal>
         <SectionHeader eyebrow="Eat & Drink" title="กินอะไรดี · คาเฟ่ที่ต้องไป" href="/places?cat=restaurant" />
         <div className="scrollbar-none -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
           {foodPlaces.map((p) => (
@@ -217,12 +228,12 @@ export default async function HomePage() {
       </section>
 
       {/* STORIES */}
-      <section>
+      <section data-reveal>
         <SectionHeader eyebrow="Stories" title="เรื่องเล่าจากคนพื้นที่" href="/rooms/culture" />
         <Feed filter={{ mode: "top", ids: stories.map((s) => s.id) }} initial={{ posts: stories, hasMore: false }} pageSize={3} />
       </section>
 
-      <section className="surface flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <section data-reveal className="surface flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="font-editorial text-xl font-semibold">มีอะไรอยากเม้าท์ หรืออยากถามคนในเมือง?</p>
           <p className="text-sm text-muted">ไม่ถึงนาทีก็โพสต์ได้ เลือกห้อง พิมพ์ กดโพสต์ จบเลย</p>

@@ -4,7 +4,7 @@ export const SITE_URL =
 
 export const BRAND = {
   name: "SISE",
-  th: "ศรีสะเกษเด็ดกว่าที่คิด",
+  th: "ศรีสะเกษ เมืองเล็ก ไม่ธรรมดา",
   en: "Discover Sisaket.",
   sub: "Local stories. Local places. Local people.",
 };

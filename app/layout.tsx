@@ -11,7 +11,7 @@ const display = Space_Grotesk({ variable: "--font-display-latin", subsets: ["lat
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: "SISE · พื้นที่ออนไลน์ของคนศรีสะเกษ", template: "%s · SISE ศรีสะเกษ" },
-  description: "ศรีสะเกษเด็ดกว่าที่คิด ค้นพบร้านอาหาร คาเฟ่ งาน ที่เที่ยว และพูดคุยกับคนศรีสะเกษในห้องที่คุณสนใจ — Discover Sisaket.",
+  description: "ศรีสะเกษ เมืองเล็ก ไม่ธรรมดา ค้นพบร้านอาหาร คาเฟ่ งาน ที่เที่ยว และพูดคุยกับคนศรีสะเกษในห้องที่คุณสนใจ — Discover Sisaket.",
   applicationName: "SISE",
   keywords: ["ศรีสะเกษ", "ร้านอาหารศรีสะเกษ", "คาเฟ่ศรีสะเกษ", "เที่ยวศรีสะเกษ", "งานศรีสะเกษ", "ของกินศรีสะเกษ", "ชุมชนศรีสะเกษ"],
   openGraph: {
