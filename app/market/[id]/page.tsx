@@ -37,7 +37,7 @@ export default async function ListingPage({ params }: { params: Promise<{ id: st
         <Cover tone={l.tone} icon="market" className="aspect-square w-full rounded-3xl lg:sticky lg:top-24 lg:self-start" />
         <div className="space-y-5">
           <div>
-            {l.promoted && <span className="mb-2 inline-block rounded-full bg-gold px-3 py-0.5 text-xs font-bold text-night">โปรโมต</span>}
+            {l.promoted && <span className="mb-2 inline-block rounded-sm bg-gold px-3 py-0.5 text-xs font-bold text-night">โปรโมต</span>}
             <h1 className="font-editorial text-2xl font-bold leading-snug sm:text-3xl">{l.title}</h1>
             <p className="font-editorial mt-2 text-3xl font-bold text-ink">{formatBaht(l.price)}{l.negotiable && <span className="ml-2 text-sm font-normal text-muted">ต่อรองได้</span>}</p>
             <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
@@ -55,13 +55,13 @@ export default async function ListingPage({ params }: { params: Promise<{ id: st
             <section className="surface flex items-center gap-3 p-4">
               <Avatar name={seller.name} tone={seller.tone} size={48} />
               <div className="min-w-0 flex-1"><Link href={`/u/${seller.handle}`} className="font-semibold hover:underline">{seller.name}</Link><p className="text-sm text-muted">{seller.area} · เป็นสมาชิก {seller.joinedDays} วัน</p></div>
-              <span className="rounded-full bg-jade-soft px-2.5 py-1 text-xs font-semibold text-jade">คะแนน {seller.reputation}</span>
+              <span className="rounded-sm bg-jade-soft px-2.5 py-1 text-xs font-semibold text-jade">คะแนน {seller.reputation}</span>
             </section>
           )}
           <div className="flex flex-wrap items-center gap-2">
-            <a href="#contact" className="press inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-night px-6 py-3.5 font-semibold text-on-night"><MessageCircle className="h-5 w-5" /> ติดต่อผู้ขาย</a>
+            <a href="#contact" className="press inline-flex flex-1 items-center justify-center gap-2 rounded-sm bg-night px-6 py-3.5 font-semibold text-on-night"><MessageCircle className="h-5 w-5" /> ติดต่อผู้ขาย</a>
             <SaveButton kind="listings" id={l.id} />
-            <ShareButton path={`/market/${l.id}`} title={l.title} className="press rounded-full border border-line p-3 hover:border-gold" label="" />
+            <ShareButton path={`/market/${l.id}`} title={l.title} className="press rounded-sm border border-line p-3 hover:border-gold" label="" />
             <ReportMenu targetType="listing" targetId={l.id} authorId={l.sellerId} authorName={seller?.name} />
           </div>
           <p id="contact" className="scroll-mt-24 rounded-2xl bg-gold-soft p-4 text-sm"><b>ช่องทางติดต่อ:</b> {l.contact}<br /><span className="text-muted">อย่าโอนเงินก่อนเห็นสินค้า และนัดรับในที่สาธารณะ</span></p>

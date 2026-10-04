@@ -26,7 +26,7 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
           <h1 className="font-editorial text-3xl font-bold sm:text-4xl">ซื้อขายในเมืองเรา</h1>
           <p className="mt-2 max-w-xl text-muted">ของมือสอง สินค้าท้องถิ่น และบริการ จากคนในพื้นที่ นัดรับที่สาธารณะเสมอ</p>
         </div>
-        <Link href="/create?type=marketplace&room=market" className="press rounded-full bg-night px-6 py-3 font-semibold text-on-night">+ ลงขาย</Link>
+        <Link href="/create?type=marketplace&room=market" className="press rounded-sm bg-night px-6 py-3 font-semibold text-on-night">+ ลงขาย</Link>
       </header>
       <div className="scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
         <Chip href="/market" active={!active}>ทั้งหมด</Chip>

@@ -96,7 +96,7 @@ export function Chip({ children, active, onClick, href, tone = "neutral" }: {
   tone?: "neutral" | "gold" | "jade" | "laterite";
 }) {
   const cls = cx(
-    "press inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium whitespace-nowrap",
+    "press inline-flex shrink-0 items-center gap-1.5 rounded-sm border px-3.5 py-1.5 text-sm font-medium whitespace-nowrap",
     active
       ? "border-night bg-night text-on-night"
       : tone === "gold"
@@ -114,7 +114,7 @@ export function Chip({ children, active, onClick, href, tone = "neutral" }: {
 export function EmptyState({ icon = "chat", title, hint, action }: { icon?: string; title: string; hint?: string; action?: ReactNode }) {
   return (
     <div className="surface-flat flex flex-col items-center px-6 py-12 text-center">
-      <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gold-soft text-gold">
+      <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-md bg-gold-soft text-gold">
         <RoomIcon name={icon} className="h-6 w-6" />
       </span>
       <p className="font-editorial text-lg font-semibold">{title}</p>

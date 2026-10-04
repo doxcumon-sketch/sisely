@@ -50,12 +50,12 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
               <p className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-ink-2">
                 <span className="inline-flex items-center gap-1.5"><Users className="h-4 w-4 text-gold" /> <b>{formatCount(room.members)}</b> สมาชิก</span>
                 <span><b>{formatCount(room.posts)}</b> โพสต์</span>
-                {room.trending && <span className="rounded-full bg-laterite-soft px-2.5 py-0.5 text-xs font-semibold text-laterite">กำลังคึกคัก</span>}
+                {room.trending && <span className="rounded-sm bg-laterite-soft px-2.5 py-0.5 text-xs font-semibold text-laterite">กำลังคึกคัก</span>}
               </p>
             </div>
             <div className="flex gap-2">
               <FollowButton kind="rooms" id={room.slug} label="ติดตามห้อง" />
-              <Link href={`/create?room=${room.slug}`} className="press inline-flex items-center gap-2 rounded-full border border-line bg-card px-5 py-2.5 font-semibold hover:border-gold">
+              <Link href={`/create?room=${room.slug}`} className="press inline-flex items-center gap-2 rounded-sm border border-line bg-card px-5 py-2.5 font-semibold hover:border-gold">
                 <PenLine className="h-4 w-4" /> โพสต์
               </Link>
             </div>

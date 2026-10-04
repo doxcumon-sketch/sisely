@@ -329,3 +329,28 @@ export async function adminOverview() {
     queue,
   };
 }
+
+/* ---------------------------------- home pulse ---------------------------------- */
+
+/** Real activity numbers + a feed of the latest happenings for the ticker. Never fabricated. */
+export async function getPulse() {
+  const since = new Date(Date.now() - 86_400_000);
+  const [posts, comments, rooms, members, postsToday, latest] = await Promise.all([
+    prisma.post.count({ where: { status: "PUBLISHED" } }),
+    prisma.comment.count({ where: { status: "PUBLISHED" } }),
+    prisma.room.count(),
+    prisma.user.count({ where: { status: "ACTIVE" } }),
+    prisma.post.count({ where: { status: "PUBLISHED", createdAt: { gte: since } } }),
+    prisma.post.findMany({
+      where: { status: "PUBLISHED" },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: { id: true, title: true, createdAt: true, author: { select: { name: true } }, room: { select: { name: true } } },
+    }),
+  ]);
+  const now = Date.now();
+  return {
+    posts, comments, rooms, members, postsToday,
+    latest: latest.map((p) => ({ id: p.id, title: p.title, author: p.author.name, room: p.room.name, ageMin: Math.floor((now - p.createdAt.getTime()) / 60_000) })),
+  };
+}

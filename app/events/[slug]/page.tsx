@@ -74,7 +74,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <div className="flex flex-wrap gap-2">
             <InterestedButton slug={e.slug} base={e.interested} />
             <SaveButton kind="events" id={e.slug} />
-            <ShareButton path={`/events/${e.slug}`} title={e.title} className="press inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2.5 text-[0.95rem] font-semibold hover:border-gold" label="แชร์" />
+            <ShareButton path={`/events/${e.slug}`} title={e.title} className="press inline-flex items-center gap-1.5 rounded-sm border border-line px-4 py-2.5 text-[0.95rem] font-semibold hover:border-gold" label="แชร์" />
           </div>
         </div>
       </header>

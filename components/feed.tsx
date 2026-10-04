@@ -130,7 +130,7 @@ export function Feed({
         icon="chat"
         title={emptyTitle}
         hint={emptyHint}
-        action={emptyAction ?? <Link href="/create" className="press inline-block rounded-full bg-night px-5 py-2.5 font-semibold text-on-night">เริ่มโพสต์</Link>}
+        action={emptyAction ?? <Link href="/create" className="press inline-block rounded-sm bg-night px-5 py-2.5 font-semibold text-on-night">เริ่มโพสต์</Link>}
       />
     );
   }
@@ -144,12 +144,12 @@ export function Feed({
       {error && (
         <div role="alert" className="surface-flat p-5 text-center text-sm">
           <p className="text-laterite">{error}</p>
-          <button type="button" onClick={() => void loadMore()} className="press mt-3 rounded-full bg-night px-5 py-2 font-semibold text-on-night">ลองใหม่</button>
+          <button type="button" onClick={() => void loadMore()} className="press mt-3 rounded-sm bg-night px-5 py-2 font-semibold text-on-night">ลองใหม่</button>
         </div>
       )}
       {hasMore && !error && (
         <div ref={sentinel} className="flex justify-center py-4">
-          <button type="button" onClick={() => void loadMore()} disabled={loading} className="press inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-5 py-2.5 text-sm font-medium text-ink-2">
+          <button type="button" onClick={() => void loadMore()} disabled={loading} className="press inline-flex items-center gap-1.5 rounded-sm border border-line bg-card px-5 py-2.5 text-sm font-medium text-ink-2">
             <ChevronDown className="h-4 w-4" /> {loading ? "กำลังโหลด…" : "โหลดเพิ่ม"}
           </button>
         </div>

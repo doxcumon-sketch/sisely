@@ -27,7 +27,7 @@ export function ToastHost() {
   return (
     <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-24 z-[70] flex justify-center px-4 lg:bottom-6">
       {msg && (
-        <div className="rise pointer-events-auto rounded-full bg-night px-5 py-2.5 text-sm font-medium text-on-night shadow-[var(--shadow-pop)]">
+        <div className="rise pointer-events-auto rounded-sm bg-night px-5 py-2.5 text-sm font-medium text-on-night shadow-[var(--shadow-pop)]">
           {msg}
         </div>
       )}

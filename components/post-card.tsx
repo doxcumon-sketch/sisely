@@ -30,7 +30,7 @@ const TYPE_STYLE: Record<PostType, string> = {
 export function TypeBadge({ type }: { type: PostType }) {
   const m = postTypeMeta(type);
   return (
-    <span className={cx("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold", TYPE_STYLE[type])}>
+    <span className={cx("inline-flex items-center gap-1 rounded-sm px-2.5 py-0.5 text-xs font-semibold", TYPE_STYLE[type])}>
       <RoomIcon name={m.icon} className="h-3 w-3" /> {m.long}
     </span>
   );
@@ -50,7 +50,7 @@ export function PostActions({ post, detail }: { post: Post; detail?: boolean }) 
         <button
           type="button"
           onClick={() => actions.react(post)}
-          className={cx("press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm", reaction ? "text-laterite" : "text-muted hover:bg-paper-2 hover:text-ink")}
+          className={cx("press flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm", reaction ? "text-laterite" : "text-muted hover:bg-paper-2 hover:text-ink")}
           aria-pressed={!!reaction}
           aria-label={reaction ? "เลิกถูกใจ" : "ถูกใจ"}
         >
@@ -58,12 +58,12 @@ export function PostActions({ post, detail }: { post: Post; detail?: boolean }) 
           <span className="tabular-nums">{formatCount(reactions)}</span>
         </button>
         {detail ? (
-          <a href="#comments" className="press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink" aria-label="ไปที่ความคิดเห็น">
+          <a href="#comments" className="press flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink" aria-label="ไปที่ความคิดเห็น">
             <MessageCircle className="h-[18px] w-[18px]" />
             <span className="tabular-nums">{formatCount(comments)}</span>
           </a>
         ) : (
-          <Link href={`/post/${post.id}#comments`} className="press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink" aria-label={`ความคิดเห็น ${comments}`}>
+          <Link href={`/post/${post.id}#comments`} className="press flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink" aria-label={`ความคิดเห็น ${comments}`}>
             <MessageCircle className="h-[18px] w-[18px]" />
             <span className="tabular-nums">{formatCount(comments)}</span>
           </Link>
@@ -76,7 +76,7 @@ export function PostActions({ post, detail }: { post: Post; detail?: boolean }) 
           const now = await actions.save("posts", post.id, post);
           if (now !== saved) toast(now ? "บันทึกไว้ในโปรไฟล์แล้ว" : "เลิกบันทึกแล้ว");
         }}
-        className={cx("press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm", saved ? "text-gold" : "text-muted hover:bg-paper-2 hover:text-ink")}
+        className={cx("press flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm", saved ? "text-gold" : "text-muted hover:bg-paper-2 hover:text-ink")}
         aria-pressed={saved}
         aria-label={saved ? "เลิกบันทึก" : "บันทึก"}
       >
@@ -129,7 +129,7 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
         </div>
         <div className="flex items-center gap-1">
           {hot && (
-            <span className={cx("hidden items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold sm:inline-flex", hot === "hot" ? "bg-laterite-soft text-laterite" : "bg-gold-soft text-[#7a5a14] dark:text-gold")}>
+            <span className={cx("hidden items-center gap-1 rounded-sm px-2 py-0.5 text-xs font-semibold sm:inline-flex", hot === "hot" ? "bg-laterite-soft text-laterite" : "bg-gold-soft text-[#7a5a14] dark:text-gold")}>
               <Flame className="h-3 w-3" /> {hot === "hot" ? "กำลังร้อน" : "คนคุยกัน"}
             </span>
           )}
@@ -142,7 +142,7 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
         <div className="mb-1.5 flex flex-wrap items-center gap-2">
           <TypeBadge type={post.type} />
           {post.solved && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-jade-soft px-2.5 py-0.5 text-xs font-semibold text-jade">
+            <span className="inline-flex items-center gap-1 rounded-sm bg-jade-soft px-2.5 py-0.5 text-xs font-semibold text-jade">
               <CheckCircle2 className="h-3 w-3" /> ได้คำตอบแล้ว
             </span>
           )}
@@ -156,7 +156,7 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
           <Link href={`/post/${post.id}`} className={cx("mt-3 grid gap-1.5 overflow-hidden rounded-2xl", post.photos.length > 1 ? "grid-cols-2" : "grid-cols-1")} aria-label="ดูรูปภาพ">
             {post.photos.slice(0, 2).map((src, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={src} alt={`รูปจากโพสต์ ${post.title}`} loading="lazy" className={cx("w-full object-cover", post.photos!.length > 1 ? "aspect-square" : "aspect-[16/10]")} />
+              <img key={i} src={src} alt={`รูปจากโพสต์ ${post.title}`} loading="lazy" className={cx("w-full object-cover", post.photos!.length > 1 ? "aspect-[4/3]" : "aspect-[16/9]")} />
             ))}
           </Link>
         )}
@@ -164,7 +164,7 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
         {!post.photos?.length && post.images && post.images.length > 0 && (
           <Link href={`/post/${post.id}`} className={cx("mt-3 grid gap-1.5 overflow-hidden rounded-2xl", post.images.length > 1 ? "grid-cols-2" : "grid-cols-1")} aria-label="ดูรูปภาพ">
             {post.images.slice(0, 2).map((tone, i) => (
-              <Cover key={i} tone={tone} icon={room.icon} className={cx("w-full", post.images!.length > 1 ? "aspect-square" : "aspect-[16/9]")} />
+              <Cover key={i} tone={tone} icon={room.icon} className={cx("w-full", post.images!.length > 1 ? "aspect-[4/3]" : "aspect-[16/7]")} />
             ))}
           </Link>
         )}
@@ -174,17 +174,17 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
         {(place || event || post.location) && (
           <div className="mt-3 flex flex-wrap gap-2">
             {place && (
-              <Link href={`/places/${place.slug}`} className="press inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1.5 text-sm hover:border-gold">
+              <Link href={`/places/${place.slug}`} className="press inline-flex items-center gap-1.5 rounded-sm border border-line bg-paper px-3 py-1.5 text-sm hover:border-gold">
                 <MapPin className="h-3.5 w-3.5 text-laterite" /> {place.name}
               </Link>
             )}
             {event && (
-              <Link href={`/events/${event.slug}`} className="press inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1.5 text-sm hover:border-gold">
+              <Link href={`/events/${event.slug}`} className="press inline-flex items-center gap-1.5 rounded-sm border border-line bg-paper px-3 py-1.5 text-sm hover:border-gold">
                 <RoomIcon name="ticket" className="h-3.5 w-3.5 text-gold" /> {event.title}
               </Link>
             )}
             {!place && post.location && (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-sm text-muted"><MapPin className="h-3.5 w-3.5" /> {post.location}</span>
+              <span className="inline-flex items-center gap-1.5 rounded-sm border border-line px-3 py-1.5 text-sm text-muted"><MapPin className="h-3.5 w-3.5" /> {post.location}</span>
             )}
           </div>
         )}

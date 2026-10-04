@@ -82,8 +82,8 @@ export function AdminView({ overview, role, bannedWords }: { overview: Overview;
               {shown.map((r) => (
                 <li key={r.id} className="surface p-4">
                   <div className="flex flex-wrap items-center gap-2 text-xs">
-                    <span className="rounded-full bg-laterite-soft px-2.5 py-0.5 font-semibold text-laterite">{REASON[r.reason] ?? r.reason}</span>
-                    <span className="rounded-full bg-paper-2 px-2.5 py-0.5 text-muted">{r.targetType}</span>
+                    <span className="rounded-sm bg-laterite-soft px-2.5 py-0.5 font-semibold text-laterite">{REASON[r.reason] ?? r.reason}</span>
+                    <span className="rounded-sm bg-paper-2 px-2.5 py-0.5 text-muted">{r.targetType}</span>
                     <span className="text-muted">{formatAge(r.ageMin)}</span>
                     {r.hidden && <span className="font-semibold text-jade">ซ่อนแล้ว</span>}
                     {r.status !== "OPEN" && <span className="font-semibold text-jade">{r.status === "RESOLVED" ? "ดำเนินการแล้ว" : "ไม่พบการละเมิด"}</span>}
@@ -93,10 +93,10 @@ export function AdminView({ overview, role, bannedWords }: { overview: Overview;
                   <p className="mt-2 text-xs text-muted">รายงานโดย {r.reporter.name} (@{r.reporter.handle})</p>
                   {r.status === "OPEN" && (
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <button type="button" disabled={busy === r.id} onClick={() => act(r.id, "HIDE")} className="press inline-flex items-center gap-1.5 rounded-full bg-night px-4 py-2 text-sm font-semibold text-on-night disabled:opacity-50"><EyeOff className="h-4 w-4" /> ซ่อนเนื้อหา</button>
-                      <button type="button" disabled={busy === r.id} onClick={() => act(r.id, "WARN")} className="press inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-semibold disabled:opacity-50"><Check className="h-4 w-4" /> เตือนผู้ใช้</button>
-                      {role === "ADMIN" && <button type="button" disabled={busy === r.id} onClick={() => act(r.id, "SUSPEND")} className="press inline-flex items-center gap-1.5 rounded-full border border-laterite/40 px-4 py-2 text-sm font-semibold text-laterite disabled:opacity-50"><UserX className="h-4 w-4" /> ระงับบัญชี</button>}
-                      <button type="button" disabled={busy === r.id} onClick={() => act(r.id, "DISMISS")} className="press inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm text-muted disabled:opacity-50"><X className="h-4 w-4" /> ไม่พบการละเมิด</button>
+                      <button type="button" disabled={busy === r.id} onClick={() => act(r.id, "HIDE")} className="press inline-flex items-center gap-1.5 rounded-sm bg-night px-4 py-2 text-sm font-semibold text-on-night disabled:opacity-50"><EyeOff className="h-4 w-4" /> ซ่อนเนื้อหา</button>
+                      <button type="button" disabled={busy === r.id} onClick={() => act(r.id, "WARN")} className="press inline-flex items-center gap-1.5 rounded-sm border border-line px-4 py-2 text-sm font-semibold disabled:opacity-50"><Check className="h-4 w-4" /> เตือนผู้ใช้</button>
+                      {role === "ADMIN" && <button type="button" disabled={busy === r.id} onClick={() => act(r.id, "SUSPEND")} className="press inline-flex items-center gap-1.5 rounded-sm border border-laterite/40 px-4 py-2 text-sm font-semibold text-laterite disabled:opacity-50"><UserX className="h-4 w-4" /> ระงับบัญชี</button>}
+                      <button type="button" disabled={busy === r.id} onClick={() => act(r.id, "DISMISS")} className="press inline-flex items-center gap-1.5 rounded-sm border border-line px-4 py-2 text-sm text-muted disabled:opacity-50"><X className="h-4 w-4" /> ไม่พบการละเมิด</button>
                     </div>
                   )}
                 </li>
@@ -111,7 +111,7 @@ export function AdminView({ overview, role, bannedWords }: { overview: Overview;
             <ol className="space-y-2 text-sm">
               {trending.map((p, i) => (
                 <li key={p.id} className="flex items-start gap-2"><span className="w-5 shrink-0 font-bold text-gold">{i + 1}</span><span className="min-w-0 flex-1"><Link href={`/post/${p.id}`} className="line-clamp-1 hover:text-gold">{p.title}</Link></span>
-                  <button type="button" onClick={() => feature(p)} className={cx("press shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold", p.featured ? "bg-gold text-night" : "border border-line text-muted")}>{p.featured ? "เด่นแล้ว" : "ปักเด่น"}</button>
+                  <button type="button" onClick={() => feature(p)} className={cx("press shrink-0 rounded-sm px-2 py-0.5 text-xs font-semibold", p.featured ? "bg-gold text-night" : "border border-line text-muted")}>{p.featured ? "เด่นแล้ว" : "ปักเด่น"}</button>
                 </li>
               ))}
             </ol>
@@ -126,7 +126,7 @@ export function AdminView({ overview, role, bannedWords }: { overview: Overview;
               <li>• จำกัดลิงก์ 2 ต่อโพสต์ / ห้ามพิมพ์ใหญ่ล้วน</li>
             </ul>
             <p className="mb-1 mt-3 text-xs font-semibold text-muted">คำต้องห้าม ({bannedWords.length})</p>
-            <div className="flex flex-wrap gap-1.5">{bannedWords.map((w) => <span key={w} className="rounded-full bg-laterite-soft px-2.5 py-0.5 text-xs text-laterite">{w}</span>)}</div>
+            <div className="flex flex-wrap gap-1.5">{bannedWords.map((w) => <span key={w} className="rounded-sm bg-laterite-soft px-2.5 py-0.5 text-xs text-laterite">{w}</span>)}</div>
           </section>
           <section className="surface p-4 text-sm">
             <h2 className="font-editorial mb-2 text-lg font-semibold">โมเดลรายได้ (เตรียมโครงสร้าง)</h2>

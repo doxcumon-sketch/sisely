@@ -49,7 +49,7 @@ export function ShareButton({ path, title, className, label }: { path: string; t
 
   return (
     <>
-      <button type="button" onClick={onClick} className={className ?? "press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink"} aria-label={`แชร์ ${title}`}>
+      <button type="button" onClick={onClick} className={className ?? "press flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink"} aria-label={`แชร์ ${title}`}>
         <Share2 className="h-[18px] w-[18px]" />
         {label !== undefined ? label : <span className="hidden sm:inline">แชร์</span>}
       </button>
@@ -58,7 +58,7 @@ export function ShareButton({ path, title, className, label }: { path: string; t
         <div className="grid grid-cols-4 gap-3">
           {opts.map(({ label: l, icon: Icon, color, run }) => (
             <button key={l} type="button" onClick={run} className="press flex flex-col items-center gap-2 rounded-2xl p-2 text-xs font-medium hover:bg-paper-2">
-              <span className={`flex h-12 w-12 items-center justify-center rounded-full text-white ${color}`}>
+              <span className={`flex h-12 w-12 items-center justify-center rounded-sm text-white ${color}`}>
                 <Icon className="h-5 w-5" />
               </span>
               {l}

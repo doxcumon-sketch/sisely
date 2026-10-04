@@ -28,7 +28,7 @@ export function NotificationsView({ items }: { items: Item[] }) {
       <header className="flex items-end justify-between gap-3">
         <div><p className="eyebrow mb-1">Notifications</p><h1 className="font-editorial text-3xl font-bold">การแจ้งเตือน</h1></div>
         {unread.length > 0 && (
-          <button type="button" onClick={markAll} className="press inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium hover:border-gold"><CheckCheck className="h-4 w-4" /> อ่านทั้งหมด</button>
+          <button type="button" onClick={markAll} className="press inline-flex items-center gap-1.5 rounded-sm border border-line px-4 py-2 text-sm font-medium hover:border-gold"><CheckCheck className="h-4 w-4" /> อ่านทั้งหมด</button>
         )}
       </header>
 
@@ -42,7 +42,7 @@ export function NotificationsView({ items }: { items: Item[] }) {
             return (
               <li key={n.id}>
                 <Link href={n.href} onClick={() => { setRead((r) => [...r, n.id]); void actions.readNotifications([n.id]); }} className={cx("press flex gap-3 p-4 hover:bg-paper-2", isUnread && "bg-gold-soft/50")}>
-                  {n.actor ? <Avatar name={n.actor.name} tone={n.actor.tone} size={42} src={n.actor.pictureUrl} /> : <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-night text-gold"><Icon className="h-5 w-5" /></span>}
+                  {n.actor ? <Avatar name={n.actor.name} tone={n.actor.tone} size={42} src={n.actor.pictureUrl} /> : <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-sm bg-night text-gold"><Icon className="h-5 w-5" /></span>}
                   <span className="min-w-0 flex-1">
                     <span className="block font-medium leading-snug">{n.text}</span>
                     {n.detail && <span className="mt-0.5 line-clamp-2 block text-sm text-muted">{n.detail}</span>}
