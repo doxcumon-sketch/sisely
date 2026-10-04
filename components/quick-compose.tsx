@@ -6,10 +6,10 @@ import { Avatar } from "@/components/ui";
 import { requireLogin, useSise } from "@/lib/store";
 
 const SHORTCUTS = [
-  { type: "question", label: "ถามคนศรีสะเกษ", icon: HelpCircle },
-  { type: "recommendation", label: "แนะนำที่เด็ด", icon: Sparkles },
-  { type: "marketplace", label: "ลงขาย", icon: ShoppingBag },
-  { type: "event", label: "บอกกิจกรรม", icon: Megaphone },
+  { type: "question", label: "ถามคนพื้นที่", icon: HelpCircle },
+  { type: "recommendation", label: "แนะนำของเด็ด", icon: Sparkles },
+  { type: "marketplace", label: "ลงขายของ", icon: ShoppingBag },
+  { type: "event", label: "ชวนไปงาน", icon: Megaphone },
 ] as const;
 
 /** One-tap entry to posting at the top of the feed — the single biggest driver of a living community. */
@@ -28,7 +28,7 @@ export function QuickCompose() {
         <Avatar name={me?.name ?? "SISE"} tone="gold" size={42} src={me?.pictureUrl} />
         <Link href="/create" onClick={go} className="press flex h-11 min-w-0 flex-1 items-center rounded-sm border border-line bg-paper px-4 text-[0.98rem] text-faint hover:border-gold">
           <MessagesSquare className="mr-2 h-4 w-4 shrink-0 text-gold" />
-          <span className="truncate">กำลังคิดอะไรอยู่? ถาม แนะนำ หรือชวนคุย…</span>
+          <span className="truncate">มีอะไรอยากเม้าท์? ถาม แนะนำ หรือชวนคุยได้เลย…</span>
         </Link>
       </div>
       <div className="scrollbar-none -mx-1 mt-3 flex gap-2 overflow-x-auto px-1">

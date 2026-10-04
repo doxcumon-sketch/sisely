@@ -22,17 +22,18 @@ import { ShareButton } from "@/components/share";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: { absolute: "SISE · ศรีสะเกษในแบบของเรา — ชุมชน ร้าน งาน ที่เที่ยว" },
+  title: { absolute: "SISE · ศรีสะเกษเด็ดกว่าที่คิด — ชุมชน ร้าน งาน ที่เที่ยว" },
   description: "วันนี้ศรีสะเกษมีอะไร? คนศรีสะเกษกำลังคุยอะไรกัน? ค้นพบร้านอาหาร คาเฟ่ งาน ดีล และเข้าห้องพูดคุยกับคนในพื้นที่",
   alternates: { canonical: "/" },
 };
 
 const QUICK = [
-  { label: "ร้านกาแฟ", q: "กาแฟ" },
-  { label: "มีงานอะไรวันนี้", href: "/events?when=today" },
-  { label: "หาที่กิน", q: "อาหาร" },
-  { label: "หาที่เที่ยว", href: "/places?cat=attraction" },
-  { label: "ถามคนศรีสะเกษ", href: "/rooms/qa" },
+  { label: "คาเฟ่ชิลๆ", q: "กาแฟ" },
+  { label: "วันนี้มีงานไหม", href: "/events?when=today" },
+  { label: "ของกินเด็ดๆ", q: "อาหาร" },
+  { label: "จัดทริปให้หน่อย", href: "/plan" },
+  { label: "ไปเที่ยวไหนดี", href: "/places?cat=attraction" },
+  { label: "ถามคนพื้นที่", href: "/rooms/qa" },
 ];
 
 export default async function HomePage() {
@@ -59,19 +60,19 @@ export default async function HomePage() {
       <ActivityTicker items={pulse.latest} />
 
       {/* HERO */}
-      <section className="hero-bright px-5 py-9 sm:px-10 sm:py-14 lg:px-14" aria-labelledby="hero-title">
+      <section className="hero-bright px-5 py-12 sm:px-12 sm:py-20 lg:px-16" aria-labelledby="hero-title">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
           <div className="min-w-0">
             <p className="eyebrow mb-4 flex items-center gap-3"><span className="gold-rule" /> Discover Sisaket</p>
-            <h1 id="hero-title" className="font-editorial text-balance text-[2.35rem] font-bold leading-[1.15] text-ink sm:text-5xl lg:text-[3.6rem]">
-              ศรีสะเกษ<br className="hidden sm:block" /> <span className="text-emerald-gradient whitespace-nowrap">ในแบบของเรา</span>
+            <h1 id="hero-title" className="font-editorial text-balance text-[2.6rem] font-semibold leading-[1.1] tracking-tight text-ink sm:text-6xl lg:text-[4.4rem]">
+              ศรีสะเกษ<br className="hidden sm:block" /> <span className="text-emerald-gradient whitespace-nowrap">เด็ดกว่าที่คิด</span>
             </h1>
             <p className="mt-5 max-w-xl text-[1.02rem] leading-relaxed text-ink-2 sm:text-lg">
-              ที่ที่คนศรีสะเกษคุยกัน แนะนำร้าน บอกงาน และค้นพบเมืองนี้ไปด้วยกัน
+              รวมของกินเด็ด ที่เที่ยวชิล งานน่าไป และคนพื้นที่ตัวจริงไว้ที่เดียว เปิดมาแล้วรู้เลยว่าวันนี้ไปไหนดี
             </p>
             <Link href="/search" className="press mt-7 flex h-14 max-w-xl items-center gap-3 border border-line bg-card px-5 text-faint shadow-[var(--shadow-card)] hover:border-gold">
               <Search className="h-5 w-5 text-gold" />
-              <span className="flex-1 text-[1.02rem]">วันนี้กำลังหาอะไร?</span>
+              <span className="flex-1 text-[1.02rem]">วันนี้อยากไปไหน กินอะไรดี?</span>
               <span className="hidden bg-night px-4 py-2 text-sm font-semibold text-on-night sm:block">ค้นหา</span>
             </Link>
             <div className="scrollbar-none -mx-5 mt-4 flex gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
@@ -120,7 +121,7 @@ export default async function HomePage() {
             ["โพสต์ใน 24 ชม.", pulse.postsToday],
             ["โพสต์ทั้งหมด", pulse.posts],
             ["ความเห็น", pulse.comments],
-            ["ห้องพูดคุย", pulse.rooms],
+            ["ห้องให้คุย", pulse.rooms],
           ].map(([label, value]) => (
             <div key={label as string} className="bg-card/90 px-2.5 py-3 sm:px-5 sm:py-4">
               <dd className="font-editorial text-xl font-bold text-ink sm:text-3xl">{formatCount(value as number)}</dd>
@@ -135,9 +136,9 @@ export default async function HomePage() {
       {/* THREE QUESTIONS */}
       <section aria-label="สามคำถามของเมือง" className="grid gap-3 sm:grid-cols-3">
         {[
-          { href: "/events?when=today", icon: "events", q: "วันนี้ศรีสะเกษมีอะไร?", a: `${upcoming.length} งานที่ควรรู้`, tone: "bg-laterite-soft" },
-          { href: "#talking", icon: "talk", q: "คนศรีสะเกษกำลังคุยอะไรกัน?", a: "ดูกระทู้ที่กำลังร้อน", tone: "bg-jade-soft" },
-          { href: "/discover", icon: "sparkle", q: "จะค้นพบอะไรใหม่ได้บ้าง?", a: "ที่เที่ยว ร้านเด็ด ดีล", tone: "bg-gold-soft" },
+          { href: "/events?when=today", icon: "events", q: "วันนี้ในเมืองมีอะไรเด็ด?", a: `${upcoming.length} งานที่น่าไป`, tone: "bg-laterite-soft" },
+          { href: "#talking", icon: "talk", q: "ตอนนี้ชาวเมืองเม้าท์อะไรกัน?", a: "ส่องกระทู้ฮอตๆ", tone: "bg-jade-soft" },
+          { href: "/discover", icon: "sparkle", q: "มีอะไรน่าลองอีกบ้าง?", a: "ที่เที่ยว ร้านเด็ด ดีลปัง", tone: "bg-gold-soft" },
         ].map((t) => (
           <Link key={t.q} href={t.href} className={`press group flex items-center gap-3 rounded-2xl border border-line-soft p-4 ${t.tone}`}>
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-card text-ink"><RoomIcon name={t.icon} className="h-5 w-5" /></span>
@@ -169,7 +170,7 @@ export default async function HomePage() {
       {/* FEED + RAIL */}
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_21rem]">
         <section aria-labelledby="foryou-h" className="min-w-0" id="talking">
-          <SectionHeader eyebrow="For You" title="สำหรับคุณ" />
+          <SectionHeader eyebrow="For You" title="ฟีดของคุณ" />
           <Onboarding rooms={rooms.slice(0, 12).map((r) => ({ slug: r.slug, name: r.name, icon: r.icon }))} />
           <QuickCompose />
           <HomeFeedTabs initial={forYou} />
@@ -177,13 +178,13 @@ export default async function HomePage() {
 
         <aside className="space-y-8 xl:sticky xl:top-24 xl:self-start" aria-label="เมืองกำลังเป็นอย่างไร">
           <section className="surface p-4">
-            <SectionHeader eyebrow="Trending" title="กำลังเป็นกระแส" live />
+            <SectionHeader eyebrow="Trending" title="ฮอตตอนนี้" live />
             <TrendingList posts={trending.posts} />
           </section>
           <section className="surface p-5">
             <p className="eyebrow mb-1">Invite</p>
-            <h2 className="font-editorial text-lg font-semibold">ชวนเพื่อนมาคุยด้วยกัน</h2>
-            <p className="mt-1 text-sm text-muted">ชุมชนจะสนุกเมื่อมีคนรู้จักอยู่ในนั้น ส่งลิงก์ให้เพื่อนใน LINE หรือ Facebook ได้เลย</p>
+            <h2 className="font-editorial text-lg font-semibold">ชวนเพื่อนมาแจม</h2>
+            <p className="mt-1 text-sm text-muted">เมืองจะสนุกขึ้นเมื่อเพื่อนๆ อยู่ด้วย ส่งลิงก์ให้เพื่อนใน LINE หรือ Facebook ได้เลย</p>
             <div className="mt-3"><ShareButton path="/" title="SISE — พื้นที่ออนไลน์ของคนศรีสะเกษ มาคุยกันเถอะ" className="press inline-flex items-center gap-2 rounded-sm bg-cta px-5 py-2.5 font-bold text-on-cta hover:bg-cta-2" label="ชวนเพื่อน" /></div>
           </section>
           <section>
@@ -197,7 +198,7 @@ export default async function HomePage() {
 
       {/* ROOMS */}
       <section>
-        <SectionHeader eyebrow="Rooms" title="ห้องที่คนกำลังคุยกัน" href="/rooms" />
+        <SectionHeader eyebrow="Rooms" title="ห้องที่คึกคักที่สุด" href="/rooms" />
         <div className="scrollbar-none -mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 xl:grid-cols-4">
           {hotRooms.map((r) => (
             <div key={r.id} className="w-[72%] shrink-0 snap-start sm:w-64 lg:w-auto"><RoomCard room={r} compact /></div>
@@ -207,7 +208,7 @@ export default async function HomePage() {
 
       {/* FOOD + CAFE */}
       <section>
-        <SectionHeader eyebrow="Eat & Drink" title="กินอะไรดี · คาเฟ่น่าไป" href="/places?cat=restaurant" />
+        <SectionHeader eyebrow="Eat & Drink" title="กินอะไรดี · คาเฟ่ที่ต้องไป" href="/places?cat=restaurant" />
         <div className="scrollbar-none -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
           {foodPlaces.map((p) => (
             <div key={p.id} className="w-[78%] shrink-0 snap-start sm:w-72 lg:w-auto"><PlaceCard place={p} /></div>
@@ -217,17 +218,17 @@ export default async function HomePage() {
 
       {/* STORIES */}
       <section>
-        <SectionHeader eyebrow="Stories" title="เรื่องราวจากคนศรีสะเกษ" href="/rooms/culture" />
+        <SectionHeader eyebrow="Stories" title="เรื่องเล่าจากคนพื้นที่" href="/rooms/culture" />
         <Feed filter={{ mode: "top", ids: stories.map((s) => s.id) }} initial={{ posts: stories, hasMore: false }} pageSize={3} />
       </section>
 
       <section className="surface flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-editorial text-xl font-semibold">มีเรื่องอยากเล่า หรืออยากถามคนในเมือง?</p>
-          <p className="text-sm text-muted">ใช้เวลาไม่ถึงนาที เลือกห้อง พิมพ์ แล้วโพสต์</p>
+          <p className="font-editorial text-xl font-semibold">มีอะไรอยากเม้าท์ หรืออยากถามคนในเมือง?</p>
+          <p className="text-sm text-muted">ไม่ถึงนาทีก็โพสต์ได้ เลือกห้อง พิมพ์ กดโพสต์ จบเลย</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/create" className="press inline-flex items-center gap-2 rounded-sm bg-night px-6 py-3 font-semibold text-on-night"><MessagesSquare className="h-4 w-4" /> เริ่มโพสต์</Link>
+          <Link href="/create" className="press inline-flex items-center gap-2 rounded-sm bg-night px-6 py-3 font-semibold text-on-night"><MessagesSquare className="h-4 w-4" /> โพสต์เลย</Link>
           <Link href="/discover" className="press inline-flex items-center gap-2 rounded-sm border border-line px-6 py-3 font-semibold"><Compass className="h-4 w-4" /> ค้นพบ</Link>
         </div>
       </section>

@@ -15,8 +15,8 @@
   --faint: #9593ad;
   --line: #e4e2f0;
   --line-soft: #eeedf7;
-  --gold: #c2255c;
-  --gold-soft: #ffe8f0;
+  --gold: #5b3df5;
+  --gold-soft: #efebff;
   --jade: #5b3df5;
   --jade-soft: #ece8ff;
   --laterite: #e8492f;
@@ -31,7 +31,7 @@
   --rose: #ff8fb1;
   --rose-2: #e0408a;
   --ring: #5b3df5;
-  --shadow-card: 0 1px 0 rgb(14 13 28 / 0.04), 0 8px 24px -12px rgb(91 61 245 / 0.25);
+  --shadow-card: 0 1px 2px rgb(14 13 28 / 0.05);
   --shadow-pop: 0 18px 44px -14px rgb(13 11 36 / 0.45);
   color-scheme: light;
 }
@@ -46,8 +46,8 @@
   --faint: #7d7a9f;
   --line: #2a2750;
   --line-soft: #211f42;
-  --gold: #ff8fb1;
-  --gold-soft: #3a1830;
+  --gold: #a99bff;
+  --gold-soft: #2a2468;
   --jade: #a99bff;
   --jade-soft: #26215a;
   --laterite: #ff8a6e;
@@ -133,8 +133,8 @@ body {
 /* ---------- Editorial type ---------- */
 .font-editorial {
   font-family: var(--font-serif), var(--font-sans), sans-serif;
-  letter-spacing: -0.015em;
-  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-weight: 600;
 }
 .wordmark {
   font-family: var(--font-display), serif;
@@ -143,9 +143,9 @@ body {
 }
 .eyebrow {
   font-size: 0.75rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--muted);
   font-weight: 600;
 }
 
@@ -197,15 +197,6 @@ body {
     radial-gradient(80% 90% at 80% 10%, color-mix(in srgb, var(--c) 55%, transparent), transparent 60%),
     radial-gradient(90% 100% at 0% 100%, color-mix(in srgb, var(--b) 80%, transparent), transparent 70%),
     linear-gradient(140deg, var(--a), color-mix(in srgb, var(--a) 70%, var(--b)));
-}
-.cover.has-photo::after { display: none; }
-.cover::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='white' stroke-opacity='.10' stroke-width='1'%3E%3Cpath d='M36 6 L66 36 L36 66 L6 36 Z'/%3E%3Cpath d='M36 20 L52 36 L36 52 L20 36 Z'/%3E%3Ccircle cx='36' cy='36' r='4'/%3E%3C/g%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-  z-index: -1;
 }
 
 /* ---------- Motion ---------- */
@@ -261,36 +252,24 @@ body {
   isolation: isolate;
   overflow: hidden;
   background:
-    radial-gradient(50% 70% at 95% 5%, rgb(115 87 255 / 0.30), transparent 65%),
-    radial-gradient(45% 60% at 70% 100%, rgb(255 143 177 / 0.32), transparent 65%),
-    radial-gradient(40% 55% at 0% 100%, rgb(255 196 168 / 0.40), transparent 65%),
-    linear-gradient(120deg, #ffffff 0%, #f6f3ff 100%);
+    radial-gradient(46% 70% at 96% 0%, rgb(115 87 255 / 0.18), transparent 70%),
+    linear-gradient(180deg, #ffffff 0%, #faf9ff 100%);
   border: 1px solid var(--line);
   border-radius: 6px;
 }
 :root[data-theme="dark"] .hero-bright {
   background:
-    radial-gradient(60% 80% at 100% 0%, rgb(138 115 255 / 0.30), transparent 62%),
-    radial-gradient(50% 70% at 20% 100%, rgb(255 143 177 / 0.16), transparent 62%),
-    linear-gradient(120deg, #100e2a 0%, #1a1650 100%);
-}
-.hero-bright::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='none' stroke='%235b3df5' stroke-opacity='.10' stroke-width='1'%3E%3Cpath d='M44 4 L84 44 L44 84 L4 44 Z'/%3E%3Cpath d='M44 22 L66 44 L44 66 L22 44 Z'/%3E%3C/g%3E%3C/svg%3E");
-  mask-image: linear-gradient(100deg, transparent 25%, #000 100%);
-  -webkit-mask-image: linear-gradient(100deg, transparent 25%, #000 100%);
+    radial-gradient(50% 70% at 100% 0%, rgb(138 115 255 / 0.28), transparent 68%),
+    linear-gradient(180deg, #121030 0%, #0e0c26 100%);
 }
 .text-emerald-gradient {
-  background: linear-gradient(100deg, #5b3df5 0%, #b13fd6 55%, #ff5c8a 110%);
+  background: linear-gradient(100deg, #4326c8 0%, #7357ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 :root[data-theme="dark"] .text-emerald-gradient {
-  background: linear-gradient(100deg, #a99bff 0%, #ff8fb1 100%);
+  background: linear-gradient(100deg, #a99bff 0%, #d2c9ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
 }
@@ -300,4 +279,4 @@ body {
 }
 .marquee { display: flex; width: max-content; animation: marquee 60s linear infinite; }
 .marquee:hover { animation-play-state: paused; }
-.gold-rule { height: 2px; background: linear-gradient(90deg, var(--gold), transparent); width: 3.5rem; }
+.gold-rule { height: 1px; background: var(--ink); width: 2.5rem; }
