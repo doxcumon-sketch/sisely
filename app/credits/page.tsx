@@ -12,7 +12,7 @@ export default function CreditsPage() {
         <p className="mt-2 text-muted">ขอบคุณช่างภาพและผู้เผยแพร่ภาพที่ทำให้ SISE มีหน้าตาของศรีสะเกษจริง ๆ</p>
       </header>
       {COVER_PHOTOS.length === 0 ? (
-        <p className="surface-flat p-6 text-muted">ขณะนี้ภาพปกเป็นภาพกราฟิกที่ SISE สร้างขึ้นเอง ยังไม่มีภาพถ่ายของบุคคลอื่น</p>
+        <p className="surface-flat p-6 text-muted">ขณะนี้ภาพปกเป็นภาพประกอบต้นฉบับของ SISE</p>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2">
           {COVER_PHOTOS.map((p) => (

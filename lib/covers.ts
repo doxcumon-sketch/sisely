@@ -1,8 +1,9 @@
 /**
  * Photo covers for rooms, places and posts.
  *
- * A photo only exists here once its file is committed to /public/covers and listed in COVER_PHOTOS
- * (with author + licence so /credits stays honest). Everything else falls back to the generated art
+ * A cover exists here once its file is committed to /public/covers and listed in COVER_PHOTOS
+ * (with author + licence so /credits stays honest). The current set is SISE's own contemporary artwork
+ * (scripts/gen-covers.py); real photographs can replace any entry with the same scene id. Everything else falls back to the generated art
  * covers, so the app never shows a broken image. See docs/COVERS.md for the shot list and licence rules.
  */
 export type SceneId =
@@ -20,34 +21,51 @@ export interface CoverPhoto {
 }
 
 /** Add entries here when a photo file is added to /public/covers. */
-export const COVER_PHOTOS: CoverPhoto[] = [];
+export const COVER_PHOTOS: CoverPhoto[] = [
+  { scene: "city", src: "/covers/city.jpg", alt: "ตัวเมืองศรีสะเกษยามค่ำ", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "market", src: "/covers/market.jpg", alt: "ตลาดเช้าและโคมไฟ", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "street-food", src: "/covers/street-food.jpg", alt: "เตาปิ้งย่างและควันหอม", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "cafe", src: "/covers/cafe.jpg", alt: "กาแฟร้อนหนึ่งถ้วย", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "pha-mo-i-daeng", src: "/covers/pha-mo-i-daeng.jpg", alt: "รุ่งอรุณเหนือทะเลหมอกที่ผามออีแดง", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "sa-kamphaeng-yai", src: "/covers/sa-kamphaeng-yai.jpg", alt: "ปราสาทขอมสีทอง", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "temple", src: "/covers/temple.jpg", alt: "เจดีย์ทองยามเย็น", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "durian", src: "/covers/durian.jpg", alt: "ลวดลายหนามทุเรียน", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "shallot", src: "/covers/shallot.jpg", alt: "แปลงหอมแดงยามเย็น", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "silk", src: "/covers/silk.jpg", alt: "ลายมัดหมี่ผ้าไหม", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "rice-field", src: "/covers/rice-field.jpg", alt: "ทุ่งนาเขียวยามเช้า", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "lamduan", src: "/covers/lamduan.jpg", alt: "ดอกลำดวน ดอกไม้ประจำจังหวัด", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "river-mun", src: "/covers/river-mun.jpg", alt: "แสงทองบนแม่น้ำมูล", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "festival", src: "/covers/festival.jpg", alt: "พลุเฉลิมฉลองในงานเทศกาล", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "night", src: "/covers/night.jpg", alt: "โคมไฟไนท์มาร์เก็ต", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+  { scene: "countryside", src: "/covers/countryside.jpg", alt: "บ้านใต้ถุนยามพลบค่ำ", author: "SISE", license: "ภาพประกอบต้นฉบับของ SISE" },
+];
 
 const bySceneMap = () => new Map(COVER_PHOTOS.map((p) => [p.scene, p]));
 
 /** Which scenes suit which room, best first. A room uses the first scene that has a photo. */
 export const ROOM_SCENES: Record<string, SceneId[]> = {
-  sisaket: ["city", "lamduan", "river-mun"],
-  talk: ["city", "countryside"],
+  sisaket: ["lamduan", "city"],
+  talk: ["river-mun", "countryside"],
   food: ["street-food", "market"],
   cafe: ["cafe", "city"],
   events: ["festival", "night"],
-  business: ["city", "market"],
-  home: ["countryside", "city"],
-  cars: ["countryside", "city"],
-  tech: ["city", "night"],
-  education: ["city", "temple"],
+  business: ["market", "city"],
+  home: ["countryside", "rice-field"],
+  cars: ["rice-field", "city"],
+  tech: ["night", "city"],
+  education: ["sa-kamphaeng-yai", "temple"],
   jobs: ["city", "market"],
-  market: ["market", "street-food"],
-  relationship: ["lamduan", "river-mun"],
-  pets: ["countryside", "rice-field"],
-  photography: ["pha-mo-i-daeng", "river-mun", "rice-field"],
-  travel: ["pha-mo-i-daeng", "sa-kamphaeng-yai", "river-mun"],
-  agriculture: ["durian", "shallot", "rice-field"],
-  games: ["night", "city"],
-  culture: ["silk", "sa-kamphaeng-yai", "temple"],
-  news: ["city"],
-  qa: ["city", "lamduan"],
-  community: ["temple", "city", "countryside"],
+  market: ["shallot", "market"],
+  relationship: ["river-mun", "lamduan"],
+  pets: ["rice-field", "countryside"],
+  photography: ["pha-mo-i-daeng", "river-mun"],
+  travel: ["pha-mo-i-daeng", "sa-kamphaeng-yai"],
+  agriculture: ["durian", "shallot"],
+  games: ["night", "festival"],
+  culture: ["silk", "sa-kamphaeng-yai"],
+  news: ["city", "temple"],
+  qa: ["temple", "lamduan"],
+  community: ["countryside", "temple"],
 };
 
 /** Scenes for specific real places (by slug). Only attach real landmarks here — never a stand-in for a business. */

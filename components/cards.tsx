@@ -13,7 +13,7 @@ import type { Deal, Listing, Place, Room, SiseEvent } from "@/lib/types";
 export function RoomCard({ room, compact }: { room: Room; compact?: boolean }) {
   return (
     <Link href={`/rooms/${room.slug}`} className="surface press group block overflow-hidden transition-shadow hover:shadow-[var(--shadow-pop)]">
-      <Cover tone={room.tone} icon={room.icon} photo={roomPhoto(room.slug)} className={compact ? "h-16" : "h-24"}>
+      <Cover tone={room.tone} icon={room.icon} photo={roomPhoto(room.slug)} className={compact ? "h-20" : "h-32"}>
         <span className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-sm">
           <RoomIcon name={room.icon} className="h-5 w-5" />
         </span>
