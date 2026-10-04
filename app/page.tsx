@@ -88,7 +88,7 @@ export default async function HomePage() {
               <Link href={`/post/${topPost.id}`} className="press group relative col-span-2 flex min-h-[13rem] flex-col justify-end overflow-hidden border border-line shadow-[var(--shadow-card)]">
                 <div className="absolute inset-0"><Cover tone={topPost.images?.[0] ?? "jade"} icon={topPost.room.icon} photo={postPhotos(topPost.room.slug, topPost.id, 1)[0] ?? roomPhoto(topPost.room.slug)} className="h-full w-full" /></div>
                 <div className="relative bg-gradient-to-t from-black/75 via-black/30 to-transparent p-5 pt-14 text-white">
-                  <p className="mb-1 flex items-center gap-2 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[#f2c4a8]"><span className="live-dot h-1.5 w-1.5 rounded-full bg-[#ff6a4d]" /> กำลังเป็นกระแส · {topPost.room.name}</p>
+                  <p className="mb-1 flex items-center gap-2 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[#ffc2d6]"><span className="live-dot h-1.5 w-1.5 rounded-full bg-[#ff6a4d]" /> กำลังเป็นกระแส · {topPost.room.name}</p>
                   <p className="font-editorial text-xl font-semibold leading-snug group-hover:underline">{topPost.title}</p>
                   <p className="mt-1 text-sm text-white/80">{topPost.stats.comments} ความเห็น · {formatCount(topPost.stats.reactions)} ถูกใจ</p>
                 </div>
@@ -98,7 +98,7 @@ export default async function HomePage() {
               <Link href={`/events/${heroEvent.slug}`} className="press group relative flex min-h-[9.5rem] flex-col justify-end overflow-hidden border border-line shadow-[var(--shadow-card)]">
                 <div className="absolute inset-0"><Cover tone={heroEvent.tone} icon="events" photo={eventPhoto(heroEvent.category)} className="h-full w-full" /></div>
                 <div className="relative bg-gradient-to-t from-black/75 to-transparent p-4 pt-10 text-white">
-                  <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[#f2c4a8]">{dayLabel(heroEvent.dayOffset)} · {heroEvent.startTime}</p>
+                  <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[#ffc2d6]">{dayLabel(heroEvent.dayOffset)} · {heroEvent.startTime}</p>
                   <p className="font-editorial line-clamp-2 font-semibold leading-snug group-hover:underline">{heroEvent.title}</p>
                 </div>
               </Link>
@@ -107,7 +107,7 @@ export default async function HomePage() {
               <Link href="/deals" className="press group relative flex min-h-[9.5rem] flex-col justify-end overflow-hidden border border-line shadow-[var(--shadow-card)]">
                 <div className="absolute inset-0"><Cover tone={heroDeal.tone} icon="deal" className="h-full w-full" /></div>
                 <div className="relative bg-gradient-to-t from-black/75 to-transparent p-4 pt-10 text-white">
-                  <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[#f2c4a8]">ดีลวันนี้ · {heroDeal.discount}</p>
+                  <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[#ffc2d6]">ดีลวันนี้ · {heroDeal.discount}</p>
                   <p className="font-editorial line-clamp-2 font-semibold leading-snug group-hover:underline">{heroDeal.title}</p>
                 </div>
               </Link>

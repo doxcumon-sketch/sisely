@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Noto_Sans_Thai, Noto_Serif_Thai } from "next/font/google";
+import { Noto_Sans_Thai, Prompt, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/app-shell";
 import { SITE_URL } from "@/lib/site";
 
 const sans = Noto_Sans_Thai({ variable: "--font-sans-th", subsets: ["thai", "latin"], display: "swap" });
-const serif = Noto_Serif_Thai({ variable: "--font-serif-th", subsets: ["thai", "latin"], weight: ["400", "600", "700"], display: "swap" });
-const display = Cormorant_Garamond({ variable: "--font-display-latin", subsets: ["latin"], weight: ["500", "600", "700"], display: "swap" });
+const serif = Prompt({ variable: "--font-serif-th", subsets: ["thai", "latin"], weight: ["500", "600", "700"], display: "swap" });
+const display = Space_Grotesk({ variable: "--font-display-latin", subsets: ["latin"], weight: ["500", "600", "700"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -30,8 +30,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf6f2" },
-    { media: "(prefers-color-scheme: dark)", color: "#140810" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f6fb" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c0b1a" },
   ],
 };
 

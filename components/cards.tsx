@@ -88,7 +88,7 @@ export function DealCard({ deal }: { deal: Deal }) {
         <span className="font-editorial px-2 text-center text-lg font-bold leading-tight text-white drop-shadow">{deal.discount}</span>
       </Cover>
       <div className="min-w-0 flex-1 p-4">
-        {deal.sponsored && <span className="mb-1 inline-block rounded bg-gold-soft px-1.5 py-px text-[10px] font-bold uppercase tracking-wide text-[#8a4a30] dark:text-gold">สปอนเซอร์</span>}
+        {deal.sponsored && <span className="mb-1 inline-block rounded bg-gold-soft px-1.5 py-px text-[10px] font-bold uppercase tracking-wide text-[#a8204f] dark:text-gold">สปอนเซอร์</span>}
         <h3 className="font-editorial text-[1.05rem] font-semibold leading-snug group-hover:text-gold">{deal.title}</h3>
         <p className="mt-0.5 text-sm text-muted">{deal.businessName}</p>
         <p className="mt-2 flex items-center justify-between text-xs text-muted">

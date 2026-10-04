@@ -39,7 +39,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
           <p className="text-muted">{b.tagline}</p>
           <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
             <span>{b.category}</span><span>{formatCount(b.followers)} ผู้ติดตาม</span><span>{b.mentions} ครั้งที่ถูกพูดถึง</span>
-            <span className="rounded-sm bg-gold-soft px-2.5 py-0.5 text-xs font-semibold text-[#8a4a30] dark:text-gold">แพ็กเกจ {PLAN_LABEL[b.plan]}</span>
+            <span className="rounded-sm bg-gold-soft px-2.5 py-0.5 text-xs font-semibold text-[#a8204f] dark:text-gold">แพ็กเกจ {PLAN_LABEL[b.plan]}</span>
           </p>
         </div>
       </header>
