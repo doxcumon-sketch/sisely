@@ -1,59 +1,58 @@
 @import "tailwindcss";
 
 /*
- * SISE design system.
- * Palette is drawn from Sisaket itself: lamduan (ดอกลำดวน) cream & gold, Khmer-temple
- * laterite red, deep rice-field jade, night ink. Light, editorial, warm — never blue/white SaaS.
- */
-/*
- * SISE design system — bright, modern luxury.
- * Warm-white canvas, emerald (rice-field) primary, champagne gold, laterite red accents.
- * Square, crisp geometry (2–6px radii) with fine hairlines; depth comes from light, not roundness.
+ * SISE design system — "Silk & Lamduan".
+ * Identity drawn from Sisaket: deep silk indigo (mat-mee weaving), lamduan flower yellow, laterite-coral accents
+ * on a warm cream canvas. Crisp geometry (2–6px radii), fine hairlines, light as the main source of depth.
+ * Token names (jade, gold, laterite) are kept for compatibility: jade = brand indigo, gold = lamduan.
  */
 :root {
-  --paper: #fbfaf6;
+  --paper: #fbf8f1;
   --paper-2: #f2eee3;
   --card: #ffffff;
-  --ink: #0e1c18;
-  --ink-2: #2b3934;
-  --muted: #5d6a64;
-  --faint: #86918b;
-  --line: #e4dfd0;
-  --line-soft: #eeeadd;
-  --gold: #a97c1f;
-  --gold-soft: #f8efd2;
-  --jade: #0a5c49;
-  --jade-soft: #dcf2ea;
-  --laterite: #c6432a;
+  --ink: #15152e;
+  --ink-2: #35355a;
+  --muted: #63638a;
+  --faint: #8c8caa;
+  --line: #e5e1ee;
+  --line-soft: #eeeaf5;
+  --gold: #9c6a00;
+  --gold-soft: #fdf0c4;
+  --jade: #2b2b8c;
+  --jade-soft: #e8e8fb;
+  --laterite: #d4432b;
   --laterite-soft: #fde6df;
-  --night: #0b1f1a;
-  --night-2: #123329;
-  --on-night: #f6efdc;
-  --on-night-muted: #bdbaa8;
-  --ring: #a97c1f;
-  --shadow-card: 0 1px 0 rgb(14 28 24 / 0.04), 0 6px 20px -10px rgb(60 45 20 / 0.16);
-  --shadow-pop: 0 18px 44px -14px rgb(20 40 30 / 0.34);
+  --night: #14143a;
+  --night-2: #202058;
+  --on-night: #fcf3d9;
+  --on-night-muted: #bdbad6;
+  --lamduan: #f4c542;
+  --lamduan-2: #e0a516;
+  --ring: #2b2b8c;
+  --shadow-card: 0 1px 0 rgb(21 21 46 / 0.04), 0 6px 20px -10px rgb(43 43 140 / 0.22);
+  --shadow-pop: 0 18px 44px -14px rgb(20 20 58 / 0.4);
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --paper: #0c1613;
-  --paper-2: #121f1a;
-  --card: #15231d;
-  --ink: #f4ecd9;
-  --ink-2: #dcd5c1;
-  --muted: #a9ab9b;
-  --faint: #7f867a;
-  --line: #28392f;
-  --line-soft: #1f2e27;
-  --gold: #dcb35a;
-  --gold-soft: #3a3320;
-  --jade: #6fd0b3;
-  --jade-soft: #173a30;
-  --laterite: #ee8d6e;
-  --laterite-soft: #3d2a22;
-  --night: #08100d;
-  --night-2: #0f1c17;
+  --paper: #0e0e26;
+  --paper-2: #151534;
+  --card: #1a1a40;
+  --ink: #f6f0e0;
+  --ink-2: #dcd7ea;
+  --muted: #aaa8c8;
+  --faint: #7f7da2;
+  --line: #2b2b58;
+  --line-soft: #222248;
+  --gold: #f4c542;
+  --gold-soft: #3a3118;
+  --jade: #a9aaff;
+  --jade-soft: #232358;
+  --laterite: #ff8a6e;
+  --laterite-soft: #432820;
+  --night: #09091f;
+  --night-2: #12123a;
+  --ring: #f4c542;
   --shadow-card: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 28px -14px rgb(0 0 0 / 0.6);
   color-scheme: dark;
 }
@@ -159,22 +158,22 @@ body {
 }
 .night-surface {
   background:
-    radial-gradient(120% 90% at 85% -10%, rgb(184 140 52 / 0.22), transparent 55%),
-    radial-gradient(90% 70% at -10% 110%, rgb(29 74 64 / 0.55), transparent 60%),
+    radial-gradient(120% 90% at 85% -10%, rgb(244 197 66 / 0.22), transparent 55%),
+    radial-gradient(90% 70% at -10% 110%, rgb(43 43 140 / 0.55), transparent 60%),
     var(--night);
   color: var(--on-night);
 }
 .text-gold-gradient {
-  background: linear-gradient(100deg, #8a6420 0%, #d8ae56 40%, #f4e2a8 55%, #b88c34 100%);
+  background: linear-gradient(100deg, #b07a00 0%, #f4c542 45%, #ffe9a0 58%, #d99a0a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 /* ---------- Art covers (no stock photos: generated tonal art) ---------- */
-.tone-jade { --a: #1d4a40; --b: #3f8a73; --c: #d9c27a; }
+.tone-jade { --a: #1c1f66; --b: #4a4fb8; --c: #f4d77a; }
 .tone-laterite { --a: #7d2f1a; --b: #c0623f; --c: #f1cf9b; }
-.tone-gold { --a: #8b6420; --b: #d8ae56; --c: #fff1c7; }
+.tone-gold { --a: #8a5f08; --b: #f4c542; --c: #fff1c7; }
 .tone-indigo { --a: #1e2a4a; --b: #4a5f9c; --c: #e8c98a; }
 .tone-plum { --a: #43203a; --b: #8d4a7a; --c: #f0c8b0; }
 .tone-sky { --a: #1f4f63; --b: #5aa3b8; --c: #fbe7b8; }
@@ -252,35 +251,35 @@ body {
   isolation: isolate;
   overflow: hidden;
   background:
-    radial-gradient(70% 90% at 100% 0%, rgb(10 92 73 / 0.16), transparent 60%),
-    radial-gradient(60% 80% at 0% 100%, rgb(201 162 74 / 0.30), transparent 60%),
-    linear-gradient(120deg, #fffaf0 0%, #f7efd9 45%, #e2f4ec 100%);
+    radial-gradient(60% 90% at 100% 0%, rgb(43 43 140 / 0.20), transparent 62%),
+    radial-gradient(55% 80% at 0% 100%, rgb(244 197 66 / 0.42), transparent 62%),
+    linear-gradient(120deg, #fffaf0 0%, #fdf0cf 40%, #e9e9fb 100%);
   border: 1px solid var(--line);
   border-radius: 6px;
 }
 :root[data-theme="dark"] .hero-bright {
   background:
-    radial-gradient(70% 90% at 100% 0%, rgb(111 208 179 / 0.14), transparent 60%),
-    radial-gradient(60% 80% at 0% 100%, rgb(220 179 90 / 0.18), transparent 60%),
-    linear-gradient(120deg, #101c17 0%, #14251e 100%);
+    radial-gradient(70% 90% at 100% 0%, rgb(169 170 255 / 0.18), transparent 60%),
+    radial-gradient(60% 80% at 0% 100%, rgb(244 197 66 / 0.16), transparent 60%),
+    linear-gradient(120deg, #11112e 0%, #181845 100%);
 }
 .hero-bright::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='none' stroke='%23a97c1f' stroke-opacity='.16' stroke-width='1'%3E%3Cpath d='M44 4 L84 44 L44 84 L4 44 Z'/%3E%3Cpath d='M44 22 L66 44 L44 66 L22 44 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='none' stroke='%232b2b8c' stroke-opacity='.13' stroke-width='1'%3E%3Cpath d='M44 4 L84 44 L44 84 L4 44 Z'/%3E%3Cpath d='M44 22 L66 44 L44 66 L22 44 Z'/%3E%3C/g%3E%3C/svg%3E");
   mask-image: linear-gradient(100deg, transparent 20%, #000 100%);
   -webkit-mask-image: linear-gradient(100deg, transparent 20%, #000 100%);
 }
 .text-emerald-gradient {
-  background: linear-gradient(100deg, #0a5c49 0%, #17866b 55%, #a97c1f 120%);
+  background: linear-gradient(100deg, #2b2b8c 0%, #5b3fc4 55%, #c98a0a 125%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 :root[data-theme="dark"] .text-emerald-gradient {
-  background: linear-gradient(100deg, #6fd0b3 0%, #dcb35a 100%);
+  background: linear-gradient(100deg, #a9aaff 0%, #f4c542 100%);
   -webkit-background-clip: text;
   background-clip: text;
 }
