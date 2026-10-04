@@ -5,8 +5,8 @@ import { createSessionToken, SESSION_COOKIE, verifySigned } from "@/lib/server/s
 
 export const dynamic = "force-dynamic";
 
-const back = (origin: string, error: string) => {
-  const res = NextResponse.redirect(new URL(`/login?error=${error}`, origin));
+const back = (origin: string, error: string, why?: string) => {
+  const res = NextResponse.redirect(new URL(`/login?error=${error}${why ? `&why=${encodeURIComponent(why)}` : ""}`, origin));
   res.cookies.delete({ name: "sise_oauth", path: "/api/auth/line" });
   return res;
 };
@@ -45,7 +45,10 @@ export async function GET(req: Request) {
     res.cookies.delete({ name: "sise_oauth", path: "/api/auth/line" });
     return res;
   } catch (e) {
-    console.error("LINE login failed", e instanceof Error ? e.message : e);
-    return back(origin, "failed");
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("LINE login failed", msg);
+    // a short, non-sensitive code so a failure can be diagnosed from a screenshot
+    const why = /token exchange failed \((\d+)\)/.exec(msg) ? `token-${/\((\d+)\)/.exec(msg)![1]}` : /verification failed \((\d+)\)/.exec(msg) ? `verify-${/\((\d+)\)/.exec(msg)![1]}` : /id_token/.test(msg) ? "idtoken" : /handle/.test(msg) ? "handle" : /prisma|database|P\d{4}/i.test(msg) ? "db" : "server";
+    return back(origin, "failed", why);
   }
 }

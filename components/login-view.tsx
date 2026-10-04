@@ -14,7 +14,7 @@ const ERRORS: Record<string, string> = {
   suspended: "บัญชีนี้ถูกระงับการใช้งาน",
 };
 
-export function LoginView({ returnTo, error, line, dev }: { returnTo: string; error?: string; line: boolean; dev: boolean }) {
+export function LoginView({ returnTo, error, why, line, dev }: { returnTo: string; error?: string; why?: string; line: boolean; dev: boolean }) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -32,7 +32,7 @@ export function LoginView({ returnTo, error, line, dev }: { returnTo: string; er
         <h1 className="font-editorial mt-5 text-2xl font-bold">มาแจมกับคนศรีสะเกษ</h1>
         <p className="mt-2 text-muted">ล็อกอินด้วย LINE แป๊บเดียว แล้วโพสต์ ตอบ เซฟของเด็ด และติดตามห้องที่ชอบได้เลย</p>
 
-        {error && <p role="alert" className="mt-5 rounded-xl bg-laterite-soft p-3 text-sm text-laterite">{ERRORS[error] ?? ERRORS.failed}</p>}
+        {error && <p role="alert" className="mt-5 rounded-xl bg-laterite-soft p-3 text-sm text-laterite">{ERRORS[error] ?? ERRORS.failed}{why && <span className="mt-1 block text-xs opacity-80">รหัส: {why} · ถ้าเปิดจากแอปอื่น (Messenger/Facebook) ลองเปิดลิงก์ใน Safari หรือ Chrome แล้วลองใหม่</span>}</p>}
 
         <div className="mt-6"><LineLoginButton returnTo={returnTo} enabled={line} /></div>
         {!line && <p className="mt-2 text-xs text-muted">LINE Login ยังไม่ได้ตั้งค่า (เจ้าของเว็บต้องใส่ LINE_CHANNEL_ID / LINE_CHANNEL_SECRET)</p>}

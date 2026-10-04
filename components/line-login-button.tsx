@@ -14,14 +14,16 @@ export function LineLoginButton({ returnTo, enabled = true, className }: { retur
   useEffect(() => {
     if (!enabled) return;
     let alive = true;
+    let fetchedAt = 0;
     const load = () =>
       fetch(`/api/auth/line/start?returnTo=${encodeURIComponent(returnTo)}`, { cache: "no-store" })
         .then((r) => (r.ok ? r.json() : null))
-        .then((j: { url?: string | null } | null) => { if (alive) setDirect(j?.url ?? null); })
+        .then((j: { url?: string | null } | null) => { if (alive) { setDirect(j?.url ?? null); fetchedAt = Date.now(); } })
         .catch(() => {});
     void load();
-    // the state cookie lives 10 minutes: refresh it when the tab comes back to the foreground
-    const onVisible = () => { if (document.visibilityState === "visible") void load(); };
+    // the state cookie lives 10 minutes: refresh only when it is getting old, never right after a tap
+    // (returning from the LINE app must not replace the state the callback is about to check)
+    const onVisible = () => { if (document.visibilityState === "visible" && Date.now() - fetchedAt > 6 * 60_000) void load(); };
     document.addEventListener("visibilitychange", onVisible);
     return () => { alive = false; document.removeEventListener("visibilitychange", onVisible); };
   }, [returnTo, enabled]);
