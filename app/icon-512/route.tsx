@@ -1,27 +1,8 @@
 import { ImageResponse } from "next/og";
+import { BrandMark } from "@/components/brand-mark";
 
 export const dynamic = "force-static";
 
 export function GET() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "linear-gradient(140deg,#0f1916,#1d4a40)",
-          color: "#d8ae56",
-          fontSize: 512 * 0.5,
-          fontWeight: 700,
-          letterSpacing: -2,
-        }}
-      >
-        S
-      </div>
-    ),
-    { width: 512, height: 512 },
-  );
+  return new ImageResponse(<BrandMark size={512} />, { width: 512, height: 512 });
 }

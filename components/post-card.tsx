@@ -18,11 +18,11 @@ import type { Post, PostType } from "@/lib/types";
 
 const TYPE_STYLE: Record<PostType, string> = {
   discussion: "bg-jade-soft text-jade",
-  question: "bg-gold-soft text-[#7a5a14] dark:text-gold",
+  question: "bg-gold-soft text-[#8a4a30] dark:text-gold",
   recommendation: "bg-jade-soft text-jade",
   event: "bg-laterite-soft text-laterite",
   deal: "bg-laterite-soft text-laterite",
-  marketplace: "bg-gold-soft text-[#7a5a14] dark:text-gold",
+  marketplace: "bg-gold-soft text-[#8a4a30] dark:text-gold",
   story: "bg-paper-2 text-ink-2",
   poll: "bg-jade-soft text-jade",
   announcement: "bg-night text-on-night",
@@ -112,7 +112,7 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
             <Link href={`/u/${author.handle}`} className="font-semibold hover:underline">{name}</Link>
             {author.badge === "moderator" && <span className="rounded bg-night px-1.5 py-px text-[10px] font-bold text-on-night">MOD</span>}
-            {author.badge === "local-guide" && <span className="rounded bg-gold-soft px-1.5 py-px text-[10px] font-bold text-[#7a5a14] dark:text-gold">Local Guide</span>}
+            {author.badge === "local-guide" && <span className="rounded bg-gold-soft px-1.5 py-px text-[10px] font-bold text-[#8a4a30] dark:text-gold">Local Guide</span>}
             {author.badge === "business" && <span className="rounded bg-jade-soft px-1.5 py-px text-[10px] font-bold text-jade">ธุรกิจ</span>}
             {author.badge === "founder" && <span className="rounded bg-night px-1.5 py-px text-[10px] font-bold text-gold">SISE</span>}
           </div>
@@ -130,7 +130,7 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
         </div>
         <div className="flex items-center gap-1">
           {hot && (
-            <span className={cx("hidden items-center gap-1 rounded-sm px-2 py-0.5 text-xs font-semibold sm:inline-flex", hot === "hot" ? "bg-laterite-soft text-laterite" : "bg-gold-soft text-[#7a5a14] dark:text-gold")}>
+            <span className={cx("hidden items-center gap-1 rounded-sm px-2 py-0.5 text-xs font-semibold sm:inline-flex", hot === "hot" ? "bg-laterite-soft text-laterite" : "bg-gold-soft text-[#8a4a30] dark:text-gold")}>
               <Flame className="h-3 w-3" /> {hot === "hot" ? "กำลังร้อน" : "คนคุยกัน"}
             </span>
           )}

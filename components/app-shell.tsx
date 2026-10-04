@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandMark } from "./brand-mark";
 import { Bell, Compass, Home, Moon, PenLine, Plus, Search, Sun, User, LayoutGrid, Ticket, MapPin, Tag, ShoppingBag, BookOpen, Shield } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,8 +36,11 @@ function isActive(pathname: string, href: string) {
 
 export function Wordmark({ className, light }: { className?: string; light?: boolean }) {
   return (
-    <span className={cx("wordmark text-[1.65rem] font-bold leading-none", light ? "text-on-night" : "text-ink", className)}>
-      SIS<span className="text-gold">E</span>
+    <span className={cx("inline-flex items-center gap-2.5", className)}>
+      <BrandMark size={30} />
+      <span className={cx("wordmark text-[1.55rem] font-bold leading-none", light ? "text-on-night" : "text-ink")}>
+        SIS<span className="text-gold">E</span>
+      </span>
     </span>
   );
 }
@@ -176,7 +180,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {me && (
               <Link href="/me" className="ml-1 hidden rounded-full lg:block" aria-label="โปรไฟล์ของฉัน"><Avatar name={me.name} tone="gold" size={36} src={me.pictureUrl} /></Link>
             )}
-            <Link href="/create" className="press ml-2 hidden items-center gap-2 rounded-sm bg-[#f4c542] px-5 py-2.5 text-sm font-bold text-[#14143a] shadow-[0_6px_16px_-8px_rgba(224,165,22,0.9)] hover:bg-[#ffd25c] lg:flex">
+            <Link href="/create" className="press ml-2 hidden items-center gap-2 rounded-sm bg-cta px-5 py-2.5 text-sm font-bold text-on-cta shadow-[0_8px_18px_-10px_rgba(110,31,61,0.9)] hover:bg-cta-2 lg:flex">
               <PenLine className="h-4 w-4" /> โพสต์
             </Link>
           </div>
@@ -203,7 +207,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               return (
                 <li key={href} className="flex justify-center">
                   {primary ? (
-                    <Link href={href} className="press -mt-5 flex h-14 w-14 items-center justify-center rounded-md bg-gradient-to-br from-[#ffe08a] via-[#f4c542] to-[#e0a516] text-[#14143a] shadow-[0_10px_24px_-8px_rgba(224,165,22,0.9)]" aria-label="โพสต์ใหม่">
+                    <Link href={href} className="press -mt-5 flex h-14 w-14 items-center justify-center rounded-md bg-gradient-to-br from-cta-2 to-cta text-on-cta shadow-[0_10px_24px_-8px_rgba(110,31,61,0.9)]" aria-label="โพสต์ใหม่">
                       <Icon className="h-7 w-7" strokeWidth={2.4} />
                     </Link>
                   ) : (
