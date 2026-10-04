@@ -6,7 +6,7 @@ import { EVENT_CATEGORY_LABEL } from "@/lib/data/events";
 import { placeCategoryLabel } from "@/lib/data/places";
 import { formatBaht, formatCount, formatDateTh, weekdayShort } from "@/lib/format";
 import { CONDITION_LABEL } from "@/lib/data/commerce";
-import { placePhoto, roomPhoto } from "@/lib/covers";
+import { eventPhoto, placePhoto, roomPhoto } from "@/lib/covers";
 import type { Deal, Listing, Place, Room, SiseEvent } from "@/lib/types";
 
 
@@ -58,7 +58,7 @@ export function EventCard({ event, className, featured }: { event: SiseEvent; cl
   const multi = event.durationDays > 1;
   return (
     <Link href={`/events/${event.slug}`} className={cx("surface press group flex overflow-hidden transition-shadow hover:shadow-[var(--shadow-pop)]", featured ? "flex-col" : "flex-row", className)}>
-      <Cover tone={event.tone} icon="events" className={featured ? "aspect-[16/9] w-full" : "w-28 shrink-0 sm:w-36"}>
+      <Cover tone={event.tone} icon="events" photo={eventPhoto(event.category)} className={featured ? "aspect-[16/9] w-full" : "w-28 shrink-0 sm:w-36"}>
         <div className="absolute left-3 top-3 flex flex-col items-center rounded-xl bg-card/95 px-2.5 py-1.5 text-center leading-none text-ink shadow">
           <span className="text-[10px] font-semibold text-laterite">{weekdayShort(event.dayOffset)}</span>
           <span className="font-editorial text-xl font-bold">{formatDateTh(event.dayOffset).split(" ")[0]}</span>

@@ -141,6 +141,7 @@ export function toUser(
 ): User {
   return {
     id: u.id, pictureUrl: u.pictureUrl, handle: u.handle, name: u.name, bio: u.bio, area: u.area, tone: u.tone,
+    coverScene: u.coverScene, links: (u.links as User["links"]) ?? null,
     joinedDays: Math.max(0, Math.floor((now - u.createdAt.getTime()) / 86_400_000)), followers: counts.followers, following: counts.following,
     reputation: u.reputation, badge: u.badge ? BADGE[u.badge] : undefined,
   };

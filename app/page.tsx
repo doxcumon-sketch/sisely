@@ -10,11 +10,14 @@ import { getPulse, listDeals, listEvents, listPlaces, listRooms, queryPosts } fr
 import { ActivityTicker } from "@/components/activity-ticker";
 import { Cover } from "@/components/ui";
 import { formatCount } from "@/lib/format";
-import { postPhotos, roomPhoto } from "@/lib/covers";
+import { eventPhoto, postPhotos, roomPhoto } from "@/lib/covers";
 import { dayLabel } from "@/lib/format";
 import { eventsFor, upcomingEvents } from "@/lib/queries";
 import { HomeFeedTabs } from "@/components/home-feed";
 import { InstallBanner } from "@/components/install-banner";
+import { Onboarding } from "@/components/onboarding";
+import { QuickCompose } from "@/components/quick-compose";
+import { ShareButton } from "@/components/share";
 
 export const revalidate = 60;
 
@@ -93,7 +96,7 @@ export default async function HomePage() {
             )}
             {heroEvent && (
               <Link href={`/events/${heroEvent.slug}`} className="press group relative flex min-h-[9.5rem] flex-col justify-end overflow-hidden border border-line shadow-[var(--shadow-card)]">
-                <div className="absolute inset-0"><Cover tone={heroEvent.tone} icon="events" className="h-full w-full" /></div>
+                <div className="absolute inset-0"><Cover tone={heroEvent.tone} icon="events" photo={eventPhoto(heroEvent.category)} className="h-full w-full" /></div>
                 <div className="relative bg-gradient-to-t from-black/75 to-transparent p-4 pt-10 text-white">
                   <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[#f3d68a]">{dayLabel(heroEvent.dayOffset)} · {heroEvent.startTime}</p>
                   <p className="font-editorial line-clamp-2 font-semibold leading-snug group-hover:underline">{heroEvent.title}</p>
@@ -167,6 +170,8 @@ export default async function HomePage() {
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_21rem]">
         <section aria-labelledby="foryou-h" className="min-w-0" id="talking">
           <SectionHeader eyebrow="For You" title="สำหรับคุณ" />
+          <Onboarding rooms={rooms.slice(0, 12).map((r) => ({ slug: r.slug, name: r.name, icon: r.icon }))} />
+          <QuickCompose />
           <HomeFeedTabs initial={forYou} />
         </section>
 
@@ -174,6 +179,12 @@ export default async function HomePage() {
           <section className="surface p-4">
             <SectionHeader eyebrow="Trending" title="กำลังเป็นกระแส" live />
             <TrendingList posts={trending.posts} />
+          </section>
+          <section className="surface p-5">
+            <p className="eyebrow mb-1">Invite</p>
+            <h2 className="font-editorial text-lg font-semibold">ชวนเพื่อนมาคุยด้วยกัน</h2>
+            <p className="mt-1 text-sm text-muted">ชุมชนจะสนุกเมื่อมีคนรู้จักอยู่ในนั้น ส่งลิงก์ให้เพื่อนใน LINE หรือ Facebook ได้เลย</p>
+            <div className="mt-3"><ShareButton path="/" title="SISE — พื้นที่ออนไลน์ของคนศรีสะเกษ มาคุยกันเถอะ" className="press inline-flex items-center gap-2 rounded-sm bg-[#f4c542] px-5 py-2.5 font-bold text-[#14143a] hover:bg-[#ffd25c]" label="ชวนเพื่อน" /></div>
           </section>
           <section>
             <SectionHeader title="ดีลวันนี้" href="/deals" />

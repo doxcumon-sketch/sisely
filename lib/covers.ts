@@ -82,8 +82,15 @@ const pick = (scenes: SceneId[] | undefined, offset = 0): CoverPhoto | undefined
   return found.length ? found[offset % found.length] : undefined;
 };
 
+/** Event artwork by category, so a concert and a market never share the same look. */
+export const EVENT_SCENES: Record<string, SceneId[]> = {
+  concert: ["night"], festival: ["festival"], market: ["market"], sports: ["pha-mo-i-daeng"], workshop: ["silk"],
+  exhibition: ["city"], community: ["temple"], food: ["street-food"], culture: ["sa-kamphaeng-yai"],
+};
+
 export const roomPhoto = (slug: string): CoverPhoto | undefined => pick(ROOM_SCENES[slug]);
 export const placePhoto = (slug: string): CoverPhoto | undefined => pick(PLACE_SCENES[slug]);
+export const eventPhoto = (category: string): CoverPhoto | undefined => pick(EVENT_SCENES[category]);
 
 /** Photos for a post's media slots: the room's scenes, rotated so two posts in one room don't look identical. */
 export function postPhotos(roomSlug: string, postId: string, count: number): CoverPhoto[] {

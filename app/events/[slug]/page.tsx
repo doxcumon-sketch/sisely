@@ -11,6 +11,7 @@ import { getEvent, getPlace, listEvents, queryPosts } from "@/lib/server/repo";
 import { bangkokDate, dayLabel, formatCount } from "@/lib/format";
 import { EventCard } from "@/components/cards";
 import { SITE_URL } from "@/lib/site";
+import { eventPhoto } from "@/lib/covers";
 
 export const revalidate = 60;
 
@@ -63,7 +64,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       <nav aria-label="breadcrumb" className="text-sm text-muted"><Link href="/events" className="hover:text-ink">งาน</Link> / <span className="text-ink">{e.title}</span></nav>
 
       <header className="surface overflow-hidden">
-        <Cover tone={e.tone} icon="events" className="h-52 sm:h-80">
+        <Cover tone={e.tone} icon="events" photo={eventPhoto(e.category)} className="h-52 sm:h-80">
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-5 pt-20 text-white sm:p-8">
             <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-white/80">{EVENT_CATEGORY_LABEL[e.category]} · {dayLabel(e.dayOffset)}</p>
             <h1 className="font-editorial text-2xl font-bold leading-tight sm:text-4xl">{e.title}</h1>

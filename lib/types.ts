@@ -19,6 +19,8 @@ export type ReactionKind = "like" | "love" | "helpful" | "wow";
 export interface User {
   id: string;
   pictureUrl?: string | null;
+  coverScene?: string | null;
+  links?: { line?: string; facebook?: string; website?: string } | null;
   handle: string;
   name: string;
   bio: string;

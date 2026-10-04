@@ -9,18 +9,26 @@ export function checkBannedWords(text: string): string | null {
 }
 
 /** Resize an image file to a small JPEG data URL so prototype posts fit in localStorage. */
-export function downscaleImage(file: File, max = 900, quality = 0.72): Promise<string> {
+export function downscaleImage(file: File, max = 900, quality = 0.72, square = false): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
-      const scale = Math.min(1, max / Math.max(img.width, img.height));
       const canvas = document.createElement("canvas");
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
       const ctx = canvas.getContext("2d");
       if (!ctx) return reject(new Error("canvas"));
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      if (square) {
+        // centre-crop to a square so avatars never get distorted
+        const side = Math.min(img.width, img.height);
+        const out = Math.min(max, side);
+        canvas.width = canvas.height = out;
+        ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, out, out);
+      } else {
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
       URL.revokeObjectURL(url);
       resolve(canvas.toDataURL("image/jpeg", quality));
     };

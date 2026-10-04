@@ -62,7 +62,8 @@ function slugify(name: string): string {
 export async function upsertLineUser(p: LineProfile) {
   const existing = await prisma.user.findUnique({ where: { lineUserId: p.sub } });
   if (existing) {
-    return prisma.user.update({ where: { id: existing.id }, data: { pictureUrl: p.picture ?? existing.pictureUrl, lastSeenAt: new Date() } });
+    // A photo the member uploaded themselves is never replaced by their LINE picture.
+    return prisma.user.update({ where: { id: existing.id }, data: { pictureUrl: existing.avatarCustom ? existing.pictureUrl : (p.picture ?? existing.pictureUrl), lastSeenAt: new Date() } });
   }
   for (let i = 0; i < 5; i++) {
     const handle = `${slugify(p.name)}${randomBytes(2).toString("hex")}`;

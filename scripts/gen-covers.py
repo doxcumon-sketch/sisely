@@ -10,7 +10,7 @@ W, H = 1600, 900
 OUT = sys.argv[1] if len(sys.argv) > 1 else "/tmp/covers-svg"
 os.makedirs(OUT, exist_ok=True)
 
-GOLD = "#e3c276"; GOLD2 = "#b88c34"; IVORY = "#f6efdc"; EM = "#0a5c49"; EMD = "#06382d"; INK = "#07130f"; LAT = "#c6432a"
+GOLD = "#f4c542"; GOLD2 = "#e0a516"; IVORY = "#f6efdc"; EM = "#2b2b8c"; EMD = "#14143f"; INK = "#0a0a22"; LAT = "#d4432b"
 
 def lg(i, stops, x1=0, y1=0, x2=0, y2=1):
     s = "".join(f'<stop offset="{o}" stop-color="{c}" stop-opacity="{a}"/>' for o, c, a in stops)
@@ -63,29 +63,29 @@ b += '<g fill="#060f16"><circle cx="430" cy="706" r="9"/><path d="M416 716 Q430 
 S["pha-mo-i-daeng"] = frame(defs, b)
 
 # ---- sa-kamphaeng-yai: gold prang on deep emerald
-defs = lg("bg", [(0, INK, 1), (.6, EMD, 1), (1, "#0d4a3a", 1)]) + rg("glow", [(0, "#e3c276", .5), (1, "#e3c276", 0)], .5, .55, .5) + lg("tw", [(0, "#f3dc9a", 1), (1, "#a67c1f", 1)])
+defs = lg("bg", [(0, INK, 1), (.6, EMD, 1), (1, "#23236e", 1)]) + rg("glow", [(0, "#f4c542", .5), (1, "#f4c542", 0)], .5, .55, .5) + lg("tw", [(0, "#ffe08a", 1), (1, "#e0a516", 1)])
 b = f'<rect width="{W}" height="{H}" fill="url(#bg)"/><circle cx="800" cy="470" r="420" fill="url(#glow)"/>'
-b += '<circle cx="800" cy="300" r="120" fill="none" stroke="#e3c276" stroke-width="1.5" opacity=".5"/><circle cx="800" cy="300" r="180" fill="none" stroke="#e3c276" stroke-width="1" opacity=".25"/>'
+b += '<circle cx="800" cy="300" r="120" fill="none" stroke="#f4c542" stroke-width="1.5" opacity=".5"/><circle cx="800" cy="300" r="180" fill="none" stroke="#f4c542" stroke-width="1" opacity=".25"/>'
 def prang(cx, base, h, w, op=1):
     o = f'<g opacity="{op}">'
     for i in range(6):
         tw = w * (1 - i * .13); y = base - h * (i * .15)
         o += f'<path d="M{cx - tw / 2:.0f} {y:.0f} L{cx - tw / 2 + 12:.0f} {y - h * .13:.0f} L{cx + tw / 2 - 12:.0f} {y - h * .13:.0f} L{cx + tw / 2:.0f} {y:.0f} Z" fill="url(#tw)" opacity="{.95 - i * .06:.2f}"/>'
-        o += f'<path d="M{cx - tw / 2 + 12:.0f} {y - h * .13:.0f} L{cx + tw / 2 - 12:.0f} {y - h * .13:.0f}" stroke="#06382d" stroke-width="2"/>'
+        o += f'<path d="M{cx - tw / 2 + 12:.0f} {y - h * .13:.0f} L{cx + tw / 2 - 12:.0f} {y - h * .13:.0f}" stroke="#14143f" stroke-width="2"/>'
     o += f'<path d="M{cx - w * .1:.0f} {base - h * .9:.0f} Q{cx} {base - h * 1.2:.0f} {cx + w * .1:.0f} {base - h * .9:.0f} Z" fill="url(#tw)"/><rect x="{cx - 2}" y="{base - h * 1.28:.0f}" width="4" height="{h * .1:.0f}" fill="#f3dc9a"/>'
-    o += f'<rect x="{cx - w * .08:.0f}" y="{base - h * .2:.0f}" width="{w * .16:.0f}" height="{h * .2:.0f}" fill="#06382d"/></g>'
+    o += f'<rect x="{cx - w * .08:.0f}" y="{base - h * .2:.0f}" width="{w * .16:.0f}" height="{h * .2:.0f}" fill="#14143f"/></g>'
     return o
 b += prang(800, 760, 380, 250) + prang(600, 760, 230, 150, .85) + prang(1000, 760, 230, 150, .85)
-b += f'<rect y="760" width="{W}" height="140" fill="#04201a"/>' + hair(f"M0 760 H{W}", GOLD, 1.5, .6)
+b += f'<rect y="760" width="{W}" height="140" fill="#0c0c33"/>' + hair(f"M0 760 H{W}", GOLD, 1.5, .6)
 for i in range(9): b += hair(f"M{200 + i * 150} 760 V900", GOLD, 1, .12)
 S["sa-kamphaeng-yai"] = frame(defs, b)
 
 # ---- temple: concentric gold chedi
-defs = lg("bg", [(0, "#0b1a2a", 1), (.7, "#143a42", 1), (1, "#1c5a52", 1)]) + rg("halo", [(0, "#ffe9a8", .65), (1, "#ffe9a8", 0)])
+defs = lg("bg", [(0, "#0b0b2c", 1), (.7, "#26276f", 1), (1, "#3a3a9a", 1)]) + rg("halo", [(0, "#ffe9a8", .65), (1, "#ffe9a8", 0)])
 b = f'<rect width="{W}" height="{H}" fill="url(#bg)"/><circle cx="800" cy="420" r="400" fill="url(#halo)"/>'
-for r in [150, 220, 290, 360]: b += f'<circle cx="800" cy="420" r="{r}" fill="none" stroke="#e3c276" stroke-width="1.2" opacity="{.5 - r / 1000:.2f}"/>'
+for r in [150, 220, 290, 360]: b += f'<circle cx="800" cy="420" r="{r}" fill="none" stroke="#f4c542" stroke-width="1.2" opacity="{.5 - r / 1000:.2f}"/>'
 b += '<g transform="translate(800 790)"><path d="M-210 0 L-176 -74 L176 -74 L210 0 Z" fill="#c99a3a"/><path d="M-150 -74 L-118 -150 L118 -150 L150 -74 Z" fill="#e0b24a"/><path d="M-96 -150 L-72 -240 L72 -240 L96 -150 Z" fill="#c99a3a"/><path d="M-64 -240 Q0 -490 64 -240 Z" fill="#f0cf6a"/><rect x="-3" y="-560" width="6" height="86" fill="#f0cf6a"/><circle cy="-568" r="9" fill="#fff4c2"/></g>'
-b += f'<path d="M0 790 H{W}" stroke="#e3c276" stroke-width="1.5" opacity=".6"/><rect y="790" width="{W}" height="110" fill="#06141a"/>'
+b += f'<path d="M0 790 H{W}" stroke="#f4c542" stroke-width="1.5" opacity=".6"/><rect y="790" width="{W}" height="110" fill="#06141a"/>'
 S["temple"] = frame(defs, b)
 
 # ---- rice-field: flowing terraces at golden hour
@@ -114,16 +114,16 @@ b += f'<path d="M0 470 C260 440 440 468 640 468 L640 500 L0 540 Z" fill="#0b0e22
 S["river-mun"] = frame(defs, b)
 
 # ---- durian: macro spikes pattern, emerald & gold
-defs = lg("bg", [(0, "#0b4a38", 1), (1, "#06241c", 1)], 0, 0, 1, 1) + rg("hl", [(0, "#f3dc9a", .55), (1, "#f3dc9a", 0)], .3, .25, .6)
+defs = lg("bg", [(0, "#2a2a85", 1), (1, "#101040", 1)], 0, 0, 1, 1) + rg("hl", [(0, "#f3dc9a", .55), (1, "#f3dc9a", 0)], .3, .25, .6)
 b = f'<rect width="{W}" height="{H}" fill="url(#bg)"/><rect width="{W}" height="{H}" fill="url(#hl)"/>'
 random.seed(5)
 for r_ in range(-1, 9):
     for c in range(-1, 14):
         x = c * 130 + (65 if r_ % 2 else 0); y = r_ * 112
         sh = random.uniform(.55, 1)
-        b += f'<path d="M{x} {y - 62} L{x + 56} {y - 4} L{x} {y + 62} L{x - 56} {y - 4} Z" fill="url(#bg)" stroke="#e3c276" stroke-width="1.3" opacity="{.4 + sh * .5:.2f}"/>'
-        b += f'<path d="M{x} {y - 62} L{x} {y + 62} M{x - 56} {y - 4} L{x + 56} {y - 4}" stroke="#e3c276" stroke-width=".7" opacity="{.15 + sh * .25:.2f}"/>'
-b += '<circle cx="1180" cy="330" r="190" fill="#06241c" opacity=".55"/><circle cx="1180" cy="330" r="190" fill="none" stroke="#e3c276" stroke-width="1.5" opacity=".7"/>'
+        b += f'<path d="M{x} {y - 62} L{x + 56} {y - 4} L{x} {y + 62} L{x - 56} {y - 4} Z" fill="url(#bg)" stroke="#f4c542" stroke-width="1.3" opacity="{.4 + sh * .5:.2f}"/>'
+        b += f'<path d="M{x} {y - 62} L{x} {y + 62} M{x - 56} {y - 4} L{x + 56} {y - 4}" stroke="#f4c542" stroke-width=".7" opacity="{.15 + sh * .25:.2f}"/>'
+b += '<circle cx="1180" cy="330" r="190" fill="#101040" opacity=".55"/><circle cx="1180" cy="330" r="190" fill="none" stroke="#f4c542" stroke-width="1.5" opacity=".7"/>'
 S["durian"] = frame(defs, b)
 
 # ---- shallot: perspective rows
@@ -132,7 +132,7 @@ b = f'<rect width="{W}" height="{H}" fill="url(#sky)"/>' + f'<path d="{contour(4
 vx, vy = 800, 430
 for k in range(-12, 13):
     xb = 800 + k * 190
-    b += f'<path d="M{vx} {vy} L{xb - 44} {H} L{xb + 44} {H} Z" fill="#7a4a30" opacity=".5"/>' + hair(f"M{vx} {vy} L{xb} {H}", "#e3c276", 1, .28)
+    b += f'<path d="M{vx} {vy} L{xb - 44} {H} L{xb + 44} {H} Z" fill="#7a4a30" opacity=".5"/>' + hair(f"M{vx} {vy} L{xb} {H}", "#f4c542", 1, .28)
 random.seed(8)
 for r_ in range(1, 17):
     t = (r_ / 16) ** 1.9; y = vy + t * (H - vy)
@@ -144,7 +144,7 @@ b += f'<rect y="430" width="{W}" height="60" fill="#f6d29a" opacity=".2" filter=
 S["shallot"] = frame(defs, b)
 
 # ---- silk: refined matmi lattice, indigo & gold
-defs = lg("bg", [(0, "#12183f", 1), (1, "#2a1042", 1)], 0, 0, 1, 1) + rg("hl", [(0, "#e3c276", .35), (1, "#e3c276", 0)], .7, .3, .7)
+defs = lg("bg", [(0, "#12183f", 1), (1, "#2a1042", 1)], 0, 0, 1, 1) + rg("hl", [(0, "#f4c542", .35), (1, "#f4c542", 0)], .7, .3, .7)
 b = f'<rect width="{W}" height="{H}" fill="url(#bg)"/><rect width="{W}" height="{H}" fill="url(#hl)"/>'
 bands = [GOLD, "#f6efdc", "#c6432a", "#5fb09a"]
 y = 0
@@ -159,7 +159,7 @@ for i in range(8):
 S["silk"] = frame(defs, b, grain=.16)
 
 # ---- lamduan: botanical gold line-art on emerald
-defs = lg("bg", [(0, "#0a3d30", 1), (1, "#04201a", 1)], 0, 0, 1, 1) + rg("bk", [(0, "#f3dc9a", .5), (1, "#f3dc9a", 0)])
+defs = lg("bg", [(0, "#1a1a66", 1), (1, "#0c0c33", 1)], 0, 0, 1, 1) + rg("bk", [(0, "#f3dc9a", .5), (1, "#f3dc9a", 0)])
 b = f'<rect width="{W}" height="{H}" fill="url(#bg)"/>'
 random.seed(4)
 for _ in range(10): b += f'<circle cx="{random.uniform(0, W):.0f}" cy="{random.uniform(0, H):.0f}" r="{random.uniform(40, 110):.0f}" fill="url(#bk)" opacity="{random.uniform(.25, .6):.2f}"/>'
@@ -170,7 +170,7 @@ for x, y, r, s in [(250, 668, -32, 1.1), (520, 600, 30, 1.25), (770, 520, -36, 1
 def lam(cx, cy, s, rot=0, op=1):
     o = f'<g transform="translate({cx} {cy}) rotate({rot}) scale({s})" opacity="{op}">'
     for k in range(6): o += f'<path d="M0 0 C-28 -52 -28 -124 0 -156 C28 -124 28 -52 0 0 Z" fill="#f0d98a" fill-opacity=".92" stroke="#fff6cf" stroke-width="1.5" transform="rotate({k * 60})"/>'
-    for k in range(6): o += f'<path d="M0 0 C-18 -34 -18 -80 0 -102 C18 -80 18 -34 0 0 Z" fill="#fff3c4" stroke="#e3c276" stroke-width="1.2" transform="rotate({k * 60 + 30})"/>'
+    for k in range(6): o += f'<path d="M0 0 C-18 -34 -18 -80 0 -102 C18 -80 18 -34 0 0 Z" fill="#fff3c4" stroke="#f4c542" stroke-width="1.2" transform="rotate({k * 60 + 30})"/>'
     o += '<circle r="15" fill="#c98a2e"/>' + "".join(f'<circle cx="{20 * math.cos(k):.1f}" cy="{20 * math.sin(k):.1f}" r="3.2" fill="#8a5a1a"/>' for k in range(7)) + "</g>"
     return o
 b += lam(1030, 430, 1.55, -8) + lam(560, 560, 1.05, 12) + lam(1340, 250, .8, 20, .9) + lam(330, 330, .6, 34, .55)
@@ -182,7 +182,7 @@ b = f'<rect width="{W}" height="{H}" fill="url(#bg)"/><rect y="520" width="{W}" 
 random.seed(31)
 for i in range(16):
     x = 50 + i * 100; y = 150 + math.sin(i * .9) * 26
-    b += f'<circle cx="{x}" cy="{y:.0f}" r="70" fill="url(#glow)" opacity=".55"/><ellipse cx="{x}" cy="{y:.0f}" rx="16" ry="22" fill="#ffb060"/><ellipse cx="{x}" cy="{y:.0f}" rx="7" ry="12" fill="#fff0c0"/><path d="M{x} {y - 22:.0f} V90" stroke="#e3c276" stroke-width="1.2" opacity=".6"/>'
+    b += f'<circle cx="{x}" cy="{y:.0f}" r="70" fill="url(#glow)" opacity=".55"/><ellipse cx="{x}" cy="{y:.0f}" rx="16" ry="22" fill="#ffb060"/><ellipse cx="{x}" cy="{y:.0f}" rx="7" ry="12" fill="#fff0c0"/><path d="M{x} {y - 22:.0f} V90" stroke="#f4c542" stroke-width="1.2" opacity=".6"/>'
 b += hair("M0 90 H1600", GOLD, 1.5, .5)
 for i in range(5):
     x = 40 + i * 312

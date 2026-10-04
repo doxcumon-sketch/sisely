@@ -34,10 +34,11 @@ export interface SiseState {
   theme: "light" | "dark";
   recentSearches: string[];
   installDismissed: boolean;
+  onboardingDismissed: boolean;
   loginPrompt: boolean;
 }
 
-const EMPTY: Omit<SiseState, "theme" | "recentSearches" | "installDismissed"> = {
+const EMPTY: Omit<SiseState, "theme" | "recentSearches" | "installDismissed" | "onboardingDismissed"> = {
   ready: false,
   me: null,
   reactions: {},
@@ -53,7 +54,7 @@ const EMPTY: Omit<SiseState, "theme" | "recentSearches" | "installDismissed"> = 
   loginPrompt: false,
 };
 
-export const DEFAULT_STATE: SiseState = { ...EMPTY, theme: "light", recentSearches: [], installDismissed: false };
+export const DEFAULT_STATE: SiseState = { ...EMPTY, theme: "light", recentSearches: [], installDismissed: false, onboardingDismissed: false };
 
 const PREFS_KEY = "sise:prefs";
 let state: SiseState = DEFAULT_STATE;
@@ -66,12 +67,13 @@ function loadPrefs() {
   try {
     const raw = window.localStorage.getItem(PREFS_KEY);
     if (raw) {
-      const p = JSON.parse(raw) as Partial<Pick<SiseState, "theme" | "recentSearches" | "installDismissed">>;
+      const p = JSON.parse(raw) as Partial<Pick<SiseState, "theme" | "recentSearches" | "installDismissed" | "onboardingDismissed">>;
       state = {
         ...state,
         theme: p.theme === "dark" ? "dark" : "light",
         recentSearches: Array.isArray(p.recentSearches) ? p.recentSearches.slice(0, 6) : [],
         installDismissed: !!p.installDismissed,
+        onboardingDismissed: !!p.onboardingDismissed,
       };
     }
   } catch {
@@ -81,7 +83,7 @@ function loadPrefs() {
 
 function persistPrefs() {
   try {
-    window.localStorage.setItem(PREFS_KEY, JSON.stringify({ theme: state.theme, recentSearches: state.recentSearches, installDismissed: state.installDismissed }));
+    window.localStorage.setItem(PREFS_KEY, JSON.stringify({ theme: state.theme, recentSearches: state.recentSearches, installDismissed: state.installDismissed, onboardingDismissed: state.onboardingDismissed }));
   } catch {
     /* ignore quota/private mode */
   }
@@ -322,12 +324,15 @@ export const actions = {
   dismissInstall() {
     set((s) => ({ ...s, installDismissed: true }), true);
   },
+  dismissOnboarding() {
+    set((s) => ({ ...s, onboardingDismissed: true }), true);
+  },
   closeLoginPrompt() {
     set((s) => ({ ...s, loginPrompt: false }));
   },
-  async setProfile(p: { name?: string; bio?: string }) {
-    const r = await api<{ name: string; bio: string }>("/api/me", "PATCH", p);
-    if (r.ok) set((s) => (s.me ? { ...s, me: { ...s.me, name: r.data.name } } : s));
+  async setProfile(p: Record<string, unknown>) {
+    const r = await api<{ name: string; pictureUrl: string | null }>("/api/me", "PATCH", p);
+    if (r.ok) set((s) => (s.me ? { ...s, me: { ...s.me, name: r.data.name, pictureUrl: r.data.pictureUrl } } : s));
     else fail(r.error);
     return r.ok;
   },
