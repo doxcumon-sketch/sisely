@@ -72,8 +72,8 @@ export default async function PlacePage({ params }: { params: Promise<{ slug: st
         </Cover>
         <div className="flex flex-wrap items-center justify-between gap-3 p-4 sm:px-8">
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-            <span className="inline-flex items-center gap-1.5 text-base font-bold"><Star className="h-5 w-5 fill-gold text-gold" /> {p.rating.toFixed(1)}</span>
-            <span className="text-muted">ความรู้สึกจากชุมชน · {p.reviews} ความเห็น</span>
+            {p.reviews > 0 && <span className="inline-flex items-center gap-1.5 text-base font-bold"><Star className="h-5 w-5 fill-gold text-gold" /> {p.rating.toFixed(1)}</span>}
+            {p.reviews > 0 && <span className="text-muted">ความรู้สึกจากชุมชน · {p.reviews} ความเห็น</span>}
             <span className="text-muted">{formatCount(p.followers)} ผู้ติดตาม</span>
             <span className="text-muted">{"฿".repeat(p.priceLevel)}</span>
           </p>
@@ -93,7 +93,7 @@ export default async function PlacePage({ params }: { params: Promise<{ slug: st
             <ul className="mt-3 flex flex-wrap gap-2">{p.highlights.map((h) => <li key={h} className="rounded-sm bg-gold-soft px-3 py-1 text-sm font-medium">{h}</li>)}</ul>
           </section>
 
-          <section aria-labelledby="mentions">
+          {p.mentions.length > 0 && <section aria-labelledby="mentions">
             <SectionHeader eyebrow="Community" title="คนพูดถึงที่นี่ว่า…" />
             <div className="grid gap-3 sm:grid-cols-2">
               {p.mentions.map((m, i) => (
@@ -103,7 +103,7 @@ export default async function PlacePage({ params }: { params: Promise<{ slug: st
                 </blockquote>
               ))}
             </div>
-          </section>
+          </section>}
 
           {placeDeals.length > 0 && (
             <section><SectionHeader title="ดีลจากที่นี่" href="/deals" /><div className="space-y-3">{placeDeals.map((d) => <DealCard key={d.id} deal={d} />)}</div></section>
