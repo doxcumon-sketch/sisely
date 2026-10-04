@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { ListingCard } from "@/components/cards";
 import { Chip } from "@/components/ui";
-import { LISTING_CATEGORIES, listings, userById } from "@/lib/data";
+import { LISTING_CATEGORIES } from "@/lib/data";
+import { listListings } from "@/lib/server/repo";
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 
@@ -11,10 +12,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/market" },
 };
 
+export const revalidate = 60;
+
 export default async function MarketPage({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
   const { cat } = await searchParams;
   const active = LISTING_CATEGORIES.find((c) => c.key === cat)?.key;
-  const list = (active ? listings.filter((l) => l.category === active) : listings).sort((a, b) => Number(!!b.promoted) - Number(!!a.promoted) || a.ageMin - b.ageMin);
+  const list = await listListings(active);
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
@@ -30,7 +33,7 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
         {LISTING_CATEGORIES.map((c) => <Chip key={c.key} href={`/market?cat=${c.key}`} active={active === c.key}>{c.label}</Chip>)}
       </div>
       <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
-        {list.map((l) => <ListingCard key={l.id} listing={l} sellerName={userById(l.sellerId)?.name ?? "ผู้ขาย"} />)}
+        {list.map((l) => <ListingCard key={l.id} listing={l} sellerName={l.sellerName} />)}
       </div>
       <p className="flex items-start gap-2 rounded-2xl bg-jade-soft p-4 text-sm text-jade"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" /> เพื่อความปลอดภัย: ตรวจของก่อนโอนเงิน นัดรับในที่สาธารณะ และกดรายงานเมื่อพบประกาศน่าสงสัย</p>
     </div>

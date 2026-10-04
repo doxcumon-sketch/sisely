@@ -4,12 +4,9 @@ import { notFound } from "next/navigation";
 import { PlaceCard } from "@/components/cards";
 import { ShareButton } from "@/components/share";
 import { Cover } from "@/components/ui";
-import { guideBySlug, guides, placeBySlug } from "@/lib/data";
+import { guideBySlug } from "@/lib/data";
+import { listPlaces } from "@/lib/server/repo";
 import { SITE_URL } from "@/lib/site";
-
-export function generateStaticParams() {
-  return guides.map((g) => ({ slug: g.slug }));
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -18,10 +15,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: g.title, description: g.summary, keywords: g.seoKeywords, alternates: { canonical: `/guide/${g.slug}` }, openGraph: { type: "article", title: g.title, description: g.summary } };
 }
 
+export const revalidate = 300;
+
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const g = guideBySlug(slug);
   if (!g) notFound();
+  const allPlaces = await listPlaces();
   const jsonLd = { "@context": "https://schema.org", "@type": "Article", headline: g.title, description: g.summary, inLanguage: "th", mainEntityOfPage: `${SITE_URL}/guide/${g.slug}`, publisher: { "@type": "Organization", name: "SISE" } };
 
   return (
@@ -39,7 +39,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <section key={i}>
           <h2 className="font-editorial mb-2 flex items-baseline gap-3 text-2xl font-semibold"><span className="text-gold-gradient text-3xl" style={{ fontFamily: "var(--font-display-latin), serif" }}>{String(i + 1).padStart(2, "0")}</span>{s.heading}</h2>
           <p className="text-[1.05rem] leading-[1.9] text-ink-2">{s.body}</p>
-          {s.placeSlugs && <div className="mt-4 grid gap-4 sm:grid-cols-2">{s.placeSlugs.map((ps) => placeBySlug(ps)).filter(Boolean).map((p) => <PlaceCard key={p!.id} place={p!} />)}</div>}
+          {s.placeSlugs && <div className="mt-4 grid gap-4 sm:grid-cols-2">{s.placeSlugs.map((ps) => allPlaces.find((p) => p.slug === ps)).filter(Boolean).map((p) => <PlaceCard key={p!.id} place={p!} />)}</div>}
         </section>
       ))}
       <p className="rounded-2xl border border-dashed border-line p-4 text-sm text-muted">ไกด์นี้เป็นข้อมูลตัวอย่างสำหรับเวอร์ชันทดลอง ตรวจสอบเวลาเปิด-ปิดและราคาก่อนเดินทางทุกครั้ง</p>

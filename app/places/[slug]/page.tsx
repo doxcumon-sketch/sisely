@@ -7,19 +7,16 @@ import { DealCard, EventCard, PlaceCard } from "@/components/cards";
 import { Feed } from "@/components/feed";
 import { ShareButton } from "@/components/share";
 import { Cover, SectionHeader } from "@/components/ui";
-import { businessBySlug, deals, events, placeBySlug, placeCategoryLabel, places } from "@/lib/data";
+import { placeCategoryLabel } from "@/lib/data";
+import { getBusiness, getPlace, listDeals, listEvents, listPlaces, queryPosts } from "@/lib/server/repo";
 import { formatCount } from "@/lib/format";
 import { SITE_URL } from "@/lib/site";
 
-export const revalidate = 900;
-
-export function generateStaticParams() {
-  return places.map((p) => ({ slug: p.slug }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const p = placeBySlug(slug);
+  const p = await getPlace(slug);
   if (!p) return {};
   return {
     title: `${p.name} ศรีสะเกษ — ${p.tagline}`,
@@ -31,12 +28,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PlacePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = placeBySlug(slug);
+  const p = await getPlace(slug);
   if (!p) notFound();
-  const business = p.businessSlug ? businessBySlug(p.businessSlug) : undefined;
+  const [business, deals, events, places, initialPosts] = await Promise.all([
+    p.businessSlug ? getBusiness(p.businessSlug) : null,
+    listDeals(),
+    listEvents(),
+    listPlaces(p.category),
+    queryPosts({ mode: "new", placeSlug: p.slug, limit: 4 }),
+  ]);
   const placeDeals = deals.filter((d) => d.placeSlug === p.slug);
   const placeEvents = events.filter((e) => e.placeSlug === p.slug);
-  const similar = places.filter((x) => x.category === p.category && x.id !== p.id).slice(0, 3);
+  const similar = places.filter((x) => x.id !== p.id).slice(0, 3);
   const bbox = `${p.lng - 0.01},${p.lat - 0.006},${p.lng + 0.01},${p.lat + 0.006}`;
 
   const jsonLd = {
@@ -110,7 +113,7 @@ export default async function PlacePage({ params }: { params: Promise<{ slug: st
 
           <section aria-labelledby="discuss">
             <SectionHeader eyebrow="Discussion" title="โพสต์ในชุมชนที่พูดถึงที่นี่" href={`/create?place=${p.slug}`} hrefLabel="+ โพสต์" />
-            <Feed filter={{ mode: "new", placeSlug: p.slug }} pageSize={4} emptyTitle="ยังไม่มีใครพูดถึงที่นี่" emptyHint="ถามหรือรีวิวเป็นคนแรกได้เลย" />
+            <Feed filter={{ mode: "new", placeSlug: p.slug }} initial={initialPosts} pageSize={4} emptyTitle="ยังไม่มีใครพูดถึงที่นี่" emptyHint="ถามหรือรีวิวเป็นคนแรกได้เลย" />
           </section>
         </div>
 

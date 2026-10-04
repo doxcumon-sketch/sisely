@@ -6,20 +6,17 @@ import { InterestedButton, SaveButton } from "@/components/buttons";
 import { Feed } from "@/components/feed";
 import { ShareButton } from "@/components/share";
 import { Cover, SectionHeader } from "@/components/ui";
-import { EVENT_CATEGORY_LABEL, eventBySlug, events, placeBySlug } from "@/lib/data";
+import { EVENT_CATEGORY_LABEL } from "@/lib/data";
+import { getEvent, getPlace, listEvents, queryPosts } from "@/lib/server/repo";
 import { bangkokDate, dayLabel, formatCount } from "@/lib/format";
 import { EventCard } from "@/components/cards";
 import { SITE_URL } from "@/lib/site";
 
-export const revalidate = 900;
-
-export function generateStaticParams() {
-  return events.map((e) => ({ slug: e.slug }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const e = eventBySlug(slug);
+  const e = await getEvent(slug);
   if (!e) return {};
   return {
     title: `${e.title} — ${EVENT_CATEGORY_LABEL[e.category]}ศรีสะเกษ`,
@@ -31,9 +28,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const e = eventBySlug(slug);
+  const e = await getEvent(slug);
   if (!e) notFound();
-  const place = e.placeSlug ? placeBySlug(e.placeSlug) : undefined;
+  const [place, events, initialPosts] = await Promise.all([e.placeSlug ? getPlace(e.placeSlug) : null, listEvents(), queryPosts({ mode: "new", eventSlug: e.slug, limit: 4 })]);
   const more = events.filter((x) => x.id !== e.id).slice(0, 2);
   const start = bangkokDate(e.dayOffset).toISOString().slice(0, 10);
   const end = bangkokDate(e.dayOffset + e.durationDays - 1).toISOString().slice(0, 10);
@@ -88,7 +85,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <section className="surface-flat p-5"><h2 className="font-editorial mb-1 text-lg font-semibold">ข้อมูลบัตร</h2><p className="text-ink-2">{e.ticketInfo}</p></section>
           <section>
             <SectionHeader eyebrow="Discussion" title="คนคุยเรื่องงานนี้" href={`/create?type=question`} hrefLabel="+ ถาม" />
-            <Feed filter={{ mode: "new", eventSlug: e.slug }} pageSize={4} emptyTitle="ยังไม่มีใครพูดถึงงานนี้" emptyHint="ถามเรื่องที่จอดรถ ราคา หรือชวนเพื่อนไปด้วยกัน" />
+            <Feed filter={{ mode: "new", eventSlug: e.slug }} initial={initialPosts} pageSize={4} emptyTitle="ยังไม่มีใครพูดถึงงานนี้" emptyHint="ถามเรื่องที่จอดรถ ราคา หรือชวนเพื่อนไปด้วยกัน" />
           </section>
         </div>
         <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">

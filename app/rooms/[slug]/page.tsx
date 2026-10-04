@@ -7,16 +7,14 @@ import { RoomIcon } from "@/components/icons";
 import { RoomFeed } from "@/components/room-feed";
 import { Cover, SectionHeader } from "@/components/ui";
 import { RoomCard } from "@/components/cards";
-import { roomBySlug, rooms } from "@/lib/data";
+import { getRoom, listRooms, queryPosts } from "@/lib/server/repo";
 import { formatCount } from "@/lib/format";
 
-export function generateStaticParams() {
-  return rooms.map((r) => ({ slug: r.slug }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const room = roomBySlug(slug);
+  const room = await getRoom(slug);
   if (!room) return {};
   return {
     title: `${room.name} — ${room.tagline}`,
@@ -28,8 +26,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function RoomPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const room = roomBySlug(slug);
+  const room = await getRoom(slug);
   if (!room) notFound();
+  const [rooms, initial] = await Promise.all([listRooms(), queryPosts({ mode: "hot", roomSlug: room.slug, limit: 8 })]);
   const related = rooms.filter((r) => r.group === room.group && r.id !== room.id).slice(0, 3);
 
   return (
@@ -65,7 +64,7 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
       </header>
 
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <RoomFeed roomSlug={room.slug} />
+        <RoomFeed roomSlug={room.slug} initial={initial} />
         <aside className="space-y-6 xl:sticky xl:top-24 xl:self-start">
           <section className="surface p-5">
             <h2 className="font-editorial mb-2 text-lg font-semibold">กฎของห้อง</h2>

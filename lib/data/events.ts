@@ -88,4 +88,3 @@ export const EVENT_CATEGORY_LABEL: Record<SiseEvent["category"], string> = {
   culture: "วัฒนธรรม",
 };
 
-export const eventCoversDay = (e: SiseEvent, offset: number) => offset >= e.dayOffset && offset < e.dayOffset + e.durationDays;

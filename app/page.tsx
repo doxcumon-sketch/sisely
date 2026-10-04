@@ -2,16 +2,17 @@ import { ArrowRight, Compass, MessagesSquare, Search, Sparkles } from "lucide-re
 import Link from "next/link";
 import type { Metadata } from "next";
 import { DealCard, EventCard, PlaceCard, RoomCard } from "@/components/cards";
-import { Feed, TrendingList } from "@/components/feed";
+import { Feed } from "@/components/feed";
+import { TrendingList } from "@/components/trending";
 import { RoomIcon } from "@/components/icons";
 import { Chip, SectionHeader } from "@/components/ui";
-import { deals, places, rooms, seedPosts } from "@/lib/data";
+import { listDeals, listEvents, listPlaces, listRooms, queryPosts } from "@/lib/server/repo";
 import { dayLabel } from "@/lib/format";
 import { eventsFor, upcomingEvents } from "@/lib/queries";
 import { HomeFeedTabs } from "@/components/home-feed";
 import { InstallBanner } from "@/components/install-banner";
 
-export const revalidate = 900;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: { absolute: "SISE · ศรีสะเกษในแบบของเรา — ชุมชน ร้าน งาน ที่เที่ยว" },
@@ -27,12 +28,20 @@ const QUICK = [
   { label: "ถามคนศรีสะเกษ", href: "/rooms/qa" },
 ];
 
-export default function HomePage() {
-  const today = eventsFor("today");
-  const upcoming = today.length ? today : upcomingEvents(3);
+export default async function HomePage() {
+  const [events, rooms, places, deals, forYou, trending, stories] = await Promise.all([
+    listEvents(),
+    listRooms(),
+    listPlaces(),
+    listDeals(),
+    queryPosts({ mode: "forYou", limit: 6 }),
+    queryPosts({ mode: "hot", limit: 5 }),
+    queryPosts({ mode: "top", limit: 40 }).then((r) => r.posts.filter((p) => p.type === "story" || p.type === "recommendation").slice(0, 3)),
+  ]);
+  const today = eventsFor(events, "today");
+  const upcoming = today.length ? today : upcomingEvents(events, 3);
   const hotRooms = rooms.filter((r) => r.trending);
   const foodPlaces = places.filter((p) => p.category === "restaurant" || p.category === "cafe").slice(0, 4);
-  const stories = seedPosts.filter((p) => p.type === "story" || p.type === "recommendation").slice(0, 3);
 
   return (
     <div className="space-y-10">
@@ -105,13 +114,13 @@ export default function HomePage() {
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_21rem]">
         <section aria-labelledby="foryou-h" className="min-w-0" id="talking">
           <SectionHeader eyebrow="For You" title="สำหรับคุณ" />
-          <HomeFeedTabs />
+          <HomeFeedTabs initial={forYou} />
         </section>
 
         <aside className="space-y-8 xl:sticky xl:top-24 xl:self-start" aria-label="เมืองกำลังเป็นอย่างไร">
           <section className="surface p-4">
             <SectionHeader eyebrow="Trending" title="กำลังเป็นกระแส" live />
-            <TrendingList limit={5} />
+            <TrendingList posts={trending.posts} />
           </section>
           <section>
             <SectionHeader title="ดีลวันนี้" href="/deals" />
@@ -145,7 +154,7 @@ export default function HomePage() {
       {/* STORIES */}
       <section>
         <SectionHeader eyebrow="Stories" title="เรื่องราวจากคนศรีสะเกษ" href="/rooms/culture" />
-        <Feed filter={{ mode: "top", ids: stories.map((s) => s.id) }} pageSize={3} />
+        <Feed filter={{ mode: "top", ids: stories.map((s) => s.id) }} initial={{ posts: stories, hasMore: false }} pageSize={3} />
       </section>
 
       <section className="surface flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">

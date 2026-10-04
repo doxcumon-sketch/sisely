@@ -3,10 +3,11 @@ import { EventCard } from "@/components/cards";
 import { Chip, EmptyState } from "@/components/ui";
 import { EVENT_CATEGORY_LABEL } from "@/lib/data";
 import { dayLabel } from "@/lib/format";
+import { listEvents } from "@/lib/server/repo";
 import { eventsFor, type When } from "@/lib/queries";
 import type { SiseEvent } from "@/lib/types";
 
-export const revalidate = 900;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "งานศรีสะเกษ — วันนี้ พรุ่งนี้ สุดสัปดาห์นี้",
@@ -25,7 +26,8 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   const sp = await searchParams;
   const when = (WHEN.find((w) => w.key === sp.when)?.key ?? "all") as When;
   const cat = Object.keys(EVENT_CATEGORY_LABEL).includes(sp.cat ?? "") ? (sp.cat as SiseEvent["category"]) : undefined;
-  const list = eventsFor(when).filter((e) => !cat || e.category === cat);
+  const all = await listEvents();
+  const list = eventsFor(all, when).filter((e) => !cat || e.category === cat);
   const href = (w: When, c?: string) => `/events?${[w !== "all" ? `when=${w}` : "", c ? `cat=${c}` : ""].filter(Boolean).join("&")}`;
 
   return (
@@ -40,7 +42,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
         {WHEN.slice(0, 3).map((w) => (
           <a key={w.key} href={href(w.key, cat)} role="tab" aria-selected={when === w.key} className={`press rounded-2xl border px-3 py-4 text-center font-editorial text-lg font-semibold ${when === w.key ? "border-night bg-night text-on-night" : "border-line bg-card hover:border-gold"}`}>
             {w.label}
-            <span className={`block text-xs font-normal ${when === w.key ? "text-on-night-muted" : "text-muted"}`}>{eventsFor(w.key).length} งาน</span>
+            <span className={`block text-xs font-normal ${when === w.key ? "text-on-night-muted" : "text-muted"}`}>{eventsFor(all, w.key).length} งาน</span>
           </a>
         ))}
       </div>

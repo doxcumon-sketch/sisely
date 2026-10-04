@@ -7,26 +7,27 @@ import { ListingCard } from "@/components/cards";
 import { ReportMenu } from "@/components/report-menu";
 import { ShareButton } from "@/components/share";
 import { Avatar, Cover, SectionHeader } from "@/components/ui";
-import { CONDITION_LABEL, LISTING_CATEGORIES, listingById, listings, userById } from "@/lib/data";
+import { CONDITION_LABEL, LISTING_CATEGORIES } from "@/lib/data";
+import { getListing, listListings } from "@/lib/server/repo";
 import { formatAge, formatBaht } from "@/lib/format";
 
-export function generateStaticParams() {
-  return listings.map((l) => ({ id: l.id }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const l = listingById(id);
-  if (!l) return {};
+  const found = await getListing(id);
+  if (!found) return {};
+  const l = found.listing;
   return { title: `${l.title} — ${formatBaht(l.price)} ศรีสะเกษ`, description: l.description.slice(0, 150), alternates: { canonical: `/market/${l.id}` } };
 }
 
 export default async function ListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const l = listingById(id);
-  if (!l) notFound();
-  const seller = userById(l.sellerId);
-  const more = listings.filter((x) => x.id !== l.id && x.category === l.category).slice(0, 4);
+  const found = await getListing(id);
+  if (!found) notFound();
+  const l = found.listing;
+  const seller = found.seller;
+  const more = (await listListings(l.category)).filter((x) => x.id !== l.id).slice(0, 4);
   const cat = LISTING_CATEGORIES.find((c) => c.key === l.category)?.label;
 
   return (
@@ -66,7 +67,7 @@ export default async function ListingPage({ params }: { params: Promise<{ id: st
           <p id="contact" className="scroll-mt-24 rounded-2xl bg-gold-soft p-4 text-sm"><b>ช่องทางติดต่อ:</b> {l.contact}<br /><span className="text-muted">อย่าโอนเงินก่อนเห็นสินค้า และนัดรับในที่สาธารณะ</span></p>
         </div>
       </div>
-      {more.length > 0 && <section><SectionHeader title="สินค้าที่คล้ายกัน" /><div className="grid grid-cols-2 gap-4 md:grid-cols-4">{more.map((x) => <ListingCard key={x.id} listing={x} sellerName={userById(x.sellerId)?.name ?? ""} />)}</div></section>}
+      {more.length > 0 && <section><SectionHeader title="สินค้าที่คล้ายกัน" /><div className="grid grid-cols-2 gap-4 md:grid-cols-4">{more.map((x) => <ListingCard key={x.id} listing={x} sellerName={x.sellerName} />)}</div></section>}
     </div>
   );
 }

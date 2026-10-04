@@ -1,92 +1,97 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { Comment, Post, PostType, ReactionKind, Report, Tone } from "@/lib/types";
+import { toast } from "@/components/toast";
+import type { Post, Viewer } from "@/lib/types";
 
 /**
- * Client store: everything a signed-in user would write to the backend lives here for now
- * (reactions, saves, follows, posts, comments, votes, blocks, reports). It persists to
- * localStorage so the prototype feels real across reloads. Replace the actions with API
- * calls later — components only use the hooks and action functions exported below.
+ * Client state. The server is the source of truth: `viewer` is loaded from /api/viewer and every
+ * action is an optimistic update that calls the API and rolls back on failure. Only UI preferences
+ * (theme, recent searches) live in localStorage.
+ *
+ * Counters shown on cards come from server-rendered data; after the viewer acts we keep an
+ * `overrides` entry with the authoritative number returned by the API until fresh data arrives.
  */
-export interface SiseState {
-  reactions: Record<string, ReactionKind>;
-  saves: { posts: string[]; places: string[]; events: string[]; listings: string[] };
-  follows: { rooms: string[]; users: string[]; places: string[]; events: string[] };
-  interested: string[]; // event slugs
-  userPosts: Post[];
-  userComments: Comment[];
-  commentLikes: string[];
-  votes: Record<string, string>;
-  blocked: string[];
-  muted: string[];
-  reports: Report[];
-  readNotifs: string[];
-  viewedTopics: string[];
-  recentSearches: string[];
-  profile: { name: string; bio: string };
-  theme: "light" | "dark";
-  installDismissed: boolean;
+export interface CountOverride {
+  reactions?: number;
+  saves?: number;
+  comments?: number;
 }
 
-export const DEFAULT_STATE: SiseState = {
+export interface SiseState {
+  ready: boolean;
+  me: Viewer["user"] | null;
+  reactions: Viewer["reactions"];
+  saves: Viewer["saves"];
+  follows: Viewer["follows"];
+  votes: Viewer["votes"];
+  commentLikes: string[];
+  blocked: string[];
+  muted: string[];
+  unread: number;
+  overrides: Record<string, CountOverride>;
+  voteTotals: Record<string, { options: { id: string; label: string; votes: number }[] }>;
+  theme: "light" | "dark";
+  recentSearches: string[];
+  installDismissed: boolean;
+  loginPrompt: boolean;
+}
+
+const EMPTY: Omit<SiseState, "theme" | "recentSearches" | "installDismissed"> = {
+  ready: false,
+  me: null,
   reactions: {},
   saves: { posts: [], places: [], events: [], listings: [] },
-  follows: { rooms: ["sisaket", "food", "cafe", "events"], users: [], places: [], events: [] },
-  interested: [],
-  userPosts: [],
-  userComments: [],
-  commentLikes: [],
+  follows: { rooms: [], users: [], places: [], events: [] },
   votes: {},
+  commentLikes: [],
   blocked: [],
   muted: [],
-  reports: [],
-  readNotifs: [],
-  viewedTopics: [],
-  recentSearches: [],
-  profile: { name: "คุณ (ผู้เยี่ยมชม)", bio: "เพิ่งมาถึงศรีสะเกษ กำลังสำรวจเมืองนี้อยู่" },
-  theme: "light",
-  installDismissed: false,
+  unread: 0,
+  overrides: {},
+  voteTotals: {},
+  loginPrompt: false,
 };
 
-const KEY = "sise:v1";
+export const DEFAULT_STATE: SiseState = { ...EMPTY, theme: "light", recentSearches: [], installDismissed: false };
+
+const PREFS_KEY = "sise:prefs";
 let state: SiseState = DEFAULT_STATE;
-let loaded = false;
+let prefsLoaded = false;
 const listeners = new Set<() => void>();
 
-function load() {
-  if (loaded || typeof window === "undefined") return;
-  loaded = true;
+function loadPrefs() {
+  if (prefsLoaded || typeof window === "undefined") return;
+  prefsLoaded = true;
   try {
-    const raw = window.localStorage.getItem(KEY);
+    const raw = window.localStorage.getItem(PREFS_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as Partial<SiseState>;
+      const p = JSON.parse(raw) as Partial<Pick<SiseState, "theme" | "recentSearches" | "installDismissed">>;
       state = {
-        ...DEFAULT_STATE,
-        ...parsed,
-        saves: { ...DEFAULT_STATE.saves, ...parsed.saves },
-        follows: { ...DEFAULT_STATE.follows, ...parsed.follows },
-        profile: { ...DEFAULT_STATE.profile, ...parsed.profile },
+        ...state,
+        theme: p.theme === "dark" ? "dark" : "light",
+        recentSearches: Array.isArray(p.recentSearches) ? p.recentSearches.slice(0, 6) : [],
+        installDismissed: !!p.installDismissed,
       };
     }
   } catch {
-    /* storage unavailable or corrupt: start fresh */
+    /* storage unavailable: defaults */
   }
 }
 
-function emit() {
+function persistPrefs() {
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(state));
+    window.localStorage.setItem(PREFS_KEY, JSON.stringify({ theme: state.theme, recentSearches: state.recentSearches, installDismissed: state.installDismissed }));
   } catch {
-    /* quota / private mode: keep in memory only */
+    /* ignore quota/private mode */
   }
-  listeners.forEach((l) => l());
 }
 
-function set(update: (s: SiseState) => SiseState) {
-  load();
+function set(update: (s: SiseState) => SiseState, persist = false) {
+  loadPrefs();
   state = update(state);
-  emit();
+  if (persist) persistPrefs();
+  listeners.forEach((l) => l());
 }
 
 function subscribe(cb: () => void) {
@@ -99,7 +104,7 @@ export function useSise<T>(selector: (s: SiseState) => T): T {
   return useSyncExternalStore(
     subscribe,
     () => {
-      load();
+      loadPrefs();
       return selector(state);
     },
     () => selector(DEFAULT_STATE),
@@ -107,125 +112,229 @@ export function useSise<T>(selector: (s: SiseState) => T): T {
 }
 
 export const getSise = () => {
-  load();
+  loadPrefs();
   return state;
 };
 
+/* ------------------------------- API plumbing ------------------------------- */
+
+export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string; code?: string; status: number };
+
+export async function api<T = unknown>(url: string, method: "GET" | "POST" | "PATCH" | "DELETE" = "POST", body?: unknown): Promise<ApiResult<T>> {
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: body !== undefined ? { "content-type": "application/json" } : undefined,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+      cache: "no-store",
+    });
+    const json = (await res.json().catch(() => null)) as { ok?: boolean; data?: T; error?: string; code?: string } | null;
+    if (res.ok && json?.ok) return { ok: true, data: json.data as T };
+    if (res.status === 401) set((s) => ({ ...s, me: null, loginPrompt: true }));
+    return { ok: false, error: json?.error ?? "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง", code: json?.code, status: res.status };
+  } catch {
+    return { ok: false, error: "เชื่อมต่อไม่ได้ ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่", status: 0 };
+  }
+}
+
+/** Returns true when signed in; otherwise opens the login sheet. */
+export function requireLogin(): boolean {
+  if (getSise().me) return true;
+  set((s) => ({ ...s, loginPrompt: true }));
+  return false;
+}
+
+export async function loadViewer() {
+  const r = await api<Viewer | null>("/api/viewer", "GET");
+  if (!r.ok) {
+    set((s) => ({ ...s, ready: true }));
+    return;
+  }
+  const v = r.data;
+  set((s) => ({
+    ...s,
+    ready: true,
+    me: v?.user ?? null,
+    reactions: v?.reactions ?? {},
+    saves: v?.saves ?? EMPTY.saves,
+    follows: v?.follows ?? EMPTY.follows,
+    votes: v?.votes ?? {},
+    commentLikes: v?.commentLikes ?? [],
+    blocked: v?.blocked ?? [],
+    muted: v?.muted ?? [],
+    unread: v?.unread ?? 0,
+  }));
+}
+
 const toggle = (arr: string[], id: string) => (arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id]);
+const setOverride = (id: string, patch: CountOverride) => set((s) => ({ ...s, overrides: { ...s.overrides, [id]: { ...s.overrides[id], ...patch } } }));
+
+/** Fresh server data supersedes any optimistic number we were holding. */
+export function syncPosts(posts: Post[]) {
+  if (!posts.length) return;
+  set((s) => {
+    if (!posts.some((p) => s.overrides[p.id])) return s;
+    const next = { ...s.overrides };
+    for (const p of posts) delete next[p.id];
+    return { ...s, overrides: next };
+  });
+}
+
+export const countOf = (s: SiseState, post: Post) => ({
+  reactions: s.overrides[post.id]?.reactions ?? post.stats.reactions,
+  saves: s.overrides[post.id]?.saves ?? post.stats.saves,
+  comments: s.overrides[post.id]?.comments ?? post.stats.comments,
+});
+
+/* --------------------------------- actions --------------------------------- */
+
+const fail = (message: string) => toast(message);
 
 export const actions = {
-  react(postId: string, kind: ReactionKind = "like") {
+  async react(post: Post) {
+    if (!requireLogin()) return;
+    const had = !!getSise().reactions[post.id];
+    const base = countOf(getSise(), post).reactions;
     set((s) => {
-      const next = { ...s.reactions };
-      if (next[postId] === kind) delete next[postId];
-      else next[postId] = kind;
-      return { ...s, reactions: next };
+      const reactions = { ...s.reactions };
+      if (had) delete reactions[post.id];
+      else reactions[post.id] = "like";
+      return { ...s, reactions };
     });
+    setOverride(post.id, { reactions: Math.max(0, base + (had ? -1 : 1)) });
+    const r = await api<{ reacted: boolean; count: number }>(`/api/posts/${post.id}/react`);
+    if (!r.ok) {
+      set((s) => {
+        const reactions = { ...s.reactions };
+        if (had) reactions[post.id] = "like";
+        else delete reactions[post.id];
+        return { ...s, reactions };
+      });
+      setOverride(post.id, { reactions: base });
+      fail(r.error);
+    } else setOverride(post.id, { reactions: r.data.count });
   },
-  save(kind: keyof SiseState["saves"], id: string) {
+
+  async save(kind: keyof SiseState["saves"], id: string, post?: Post) {
+    if (!requireLogin()) return false;
+    const had = getSise().saves[kind].includes(id);
+    const type = ({ posts: "POST", places: "PLACE", events: "EVENT", listings: "LISTING" } as const)[kind];
+    const base = post ? countOf(getSise(), post).saves : 0;
     set((s) => ({ ...s, saves: { ...s.saves, [kind]: toggle(s.saves[kind], id) } }));
+    if (post) setOverride(post.id, { saves: Math.max(0, base + (had ? -1 : 1)) });
+    const r = await api(`/api/save`, "POST", { type, id });
+    if (!r.ok) {
+      set((s) => ({ ...s, saves: { ...s.saves, [kind]: toggle(s.saves[kind], id) } }));
+      if (post) setOverride(post.id, { saves: base });
+      fail(r.error);
+      return had;
+    }
+    return !had;
   },
-  follow(kind: keyof SiseState["follows"], id: string) {
+
+  async follow(kind: keyof SiseState["follows"], id: string) {
+    if (!requireLogin()) return false;
+    const had = getSise().follows[kind].includes(id);
+    const type = ({ rooms: "ROOM", users: "USER", places: "PLACE", events: "EVENT" } as const)[kind];
     set((s) => ({ ...s, follows: { ...s.follows, [kind]: toggle(s.follows[kind], id) } }));
+    const r = await api(`/api/follow`, "POST", { type, id });
+    if (!r.ok) {
+      set((s) => ({ ...s, follows: { ...s.follows, [kind]: toggle(s.follows[kind], id) } }));
+      fail(r.error);
+      return had;
+    }
+    return !had;
   },
-  interested(slug: string) {
-    set((s) => ({ ...s, interested: toggle(s.interested, slug) }));
+
+  async vote(postId: string, optionId: string) {
+    if (!requireLogin()) return;
+    if (getSise().votes[postId]) return;
+    set((s) => ({ ...s, votes: { ...s.votes, [postId]: optionId } }));
+    const r = await api<{ options: { id: string; label: string; votes: number }[]; voted: string }>(`/api/posts/${postId}/vote`, "POST", { optionId });
+    if (!r.ok) {
+      set((s) => {
+        const votes = { ...s.votes };
+        delete votes[postId];
+        return { ...s, votes };
+      });
+      fail(r.error);
+    } else set((s) => ({ ...s, voteTotals: { ...s.voteTotals, [postId]: { options: r.data.options } } }));
   },
-  vote(postId: string, optionId: string) {
-    set((s) => (s.votes[postId] ? s : { ...s, votes: { ...s.votes, [postId]: optionId } }));
-  },
-  likeComment(id: string) {
+
+  async likeComment(id: string) {
+    if (!requireLogin()) return null;
+    const had = getSise().commentLikes.includes(id);
     set((s) => ({ ...s, commentLikes: toggle(s.commentLikes, id) }));
+    const r = await api<{ liked: boolean; count: number }>(`/api/comments/${id}/like`);
+    if (!r.ok) {
+      set((s) => ({ ...s, commentLikes: toggle(s.commentLikes, id) }));
+      fail(r.error);
+      return null;
+    }
+    return { liked: !had, count: r.data.count };
   },
-  block(userId: string) {
-    set((s) => ({ ...s, blocked: s.blocked.includes(userId) ? s.blocked : [...s.blocked, userId] }));
+
+  async block(userId: string, mute = false) {
+    if (!requireLogin()) return false;
+    const r = await api(`/api/block`, "POST", { userId, mute });
+    if (!r.ok) {
+      fail(r.error);
+      return false;
+    }
+    set((s) => ({ ...s, blocked: mute ? s.blocked : Array.from(new Set([...s.blocked, userId])), muted: mute ? Array.from(new Set([...s.muted, userId])) : s.muted }));
+    return true;
   },
-  unblock(userId: string) {
-    set((s) => ({ ...s, blocked: s.blocked.filter((x) => x !== userId) }));
+
+  async unblock(userId: string) {
+    const r = await api(`/api/block`, "POST", { userId, undo: true });
+    if (r.ok) set((s) => ({ ...s, blocked: s.blocked.filter((x) => x !== userId), muted: s.muted.filter((x) => x !== userId) }));
+    else fail(r.error);
   },
-  mute(roomOrUser: string) {
-    set((s) => ({ ...s, muted: toggle(s.muted, roomOrUser) }));
+
+  async report(input: { targetType: "POST" | "COMMENT" | "USER" | "LISTING"; targetId: string; reason: string; note?: string }) {
+    if (!requireLogin()) return false;
+    const r = await api(`/api/report`, "POST", input);
+    if (!r.ok) {
+      fail(r.error);
+      return false;
+    }
+    return true;
   },
-  report(input: Omit<Report, "id" | "ageMin" | "status" | "reporterId">) {
-    set((s) => ({
-      ...s,
-      reports: [{ ...input, id: `rp-${Date.now()}`, ageMin: 0, status: "open", reporterId: "u-me" }, ...s.reports],
-    }));
+
+  async readNotifications(ids: string[] | "all") {
+    if (!getSise().me) return;
+    const r = await api<{ unread: number }>(`/api/notifications/read`, "POST", ids === "all" ? { all: true } : { ids });
+    if (r.ok) set((s) => ({ ...s, unread: r.data.unread }));
   },
-  readNotification(id: string) {
-    set((s) => (s.readNotifs.includes(id) ? s : { ...s, readNotifs: [...s.readNotifs, id] }));
+
+  bumpComments(post: Post, delta: number) {
+    setOverride(post.id, { comments: Math.max(0, countOf(getSise(), post).comments + delta) });
   },
-  readAllNotifications(ids: string[]) {
-    set((s) => ({ ...s, readNotifs: Array.from(new Set([...s.readNotifs, ...ids])) }));
-  },
-  viewTopic(roomSlug: string) {
-    set((s) => (s.viewedTopics[0] === roomSlug ? s : { ...s, viewedTopics: [roomSlug, ...s.viewedTopics.filter((x) => x !== roomSlug)].slice(0, 8) }));
-  },
+
   addRecentSearch(term: string) {
     const t = term.trim();
     if (!t) return;
-    set((s) => ({ ...s, recentSearches: [t, ...s.recentSearches.filter((x) => x !== t)].slice(0, 6) }));
-  },
-  setProfile(p: Partial<SiseState["profile"]>) {
-    set((s) => ({ ...s, profile: { ...s.profile, ...p } }));
+    set((s) => ({ ...s, recentSearches: [t, ...s.recentSearches.filter((x) => x !== t)].slice(0, 6) }), true);
   },
   setTheme(theme: SiseState["theme"]) {
-    set((s) => ({ ...s, theme }));
+    set((s) => ({ ...s, theme }), true);
   },
   dismissInstall() {
-    set((s) => ({ ...s, installDismissed: true }));
+    set((s) => ({ ...s, installDismissed: true }), true);
   },
-  resetDemo() {
-    set(() => DEFAULT_STATE);
+  closeLoginPrompt() {
+    set((s) => ({ ...s, loginPrompt: false }));
   },
-  addPost(input: {
-    type: PostType;
-    roomSlug: string;
-    title: string;
-    body: string;
-    images?: Tone[];
-    photos?: string[];
-    poll?: string[];
-    location?: string;
-    placeSlug?: string;
-  }): Post {
-    const post: Post = {
-      id: `up-${Date.now().toString(36)}`,
-      type: input.type,
-      roomSlug: input.roomSlug,
-      authorId: "u-me",
-      title: input.title,
-      body: input.body,
-      ageMin: 0,
-      createdAt: Date.now(),
-      images: input.images,
-      photos: input.photos,
-      location: input.location,
-      placeSlug: input.placeSlug,
-      poll: input.poll ? { endsInHours: 24, options: input.poll.map((label, i) => ({ id: `o${i}`, label, votes: 0 })) } : undefined,
-      stats: { views: 1, comments: 0, reactions: 0, saves: 0, shares: 0, velocity: 3 },
-    };
-    set((s) => ({ ...s, userPosts: [post, ...s.userPosts] }));
-    return post;
+  async setProfile(p: { name?: string; bio?: string }) {
+    const r = await api<{ name: string; bio: string }>("/api/me", "PATCH", p);
+    if (r.ok) set((s) => (s.me ? { ...s, me: { ...s.me, name: r.data.name } } : s));
+    else fail(r.error);
+    return r.ok;
   },
-  deletePost(id: string) {
-    set((s) => ({ ...s, userPosts: s.userPosts.filter((p) => p.id !== id) }));
-  },
-  addComment(input: { postId: string; body: string; parentId?: string }): Comment {
-    const comment: Comment = {
-      id: `uc-${Date.now().toString(36)}`,
-      postId: input.postId,
-      parentId: input.parentId,
-      authorId: "u-me",
-      body: input.body,
-      ageMin: 0,
-      createdAt: Date.now(),
-      likes: 0,
-    };
-    set((s) => ({ ...s, userComments: [...s.userComments, comment] }));
-    return comment;
-  },
-  deleteComment(id: string) {
-    set((s) => ({ ...s, userComments: s.userComments.filter((c) => c.id !== id && c.parentId !== id) }));
+  async logout() {
+    await api("/api/auth/logout");
+    // full reload on purpose: drops all signed-in client state
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.href = "/";
   },
 };
