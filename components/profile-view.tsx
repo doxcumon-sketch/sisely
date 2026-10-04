@@ -53,6 +53,8 @@ export function ProfileView({ data }: { data: ProfileData }) {
   const [avatarId, setAvatarId] = useState<{ id: string; url: string } | null>(null);
   const [removeAvatar, setRemoveAvatar] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [delOpen, setDelOpen] = useState(false);
+  const [delBusy, setDelBusy] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const coverId = editing ? draft.coverScene : profile.coverScene;
@@ -243,6 +245,33 @@ export function ProfileView({ data }: { data: ProfileData }) {
             <p className="text-muted">บล็อกอยู่ {blocked.length} คน</p>
             {blocked.map((b) => <div key={b.id} className="flex items-center justify-between"><span>{b.name}</span><button type="button" onClick={async () => { await actions.unblock(b.id); setBlocked((l) => l.filter((x) => x.id !== b.id)); }} className="press rounded-sm border border-line px-3 py-1">เลิกบล็อก</button></div>)}
             <button type="button" onClick={() => actions.logout()} className="press inline-flex items-center gap-2 rounded-sm border border-line px-4 py-2 font-medium hover:border-gold"><LogOut className="h-4 w-4" /> ออกจากระบบ</button>
+            <p className="text-xs text-muted"><Link href="/privacy" className="underline">นโยบายความเป็นส่วนตัว</Link> · <Link href="/terms" className="underline">ข้อกำหนดการใช้งาน</Link></p>
+            <div className="border-t border-line pt-3">
+              {!delOpen ? (
+                <button type="button" onClick={() => setDelOpen(true)} className="press inline-flex items-center gap-2 text-sm font-medium text-laterite hover:underline"><Trash2 className="h-4 w-4" /> ลบบัญชีของฉัน</button>
+              ) : (
+                <div className="space-y-3 border border-laterite/40 bg-laterite-soft p-4">
+                  <p className="font-semibold text-laterite">ลบบัญชีถาวรไหม?</p>
+                  <p className="text-muted">ชื่อ รูป ประวัติส่วนตัว รายการที่ติดตาม/บันทึก และการเชื่อม LINE จะถูกลบ ส่วนโพสต์และความเห็นที่คนอื่นตอบไปแล้วจะยังอยู่ แต่แสดงเป็น &ldquo;ผู้ใช้ที่ลบบัญชีแล้ว&rdquo; ย้อนกลับไม่ได้</p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      disabled={delBusy}
+                      onClick={async () => {
+                        setDelBusy(true);
+                        const r = await api("/api/me", "DELETE", { confirm: "DELETE" });
+                        // full reload on purpose: clears the in-memory viewer state
+                        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+                        if (r.ok) window.location.assign(`${window.location.origin}/`);
+                        else { setDelBusy(false); toast(r.error); }
+                      }}
+                      className="press inline-flex items-center gap-2 bg-laterite px-4 py-2 font-semibold text-white disabled:opacity-60"
+                    >{delBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />} ยืนยันลบบัญชี</button>
+                    <button type="button" onClick={() => setDelOpen(false)} className="press border border-line bg-card px-4 py-2 font-medium">ยกเลิก</button>
+                  </div>
+                </div>
+              )}
+            </div>
           </section>
         </div>
       )}

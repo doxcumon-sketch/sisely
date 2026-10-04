@@ -4,7 +4,7 @@ import { Prisma } from "../../../generated/prisma/client";
 import { COVER_PHOTOS } from "@/lib/covers";
 import { prisma } from "@/lib/prisma";
 import { fail, ok, requireMember } from "@/lib/server/http";
-import { getSession } from "@/lib/server/session";
+import { clearSessionCookie, getSession } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -60,4 +60,46 @@ export async function PATCH(req: Request) {
   const u = await prisma.user.update({ where: { id: g.user.id }, data, select: { name: true, bio: true, area: true, pictureUrl: true, coverScene: true, links: true } });
   if (dropPhoto) await prisma.postPhoto.deleteMany({ where: { id: dropPhoto, ownerId: g.user.id, postId: null } });
   return ok(u);
+}
+
+/**
+ * Delete my account (required by the App Store and Google Play for any app with sign-up).
+ * Personal data goes: name, photo, bio, links, LINE link, follows, saves, blocks and notifications. Posts and comments
+ * that other people have replied to stay, but are shown as written by "ผู้ใช้ที่ลบบัญชีแล้ว" (no way back to the person).
+ */
+export async function DELETE(req: Request) {
+  const g = await requireMember(req);
+  if ("error" in g) return g.error;
+  const { user } = g;
+  if (user.role !== "MEMBER") return fail("บัญชีผู้ดูแลลบเองไม่ได้ กรุณาให้แอดมินปรับเป็นสมาชิกทั่วไปก่อน", 403);
+  const body = (await req.json().catch(() => ({}))) as { confirm?: string };
+  if (body.confirm !== "DELETE") return fail("กรุณายืนยันการลบบัญชี", 400);
+
+  const follows = await prisma.follow.findMany({ where: { followerId: user.id }, select: { targetType: true, targetId: true } });
+  await prisma.$transaction([
+    ...follows.filter((f) => f.targetType === "ROOM").map((f) => prisma.room.update({ where: { slug: f.targetId }, data: { memberCount: { decrement: 1 } } })),
+    ...follows.filter((f) => f.targetType === "PLACE").map((f) => prisma.place.update({ where: { slug: f.targetId }, data: { followerCount: { decrement: 1 } } })),
+    prisma.follow.deleteMany({ where: { followerId: user.id } }),
+    prisma.save.deleteMany({ where: { userId: user.id } }),
+    prisma.block.deleteMany({ where: { OR: [{ blockerId: user.id }, { blockedId: user.id }] } }),
+    prisma.notification.deleteMany({ where: { OR: [{ recipientId: user.id }, { actorId: user.id }] } }),
+    prisma.postPhoto.deleteMany({ where: { ownerId: user.id, postId: null } }),
+    prisma.user.update({
+      where: { id: user.id },
+      data: {
+        lineUserId: null,
+        handle: `deleted-${Math.random().toString(36).slice(2, 10)}`,
+        name: "ผู้ใช้ที่ลบบัญชีแล้ว",
+        bio: "",
+        pictureUrl: null,
+        avatarCustom: false,
+        coverScene: null,
+        links: Prisma.DbNull,
+        badge: null,
+        status: "BANNED",
+      },
+    }),
+  ]);
+  await clearSessionCookie();
+  return ok({ deleted: true });
 }
