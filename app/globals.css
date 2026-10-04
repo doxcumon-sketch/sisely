@@ -1,63 +1,63 @@
 @import "tailwindcss";
 
 /*
- * SISE design system — "Bordeaux & Rose Gold".
- * Deep bordeaux, antique rose gold and ivory: quiet luxury, no loud primaries. Crisp geometry (2–6px radii),
- * fine hairlines. Token names (jade, gold, laterite) are kept for compatibility: jade = brand bordeaux, gold = copper/rose gold.
+ * SISE design system — "Electric Orchid".
+ * Cool paper white, ink black, one electric violet with an orchid-pink counter-accent. Crisp geometry (2–6px radii),
+ * geometric sans headings. Token names (jade, gold, laterite) are kept for compatibility: jade = brand violet, gold = orchid pink.
  */
 :root {
-  --paper: #faf6f2;
-  --paper-2: #f1e9e2;
+  --paper: #f7f6fb;
+  --paper-2: #eeedf6;
   --card: #ffffff;
-  --ink: #1d0f14;
-  --ink-2: #4a343b;
-  --muted: #7a6168;
-  --faint: #a38d92;
-  --line: #e8dcd8;
-  --line-soft: #f0e7e3;
-  --gold: #9a5a3e;
-  --gold-soft: #f6e4da;
-  --jade: #6e1f3d;
-  --jade-soft: #f5e3e8;
-  --laterite: #c4553a;
-  --laterite-soft: #fbe3da;
-  --night: #1f0912;
-  --night-2: #3a1224;
-  --on-night: #fbeee6;
-  --on-night-muted: #d2b5bc;
-  --cta: #6e1f3d;
-  --cta-2: #8a2d52;
-  --on-cta: #fdf1ea;
-  --rose: #e8b9a0;
-  --rose-2: #b9714f;
-  --ring: #6e1f3d;
-  --shadow-card: 0 1px 0 rgb(29 15 20 / 0.04), 0 6px 20px -10px rgb(110 31 61 / 0.22);
-  --shadow-pop: 0 18px 44px -14px rgb(31 9 18 / 0.45);
+  --ink: #0e0d1c;
+  --ink-2: #3a3850;
+  --muted: #6b6985;
+  --faint: #9593ad;
+  --line: #e4e2f0;
+  --line-soft: #eeedf7;
+  --gold: #c2255c;
+  --gold-soft: #ffe8f0;
+  --jade: #5b3df5;
+  --jade-soft: #ece8ff;
+  --laterite: #e8492f;
+  --laterite-soft: #ffe9e3;
+  --night: #0d0b24;
+  --night-2: #1c1650;
+  --on-night: #f4f1ff;
+  --on-night-muted: #b9b4dd;
+  --cta: #5b3df5;
+  --cta-2: #7357ff;
+  --on-cta: #ffffff;
+  --rose: #ff8fb1;
+  --rose-2: #e0408a;
+  --ring: #5b3df5;
+  --shadow-card: 0 1px 0 rgb(14 13 28 / 0.04), 0 8px 24px -12px rgb(91 61 245 / 0.25);
+  --shadow-pop: 0 18px 44px -14px rgb(13 11 36 / 0.45);
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --paper: #140810;
-  --paper-2: #1c0e17;
-  --card: #241320;
-  --ink: #f8ede6;
-  --ink-2: #e6d3d0;
-  --muted: #bfa4aa;
-  --faint: #957a82;
-  --line: #3a2230;
-  --line-soft: #2e1a26;
-  --gold: #e8b9a0;
-  --gold-soft: #3a2218;
-  --jade: #f0a9bf;
-  --jade-soft: #3d1a2c;
-  --laterite: #ff9a80;
+  --paper: #0c0b1a;
+  --paper-2: #131127;
+  --card: #181634;
+  --ink: #f4f2ff;
+  --ink-2: #dcd8f2;
+  --muted: #a9a5c9;
+  --faint: #7d7a9f;
+  --line: #2a2750;
+  --line-soft: #211f42;
+  --gold: #ff8fb1;
+  --gold-soft: #3a1830;
+  --jade: #a99bff;
+  --jade-soft: #26215a;
+  --laterite: #ff8a6e;
   --laterite-soft: #432820;
-  --night: #0e0509;
-  --night-2: #260c18;
-  --cta: #e8b9a0;
-  --cta-2: #f2c9b4;
-  --on-cta: #2c0d1a;
-  --ring: #e8b9a0;
+  --night: #07061a;
+  --night-2: #15113f;
+  --cta: #8a73ff;
+  --cta-2: #a091ff;
+  --on-cta: #0c0b1a;
+  --ring: #a99bff;
   --shadow-card: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 28px -14px rgb(0 0 0 / 0.6);
   color-scheme: dark;
 }
@@ -132,13 +132,14 @@ body {
 
 /* ---------- Editorial type ---------- */
 .font-editorial {
-  font-family: var(--font-serif), serif;
-  letter-spacing: -0.005em;
+  font-family: var(--font-serif), var(--font-sans), sans-serif;
+  letter-spacing: -0.015em;
+  font-weight: 700;
 }
 .wordmark {
   font-family: var(--font-display), serif;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
 }
 .eyebrow {
   font-size: 0.75rem;
@@ -167,26 +168,26 @@ body {
 }
 .night-surface {
   background:
-    radial-gradient(120% 90% at 85% -10%, rgb(232 185 160 / 0.20), transparent 55%),
-    radial-gradient(90% 70% at -10% 110%, rgb(138 45 82 / 0.55), transparent 60%),
+    radial-gradient(120% 90% at 85% -10%, rgb(255 143 177 / 0.22), transparent 55%),
+    radial-gradient(90% 70% at -10% 110%, rgb(91 61 245 / 0.55), transparent 60%),
     var(--night);
   color: var(--on-night);
 }
 .text-gold-gradient {
-  background: linear-gradient(100deg, #a8654a 0%, #e8b9a0 45%, #fbe3d4 58%, #c98363 100%);
+  background: linear-gradient(100deg, #7357ff 0%, #ff8fb1 50%, #ffc2a8 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 /* ---------- Art covers (no stock photos: generated tonal art) ---------- */
-.tone-jade { --a: #3a0f22; --b: #8a2d52; --c: #f1c9b4; }
-.tone-laterite { --a: #7d2f1a; --b: #c0623f; --c: #f1cf9b; }
-.tone-gold { --a: #6e3b2c; --b: #c98363; --c: #fbe3d4; }
-.tone-indigo { --a: #24203f; --b: #5a4f8a; --c: #e8c3ac; }
-.tone-plum { --a: #43203a; --b: #8d4a7a; --c: #f0c8b0; }
-.tone-sky { --a: #1f4f63; --b: #5aa3b8; --c: #fbe7b8; }
-.tone-ink { --a: #1a0b12; --b: #4a2a38; --c: #e0b59c; }
+.tone-jade { --a: #1c1259; --b: #5b3df5; --c: #c9bfff; }
+.tone-laterite { --a: #7a1f33; --b: #ff5c7a; --c: #ffd0c2; }
+.tone-gold { --a: #8a1f55; --b: #e0408a; --c: #ffd1e3; }
+.tone-indigo { --a: #141a4a; --b: #4a63e8; --c: #cfe0ff; }
+.tone-plum { --a: #3c1466; --b: #9a4bd6; --c: #f0c9ff; }
+.tone-sky { --a: #0c3a5a; --b: #2aa0c8; --c: #c8f1ff; }
+.tone-ink { --a: #0d0b1e; --b: #2a2748; --c: #bdb6ff; }
 
 .cover {
   position: relative;
@@ -260,35 +261,36 @@ body {
   isolation: isolate;
   overflow: hidden;
   background:
-    radial-gradient(60% 90% at 100% 0%, rgb(138 45 82 / 0.22), transparent 62%),
-    radial-gradient(55% 80% at 0% 100%, rgb(232 185 160 / 0.50), transparent 62%),
-    linear-gradient(120deg, #fffaf6 0%, #f9e8de 45%, #f1d9e0 100%);
+    radial-gradient(50% 70% at 95% 5%, rgb(115 87 255 / 0.30), transparent 65%),
+    radial-gradient(45% 60% at 70% 100%, rgb(255 143 177 / 0.32), transparent 65%),
+    radial-gradient(40% 55% at 0% 100%, rgb(255 196 168 / 0.40), transparent 65%),
+    linear-gradient(120deg, #ffffff 0%, #f6f3ff 100%);
   border: 1px solid var(--line);
   border-radius: 6px;
 }
 :root[data-theme="dark"] .hero-bright {
   background:
-    radial-gradient(70% 90% at 100% 0%, rgb(240 169 191 / 0.18), transparent 60%),
-    radial-gradient(60% 80% at 0% 100%, rgb(232 185 160 / 0.14), transparent 60%),
-    linear-gradient(120deg, #1a0b14 0%, #2a1020 100%);
+    radial-gradient(60% 80% at 100% 0%, rgb(138 115 255 / 0.30), transparent 62%),
+    radial-gradient(50% 70% at 20% 100%, rgb(255 143 177 / 0.16), transparent 62%),
+    linear-gradient(120deg, #100e2a 0%, #1a1650 100%);
 }
 .hero-bright::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='none' stroke='%236e1f3d' stroke-opacity='.13' stroke-width='1'%3E%3Cpath d='M44 4 L84 44 L44 84 L4 44 Z'/%3E%3Cpath d='M44 22 L66 44 L44 66 L22 44 Z'/%3E%3C/g%3E%3C/svg%3E");
-  mask-image: linear-gradient(100deg, transparent 20%, #000 100%);
-  -webkit-mask-image: linear-gradient(100deg, transparent 20%, #000 100%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='none' stroke='%235b3df5' stroke-opacity='.10' stroke-width='1'%3E%3Cpath d='M44 4 L84 44 L44 84 L4 44 Z'/%3E%3Cpath d='M44 22 L66 44 L44 66 L22 44 Z'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: linear-gradient(100deg, transparent 25%, #000 100%);
+  -webkit-mask-image: linear-gradient(100deg, transparent 25%, #000 100%);
 }
 .text-emerald-gradient {
-  background: linear-gradient(100deg, #6e1f3d 0%, #8a2d52 55%, #b9714f 125%);
+  background: linear-gradient(100deg, #5b3df5 0%, #b13fd6 55%, #ff5c8a 110%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 :root[data-theme="dark"] .text-emerald-gradient {
-  background: linear-gradient(100deg, #f0a9bf 0%, #e8b9a0 100%);
+  background: linear-gradient(100deg, #a99bff 0%, #ff8fb1 100%);
   -webkit-background-clip: text;
   background-clip: text;
 }

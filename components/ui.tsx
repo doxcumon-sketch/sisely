@@ -35,13 +35,13 @@ export function Cover({
 }
 
 const AVATAR_TONES: Record<Tone, string> = {
-  jade: "bg-[#6e1f3d] text-[#fbe3d4]",
-  laterite: "bg-[#a4472b] text-[#fbe3d4]",
-  gold: "bg-[#b9714f] text-[#fffaf6]",
-  indigo: "bg-[#3b3562] text-[#e8c3ac]",
-  plum: "bg-[#5a2a4f] text-[#f0c8b0]",
-  sky: "bg-[#2c5f6e] text-[#fbe3d4]",
-  ink: "bg-[#241017] text-[#e0b59c]",
+  jade: "bg-[#5b3df5] text-white",
+  laterite: "bg-[#e8492f] text-white",
+  gold: "bg-[#d6336c] text-white",
+  indigo: "bg-[#3b4fd8] text-white",
+  plum: "bg-[#8a3fd0] text-white",
+  sky: "bg-[#1f8fb8] text-white",
+  ink: "bg-[#1a1838] text-[#cfc8ff]",
 };
 
 export function Avatar({ name, tone, size = 36, src }: { name: string; tone: Tone; size?: number; src?: string | null }) {
