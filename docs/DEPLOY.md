@@ -57,3 +57,9 @@ npm run db:clear-demo -- --yes --welcome <handleของคุณ>   # ลบ�
 - Rate limit, ตรวจสแปม, คิวรายงาน ทำงานฝั่งเซิร์ฟเวอร์ทั้งหมด (ตาราง `RateEvent`, `Report`, `ModerationAction`)
 - Vercel Hobby ห้ามใช้เชิงพาณิชย์ — เมื่อมีโฆษณา/รายได้ให้ย้ายเป็น Pro
 - ก่อนเปิดจริง: นโยบายความเป็นส่วนตัว (PDPA) และข้อกำหนดการใช้งาน
+
+## เปิดเว็บในแอป LINE (LIFF) — ไม่เด้งไปเบราว์เซอร์
+1. LINE Developers → Provider → ช่อง LINE Login (ตัวเดิม) → แท็บ **LIFF** → **Add**
+2. LIFF app name: `SISE` · Size: `Full` · Endpoint URL: `https://sisely.vercel.app/liff` · Scopes: เลือก `profile` และ `openid` · Bot link feature: Off
+3. กด Create แล้วคัดลอก **LIFF ID** (หน้าตาแบบ `2011857472-AbCdEfGh`) — ไม่ใช่ความลับ
+4. Vercel → Settings → Environment Variables → เพิ่ม `NEXT_PUBLIC_LIFF_ID` = LIFF ID → Redeploy
