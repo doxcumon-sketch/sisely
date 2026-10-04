@@ -10,6 +10,7 @@ import { Cover, SectionHeader } from "@/components/ui";
 import { placeCategoryLabel } from "@/lib/data";
 import { getBusiness, getPlace, listDeals, listEvents, listPlaces, queryPosts } from "@/lib/server/repo";
 import { formatCount } from "@/lib/format";
+import { placePhoto } from "@/lib/covers";
 import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 60;
@@ -62,7 +63,7 @@ export default async function PlacePage({ params }: { params: Promise<{ slug: st
       </nav>
 
       <header className="surface overflow-hidden">
-        <Cover tone={p.tone} icon={p.category === "cafe" ? "cafe" : p.category === "restaurant" ? "food" : p.category === "attraction" ? "travel" : "pin"} className="h-48 sm:h-72">
+        <Cover tone={p.tone} photo={placePhoto(p.slug)} icon={p.category === "cafe" ? "cafe" : p.category === "restaurant" ? "food" : p.category === "attraction" ? "travel" : "pin"} className="h-48 sm:h-72">
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-5 pt-16 text-white sm:p-8">
             <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-white/80">{placeCategoryLabel(p.category)} · {p.district}</p>
             <h1 className="font-editorial text-3xl font-bold sm:text-5xl">{p.name}</h1>

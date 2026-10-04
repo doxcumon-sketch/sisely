@@ -12,16 +12,22 @@ export function Cover({
   icon,
   className,
   children,
+  photo,
 }: {
   tone: Tone;
   icon?: string;
   className?: string;
   children?: ReactNode;
+  /** A real photo replaces the generated art; the art stays underneath as the loading colour. */
+  photo?: { src: string; alt: string } | null;
 }) {
   return (
-    <div className={cx("cover", `tone-${tone}`, className)} aria-hidden={children ? undefined : "true"}>
-      {icon && (
-        <RoomIcon name={icon} className="pointer-events-none absolute -right-3 -bottom-4 h-24 w-24 text-white/20" />
+    <div className={cx("cover", `tone-${tone}`, photo && "has-photo", className)} aria-hidden={children || photo ? undefined : "true"}>
+      {photo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="absolute inset-0 -z-[1] h-full w-full object-cover" />
+      ) : (
+        icon && <RoomIcon name={icon} className="pointer-events-none absolute -right-3 -bottom-4 h-24 w-24 text-white/20" />
       )}
       {children}
     </div>

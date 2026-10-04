@@ -13,6 +13,7 @@ import { ageOf, useNow } from "@/lib/hooks";
 import { postTypeMeta } from "@/lib/post-types";
 import { actions, useSise } from "@/lib/store";
 import { trendingScore, hotLabel } from "@/lib/ranking";
+import { postPhotos } from "@/lib/covers";
 import type { Post, PostType } from "@/lib/types";
 
 const TYPE_STYLE: Record<PostType, string> = {
@@ -164,7 +165,7 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
         {!post.photos?.length && post.images && post.images.length > 0 && (
           <Link href={`/post/${post.id}`} className={cx("mt-3 grid gap-1.5 overflow-hidden rounded-2xl", post.images.length > 1 ? "grid-cols-2" : "grid-cols-1")} aria-label="ดูรูปภาพ">
             {post.images.slice(0, 2).map((tone, i) => (
-              <Cover key={i} tone={tone} icon={room.icon} className={cx("w-full", post.images!.length > 1 ? "aspect-[4/3]" : "aspect-[16/7]")} />
+              <Cover key={i} tone={tone} icon={room.icon} photo={postPhotos(room.slug, post.id, post.images!.length)[i]} className={cx("w-full", post.images!.length > 1 ? "aspect-[4/3]" : "aspect-[16/7]")} />
             ))}
           </Link>
         )}

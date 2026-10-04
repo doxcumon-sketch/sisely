@@ -189,6 +189,7 @@ body {
     radial-gradient(90% 100% at 0% 100%, color-mix(in srgb, var(--b) 80%, transparent), transparent 70%),
     linear-gradient(140deg, var(--a), color-mix(in srgb, var(--a) 70%, var(--b)));
 }
+.cover.has-photo::after { display: none; }
 .cover::after {
   content: "";
   position: absolute;
