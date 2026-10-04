@@ -1,9 +1,9 @@
 "use client";
 
-import { MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Wordmark } from "@/components/app-shell";
+import { LineLoginButton } from "@/components/line-login-button";
 
 const ERRORS: Record<string, string> = {
   not_configured: "ยังไม่ได้ตั้งค่า LINE Login ของเว็บนี้",
@@ -34,13 +34,7 @@ export function LoginView({ returnTo, error, line, dev }: { returnTo: string; er
 
         {error && <p role="alert" className="mt-5 rounded-xl bg-laterite-soft p-3 text-sm text-laterite">{ERRORS[error] ?? ERRORS.failed}</p>}
 
-        <a
-          href={line ? `/api/auth/line?returnTo=${encodeURIComponent(returnTo)}` : undefined}
-          aria-disabled={!line}
-          className={`press mt-6 flex items-center justify-center gap-3 rounded-sm bg-[#06c755] px-6 py-4 text-[1.05rem] font-semibold text-white ${line ? "" : "pointer-events-none opacity-50"}`}
-        >
-          <MessageCircle className="h-5 w-5" /> เข้าสู่ระบบด้วย LINE
-        </a>
+        <div className="mt-6"><LineLoginButton returnTo={returnTo} enabled={line} /></div>
         {!line && <p className="mt-2 text-xs text-muted">LINE Login ยังไม่ได้ตั้งค่า (เจ้าของเว็บต้องใส่ LINE_CHANNEL_ID / LINE_CHANNEL_SECRET)</p>}
 
         {dev && (

@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "SISE · พื้นที่ออนไลน์ของคนศรีสะเกษ",
     short_name: "SISE",
-    description: "ศรีสะเกษเด็ดกว่าที่คิด — ชุมชน ร้าน งาน ที่เที่ยว และดีลท้องถิ่น",
+    description: "ศรีสะเกษ เมืองเล็ก ไม่ธรรมดา — ชุมชน ร้าน งาน ที่เที่ยว และดีลท้องถิ่น",
     start_url: "/",
     scope: "/",
     display: "standalone",
