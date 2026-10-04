@@ -2,7 +2,11 @@ import { randomBytes } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import type { Tone } from "../../generated/prisma/client";
 
-export const lineConfigured = () => !!process.env.LINE_CHANNEL_ID && !!process.env.LINE_CHANNEL_SECRET;
+// Values pasted into hosting dashboards often carry stray whitespace/tabs; trim them.
+const channelId = () => (process.env.LINE_CHANNEL_ID ?? "").trim();
+const channelSecret = () => (process.env.LINE_CHANNEL_SECRET ?? "").trim();
+
+export const lineConfigured = () => !!channelId() && !!channelSecret();
 
 export type LineProfile = { sub: string; name: string; picture?: string };
 
@@ -11,7 +15,7 @@ const TONES: Tone[] = ["jade", "laterite", "gold", "indigo", "plum", "sky", "ink
 export function authorizeUrl(origin: string, state: string, nonce: string): string {
   const u = new URL("https://access.line.me/oauth2/v2.1/authorize");
   u.searchParams.set("response_type", "code");
-  u.searchParams.set("client_id", process.env.LINE_CHANNEL_ID!);
+  u.searchParams.set("client_id", channelId());
   u.searchParams.set("redirect_uri", `${origin}/api/auth/line/callback`);
   u.searchParams.set("state", state);
   u.searchParams.set("scope", "profile openid");
@@ -28,8 +32,8 @@ export async function fetchLineProfile(code: string, origin: string, nonce: stri
       grant_type: "authorization_code",
       code,
       redirect_uri: `${origin}/api/auth/line/callback`,
-      client_id: process.env.LINE_CHANNEL_ID!,
-      client_secret: process.env.LINE_CHANNEL_SECRET!,
+      client_id: channelId(),
+      client_secret: channelSecret(),
     }),
     cache: "no-store",
   });
@@ -40,7 +44,7 @@ export async function fetchLineProfile(code: string, origin: string, nonce: stri
   const verifyRes = await fetch("https://api.line.me/oauth2/v2.1/verify", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ id_token, client_id: process.env.LINE_CHANNEL_ID!, nonce }),
+    body: new URLSearchParams({ id_token, client_id: channelId(), nonce }),
     cache: "no-store",
   });
   if (!verifyRes.ok) throw new Error(`LINE id_token verification failed (${verifyRes.status})`);
