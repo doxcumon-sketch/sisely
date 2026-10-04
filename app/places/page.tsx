@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { PlaceCard } from "@/components/cards";
 import { RoomIcon } from "@/components/icons";
 import { Chip, EmptyState } from "@/components/ui";
-import { PLACE_CATEGORIES, places } from "@/lib/data";
+import { PLACE_CATEGORIES } from "@/lib/data";
+import { listPlaces } from "@/lib/server/repo";
 
 export const metadata: Metadata = {
   title: "สถานที่ในศรีสะเกษ — ร้านอาหาร คาเฟ่ ที่เที่ยว ที่พัก",
@@ -10,10 +11,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/places" },
 };
 
+export const revalidate = 60;
+
 export default async function PlacesPage({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
   const { cat } = await searchParams;
   const active = PLACE_CATEGORIES.find((c) => c.key === cat)?.key;
-  const list = (active ? places.filter((p) => p.category === active) : places).sort((a, b) => b.rating * Math.log(b.reviews + 2) - a.rating * Math.log(a.reviews + 2));
+  const list = await listPlaces(active);
 
   return (
     <div className="space-y-6">

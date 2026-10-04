@@ -7,11 +7,12 @@ import { useState } from "react";
 import { RoomIcon } from "@/components/icons";
 import { toast } from "@/components/toast";
 import { cx } from "@/components/ui";
-import { rooms, roomBySlug } from "@/lib/data";
-import { checkContent, downscaleImage } from "@/lib/moderation";
+import { downscaleImage } from "@/lib/moderation";
 import { POST_TYPES } from "@/lib/post-types";
-import { actions, getSise } from "@/lib/store";
+import { api } from "@/lib/store";
 import type { PostType } from "@/lib/types";
+
+type RoomOpt = { slug: string; name: string };
 
 const DEFAULT_ROOM: Partial<Record<PostType, string>> = {
   question: "qa",
@@ -25,19 +26,20 @@ const DEFAULT_ROOM: Partial<Record<PostType, string>> = {
   announcement: "community",
 };
 
-export function Composer() {
+export function Composer({ rooms, places }: { rooms: RoomOpt[]; places: { slug: string; name: string }[] }) {
   const router = useRouter();
   const sp = useSearchParams();
   const initialType = (POST_TYPES.find((t) => t.key === sp.get("type"))?.key ?? "question") as PostType;
   const [type, setType] = useState<PostType>(initialType);
-  const [room, setRoom] = useState<string>(roomBySlug(sp.get("room") ?? "") ? (sp.get("room") as string) : (DEFAULT_ROOM[initialType] ?? "talk"));
+  const [room, setRoom] = useState<string>(rooms.some((r) => r.slug === sp.get("room")) ? (sp.get("room") as string) : (DEFAULT_ROOM[initialType] ?? "talk"));
+  const placeSlug = places.some((p) => p.slug === sp.get("place")) ? (sp.get("place") as string) : undefined;
   const [roomTouched, setRoomTouched] = useState(!!sp.get("room"));
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [price, setPrice] = useState("");
   const [location, setLocation] = useState("");
   const [options, setOptions] = useState(["", ""]);
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<{ id: string; url: string }[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,11 +53,18 @@ export function Composer() {
     if (!files) return;
     setBusy(true);
     try {
-      const next: string[] = [];
-      for (const f of Array.from(files).slice(0, 4 - photos.length)) next.push(await downscaleImage(f));
-      setPhotos((p) => [...p, ...next].slice(0, 4));
-    } catch {
-      setError("เปิดรูปนี้ไม่ได้ ลองรูปอื่น (JPG/PNG)");
+      for (const f of Array.from(files).slice(0, 4 - photos.length)) {
+        const dataUrl = await downscaleImage(f);
+        const blob = await (await fetch(dataUrl)).blob();
+        const form = new FormData();
+        form.append("file", new File([blob], "photo.jpg", { type: "image/jpeg" }));
+        const res = await fetch("/api/photos", { method: "POST", body: form });
+        const json = (await res.json().catch(() => null)) as { ok?: boolean; data?: { id: string; url: string }; error?: string } | null;
+        if (!res.ok || !json?.ok || !json.data) throw new Error(json?.error ?? "อัปโหลดไม่สำเร็จ");
+        setPhotos((p) => [...p, json.data!].slice(0, 4));
+      }
+    } catch (e) {
+      setError(e instanceof Error && e.message !== "image" ? e.message : "เปิดรูปนี้ไม่ได้ ลองรูปอื่น (JPG/PNG)");
     } finally {
       setBusy(false);
     }
@@ -64,26 +73,26 @@ export function Composer() {
   const validPollOptions = options.map((o) => o.trim()).filter(Boolean);
   const canSubmit = title.trim().length >= 5 && (type !== "poll" || validPollOptions.length >= 2) && !busy;
 
-  const submit = () => {
+  const submit = async () => {
+    if (busy) return;
     setError(null);
-    const state = getSise();
+    setBusy(true);
     const composed = type === "marketplace" && price.trim() ? `ราคา ฿${price.trim()}\n\n${body.trim()}` : body.trim();
-    const verdict = checkContent({ title, body: composed }, state.userPosts, Date.now());
-    if (!verdict.ok) {
-      setError(verdict.reason);
-      return;
-    }
-    const post = actions.addPost({
+    const r = await api<{ id: string; status: string }>("/api/posts", "POST", {
       type,
       roomSlug: room,
       title: title.trim(),
       body: composed,
-      photos: photos.length ? photos : undefined,
-      poll: type === "poll" ? validPollOptions : undefined,
       location: location.trim() || undefined,
+      placeSlug,
+      poll: type === "poll" ? validPollOptions : undefined,
+      photoIds: photos.map((p) => p.id),
     });
-    toast("โพสต์แล้ว!");
-    router.push(`/post/${post.id}`);
+    setBusy(false);
+    if (!r.ok) return setError(r.error);
+    toast(r.data.status === "PUBLISHED" ? "โพสต์แล้ว!" : "ส่งแล้ว รอผู้ดูแลตรวจสอบสักครู่");
+    router.push(`/post/${r.data.id}`);
+    router.refresh();
   };
 
   return (
@@ -157,9 +166,9 @@ export function Composer() {
         {photos.length > 0 && (
           <ul className="grid grid-cols-4 gap-2">
             {photos.map((src, i) => (
-              <li key={i} className="relative aspect-square overflow-hidden rounded-xl">
+              <li key={src.id} className="relative aspect-square overflow-hidden rounded-xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt={`รูปที่ ${i + 1}`} className="h-full w-full object-cover" />
+                <img src={src.url} alt={`รูปที่ ${i + 1}`} className="h-full w-full object-cover" />
                 <button type="button" onClick={() => setPhotos((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white" aria-label="ลบรูป"><X className="h-3.5 w-3.5" /></button>
               </li>
             ))}
@@ -170,7 +179,7 @@ export function Composer() {
           <div>
             <label htmlFor="room" className="mb-1 block text-sm font-medium">โพสต์ในห้อง</label>
             <select id="room" value={room} onChange={(e) => { setRoom(e.target.value); setRoomTouched(true); }} className="w-full rounded-xl border border-line bg-paper px-3 py-3 text-[1rem] outline-none focus:border-gold">
-              {rooms.map((r) => <option key={r.id} value={r.slug}>{r.name}</option>)}
+              {rooms.map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>)}
             </select>
           </div>
           <div>
@@ -189,7 +198,7 @@ export function Composer() {
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl lg:left-60">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
-          <p className="hidden flex-1 text-sm text-muted sm:block">โพสต์ในห้อง <b className="text-ink">{roomBySlug(room)?.name}</b></p>
+          <p className="hidden flex-1 text-sm text-muted sm:block">โพสต์ในห้อง <b className="text-ink">{rooms.find((r) => r.slug === room)?.name}</b></p>
           <button type="button" onClick={submit} disabled={!canSubmit} className="press ml-auto w-full rounded-full bg-night px-8 py-3.5 text-[1.05rem] font-semibold text-on-night disabled:opacity-40 sm:w-auto">
             โพสต์เลย
           </button>

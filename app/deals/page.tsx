@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DealCard } from "@/components/cards";
 import { SectionHeader } from "@/components/ui";
-import { deals } from "@/lib/data";
+import { listDeals } from "@/lib/server/repo";
 
 export const metadata: Metadata = {
   title: "ดีลวันนี้ในศรีสะเกษ — ส่วนลดจากร้านท้องถิ่น",
@@ -9,8 +9,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/deals" },
 };
 
-export default function DealsPage() {
-  const ending = [...deals].sort((a, b) => a.endsInHours - b.endsInHours);
+export const revalidate = 60;
+
+export default async function DealsPage() {
+  const ending = await listDeals();
   return (
     <div className="space-y-6">
       <header>

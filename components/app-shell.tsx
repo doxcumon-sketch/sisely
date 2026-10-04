@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { cx } from "@/components/ui";
 import { ToastHost } from "@/components/toast";
-import { seedNotifications } from "@/lib/data";
-import { actions, useSise } from "@/lib/store";
+import { Avatar } from "@/components/ui";
+import { LoginPrompt } from "@/components/login-prompt";
+import { actions, loadViewer, useSise } from "@/lib/store";
 
 const SIDE_NAV = [
   { href: "/", label: "หน้าแรก", icon: Home },
@@ -42,8 +43,7 @@ export function Wordmark({ className, light }: { className?: string; light?: boo
 }
 
 function BellButton() {
-  const read = useSise((s) => s.readNotifs);
-  const unread = seedNotifications.filter((n) => n.unread && !read.includes(n.id)).length;
+  const unread = useSise((s) => s.unread);
   return (
     <Link href="/notifications" className="press relative rounded-full p-2.5 text-ink-2 hover:bg-paper-2" aria-label={unread ? `การแจ้งเตือน ${unread} รายการใหม่` : "การแจ้งเตือน"}>
       <Bell className="h-5 w-5" />
@@ -54,6 +54,13 @@ function BellButton() {
       )}
     </Link>
   );
+}
+
+function ViewerSync() {
+  useEffect(() => {
+    void loadViewer();
+  }, []);
+  return null;
 }
 
 function ThemeSync() {
@@ -105,12 +112,15 @@ function PwaRegister() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const theme = useSise((s) => s.theme);
+  const me = useSise((s) => s.me);
+  const ready = useSise((s) => s.ready);
   const composing = pathname === "/create";
   const admin = pathname.startsWith("/admin");
 
   return (
     <div className="min-h-dvh">
       <ThemeSync />
+      <ViewerSync />
       <KeyboardWatcher />
       <PwaRegister />
 
@@ -135,7 +145,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
-            <BellButton />
+            {me && <BellButton />}
+            {ready && !me && (
+              <Link href={`/login?returnTo=${encodeURIComponent(pathname)}`} className="press ml-1 rounded-full border border-line bg-card px-4 py-2 text-sm font-semibold hover:border-gold">เข้าสู่ระบบ</Link>
+            )}
+            {me && (
+              <Link href="/me" className="ml-1 hidden rounded-full lg:block" aria-label="โปรไฟล์ของฉัน"><Avatar name={me.name} tone="gold" size={36} src={me.pictureUrl} /></Link>
+            )}
             <Link href="/create" className="press ml-1 hidden items-center gap-2 rounded-full bg-night px-5 py-2.5 text-sm font-semibold text-on-night hover:bg-night-2 lg:flex">
               <PenLine className="h-4 w-4" /> โพสต์
             </Link>
@@ -174,9 +190,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Bell className="h-[18px] w-[18px]" /> แจ้งเตือน
           </Link>
         </nav>
-        <Link href="/admin" className={cx("press mt-3 flex items-center gap-3 rounded-xl px-3 py-2 text-sm", admin ? "bg-night text-on-night" : "text-faint hover:bg-paper-2")}>
+        {me && me.role !== "MEMBER" && <Link href="/admin" className={cx("press mt-3 flex items-center gap-3 rounded-xl px-3 py-2 text-sm", admin ? "bg-night text-on-night" : "text-faint hover:bg-paper-2")}>
           <Shield className="h-4 w-4" /> หลังบ้าน (ผู้ดูแล)
-        </Link>
+        </Link>}
       </aside>
 
       <main id="main" className="mx-auto max-w-6xl px-4 pb-28 pt-5 lg:pl-[calc(15rem+2rem)] lg:pr-8 lg:pb-16 lg:pt-8">
@@ -206,6 +222,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </ul>
         </nav>
       )}
+      <LoginPrompt />
       <ToastHost />
     </div>
   );

@@ -38,7 +38,11 @@ const AVATAR_TONES: Record<Tone, string> = {
   ink: "bg-[#16201c] text-[#d8ae56]",
 };
 
-export function Avatar({ name, tone, size = 36 }: { name: string; tone: Tone; size?: number }) {
+export function Avatar({ name, tone, size = 36, src }: { name: string; tone: Tone; size?: number; src?: string | null }) {
+  if (src) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src} alt="" width={size} height={size} loading="lazy" referrerPolicy="no-referrer" className="shrink-0 rounded-full object-cover" style={{ width: size, height: size }} />;
+  }
   const initial = Array.from(name.replace(/^(คุณ|ทีม|พี่|ป้า|ลุง|หมอ)\s*/, ""))[0] ?? "S";
   return (
     <span

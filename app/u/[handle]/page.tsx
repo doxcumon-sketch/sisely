@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { ProfileView } from "@/components/profile-view";
-import { userByHandle, users } from "@/lib/data";
+import { getProfile, listUserComments, queryPosts } from "@/lib/server/repo";
 
-export function generateStaticParams() {
-  return users.filter((u) => u.id !== "u-me").map((u) => ({ handle: u.handle }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params;
-  const u = userByHandle(decodeURIComponent(handle));
+  const u = await getProfile(decodeURIComponent(handle));
   if (!u) return { title: "ไม่พบผู้ใช้" };
-  return { title: `${u.name} (@${u.handle})`, description: u.bio, alternates: { canonical: `/u/${u.handle}` } };
+  return { title: `${u.name} (@${u.handle})`, description: u.bio || `สมาชิก SISE จาก${u.area}`, alternates: { canonical: `/u/${u.handle}` } };
 }
 
 export default async function UserPage({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
-  return <ProfileView handle={decodeURIComponent(handle)} />;
+  const profile = await getProfile(decodeURIComponent(handle));
+  if (!profile) notFound();
+  const [initialPosts, comments] = await Promise.all([queryPosts({ mode: "new", authorId: profile.id, limit: 8 }), listUserComments(profile.id)]);
+  return <ProfileView data={{ profile, isMe: false, initialPosts, comments }} />;
 }

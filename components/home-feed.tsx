@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Feed, type FeedMode } from "@/components/feed";
 import { Chip } from "@/components/ui";
+import type { Post } from "@/lib/types";
 
 const TABS: { key: FeedMode; label: string }[] = [
   { key: "forYou", label: "สำหรับคุณ" },
@@ -11,7 +12,7 @@ const TABS: { key: FeedMode; label: string }[] = [
   { key: "unanswered", label: "ยังไม่มีคนตอบ" },
 ];
 
-export function HomeFeedTabs() {
+export function HomeFeedTabs({ initial }: { initial: { posts: Post[]; hasMore: boolean } }) {
   const [mode, setMode] = useState<FeedMode>("forYou");
   return (
     <>
@@ -20,7 +21,7 @@ export function HomeFeedTabs() {
           <Chip key={t.key} active={mode === t.key} onClick={() => setMode(t.key)}>{t.label}</Chip>
         ))}
       </div>
-      <Feed key={mode} filter={{ mode }} pageSize={6} emptyTitle="ตอนนี้ไม่มีโพสต์ในหมวดนี้" emptyHint="ลองดูแท็บอื่น หรือเริ่มโพสต์เองได้เลย" />
+      <Feed key={mode} filter={{ mode }} initial={mode === "forYou" ? initial : undefined} pageSize={6} emptyTitle="ตอนนี้ไม่มีโพสต์ในหมวดนี้" emptyHint="ลองดูแท็บอื่น หรือเริ่มโพสต์เองได้เลย" />
     </>
   );
 }

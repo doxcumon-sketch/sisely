@@ -4,10 +4,12 @@ import { Ban, Flag, MoreHorizontal, VolumeX } from "lucide-react";
 import { useState } from "react";
 import { Sheet } from "@/components/sheet";
 import { toast } from "@/components/toast";
-import { actions } from "@/lib/store";
-import type { Report } from "@/lib/types";
+import { actions, requireLogin, useSise } from "@/lib/store";
 
-const REASONS: { key: Report["reason"]; label: string; hint: string }[] = [
+type Reason = "spam" | "abuse" | "scam" | "misinfo" | "other";
+type TargetType = "post" | "comment" | "user" | "listing";
+
+const REASONS: { key: Reason; label: string; hint: string }[] = [
   { key: "spam", label: "สแปมหรือโฆษณาซ้ำ ๆ", hint: "โพสต์ซ้ำ ลิงก์แปลก ๆ" },
   { key: "scam", label: "หลอกลวง / มิจฉาชีพ", hint: "ขายของไม่ตรงปก ขอโอนเงินก่อน" },
   { key: "abuse", label: "คำหยาบ ล่วงละเมิด หรือคุกคาม", hint: "ด่าทอ ใช้ถ้อยคำรุนแรง" },
@@ -22,22 +24,23 @@ export function ReportMenu({
   authorId,
   authorName,
 }: {
-  targetType: Report["targetType"];
+  targetType: TargetType;
   targetId: string;
   authorId?: string;
   authorName?: string;
 }) {
   const [menu, setMenu] = useState(false);
   const [reporting, setReporting] = useState(false);
-  const [reason, setReason] = useState<Report["reason"]>("spam");
+  const [reason, setReason] = useState<Reason>("spam");
   const [note, setNote] = useState("");
-  const own = authorId === "u-me";
+  const myId = useSise((st) => st.me?.id);
+  const own = !!authorId && authorId === myId;
 
-  const submit = () => {
-    actions.report({ targetType, targetId, reason, note: note.trim() || undefined });
+  const submit = async () => {
+    const ok = await actions.report({ targetType: targetType.toUpperCase() as "POST" | "COMMENT" | "USER" | "LISTING", targetId, reason, note: note.trim() || undefined });
     setReporting(false);
     setNote("");
-    toast("ส่งรายงานแล้ว ขอบคุณที่ช่วยดูแลชุมชน");
+    if (ok) toast("ส่งรายงานแล้ว ขอบคุณที่ช่วยดูแลชุมชน");
   };
 
   return (
@@ -49,16 +52,16 @@ export function ReportMenu({
       <Sheet open={menu} onClose={() => setMenu(false)} title="ตัวเลือก">
         <div className="flex flex-col">
           {!own && (
-            <button type="button" className="press flex items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-paper-2" onClick={() => { setMenu(false); setReporting(true); }}>
+            <button type="button" className="press flex items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-paper-2" onClick={() => { setMenu(false); if (requireLogin()) setReporting(true); }}>
               <Flag className="h-5 w-5 text-laterite" /> <span><b className="font-semibold">รายงาน</b><br /><span className="text-sm text-muted">ส่งให้ผู้ดูแลตรวจสอบ</span></span>
             </button>
           )}
           {authorId && !own && (
             <>
-              <button type="button" className="press flex items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-paper-2" onClick={() => { actions.mute(authorId); setMenu(false); toast(`ปิดเสียง ${authorName ?? "ผู้ใช้"} แล้ว`); }}>
+              <button type="button" className="press flex items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-paper-2" onClick={async () => { setMenu(false); if (await actions.block(authorId, true)) toast(`ปิดเสียง ${authorName ?? "ผู้ใช้"} แล้ว`); }}>
                 <VolumeX className="h-5 w-5" /> <span><b className="font-semibold">ปิดเสียง {authorName}</b><br /><span className="text-sm text-muted">ซ่อนโพสต์ในฟีดของคุณ</span></span>
               </button>
-              <button type="button" className="press flex items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-paper-2" onClick={() => { actions.block(authorId); setMenu(false); toast(`บล็อก ${authorName ?? "ผู้ใช้"} แล้ว`); }}>
+              <button type="button" className="press flex items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-paper-2" onClick={async () => { setMenu(false); if (await actions.block(authorId)) toast(`บล็อก ${authorName ?? "ผู้ใช้"} แล้ว`); }}>
                 <Ban className="h-5 w-5 text-laterite" /> <span><b className="font-semibold">บล็อก {authorName}</b><br /><span className="text-sm text-muted">จะไม่เห็นโพสต์และความเห็นอีก</span></span>
               </button>
             </>

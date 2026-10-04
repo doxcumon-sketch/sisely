@@ -8,7 +8,6 @@ import { ReportMenu } from "@/components/report-menu";
 import { ShareButton } from "@/components/share";
 import { PollBlock } from "@/components/poll";
 import { toast } from "@/components/toast";
-import { roomBySlug, userById, placeBySlug, eventBySlug } from "@/lib/data";
 import { formatAge, formatCount } from "@/lib/format";
 import { ageOf, useNow } from "@/lib/hooks";
 import { postTypeMeta } from "@/lib/post-types";
@@ -40,17 +39,17 @@ export function TypeBadge({ type }: { type: PostType }) {
 export function PostActions({ post, detail }: { post: Post; detail?: boolean }) {
   const reaction = useSise((s) => s.reactions[post.id]);
   const saved = useSise((s) => s.saves.posts.includes(post.id));
-  const reactions = post.stats.reactions + (reaction ? 1 : 0);
-  const saves = post.stats.saves + (saved ? 1 : 0);
+  const counts = useSise((s) => s.overrides[post.id]);
+  const reactions = counts?.reactions ?? post.stats.reactions;
+  const saves = counts?.saves ?? post.stats.saves;
+  const comments = counts?.comments ?? post.stats.comments;
 
   return (
     <div className="-mx-2 mt-3 flex items-center justify-between border-t border-line-soft pt-2">
       <div className="flex items-center">
         <button
           type="button"
-          onClick={() => {
-            actions.react(post.id, "like");
-          }}
+          onClick={() => actions.react(post)}
           className={cx("press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm", reaction ? "text-laterite" : "text-muted hover:bg-paper-2 hover:text-ink")}
           aria-pressed={!!reaction}
           aria-label={reaction ? "เลิกถูกใจ" : "ถูกใจ"}
@@ -61,21 +60,21 @@ export function PostActions({ post, detail }: { post: Post; detail?: boolean }) 
         {detail ? (
           <a href="#comments" className="press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink" aria-label="ไปที่ความคิดเห็น">
             <MessageCircle className="h-[18px] w-[18px]" />
-            <span className="tabular-nums">{formatCount(post.stats.comments)}</span>
+            <span className="tabular-nums">{formatCount(comments)}</span>
           </a>
         ) : (
-          <Link href={`/post/${post.id}#comments`} className="press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink" aria-label={`ความคิดเห็น ${post.stats.comments}`}>
+          <Link href={`/post/${post.id}#comments`} className="press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted hover:bg-paper-2 hover:text-ink" aria-label={`ความคิดเห็น ${comments}`}>
             <MessageCircle className="h-[18px] w-[18px]" />
-            <span className="tabular-nums">{formatCount(post.stats.comments)}</span>
+            <span className="tabular-nums">{formatCount(comments)}</span>
           </Link>
         )}
         <ShareButton path={`/post/${post.id}`} title={post.title} />
       </div>
       <button
         type="button"
-        onClick={() => {
-          actions.save("posts", post.id);
-          toast(saved ? "เลิกบันทึกแล้ว" : "บันทึกไว้ในโปรไฟล์แล้ว");
+        onClick={async () => {
+          const now = await actions.save("posts", post.id, post);
+          if (now !== saved) toast(now ? "บันทึกไว้ในโปรไฟล์แล้ว" : "เลิกบันทึกแล้ว");
         }}
         className={cx("press flex items-center gap-1.5 rounded-full px-3 py-2 text-sm", saved ? "text-gold" : "text-muted hover:bg-paper-2 hover:text-ink")}
         aria-pressed={saved}
@@ -92,13 +91,12 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
   const now = useNow();
   const blocked = useSise((s) => s.blocked);
   const muted = useSise((s) => s.muted);
-  const author = userById(post.authorId) ?? { id: post.authorId, name: "สมาชิก SISE", tone: "ink" as const, handle: "member", badge: undefined };
-  const room = roomBySlug(post.roomSlug);
+  const author = post.author;
+  const room = post.room;
   const age = ageOf(post, now);
-  const myName = useSise((s) => s.profile.name);
-  const name = post.authorId === "u-me" ? myName : author.name;
-  const place = post.placeSlug ? placeBySlug(post.placeSlug) : undefined;
-  const event = post.eventSlug ? eventBySlug(post.eventSlug) : undefined;
+  const name = author.name;
+  const place = post.placeRef;
+  const event = post.eventRef;
   const hot = hotLabel(trendingScore(post, age));
 
   if (blocked.includes(post.authorId) || muted.includes(post.authorId)) return null;
@@ -106,19 +104,19 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
   return (
     <article className="surface rise p-4 sm:p-5" style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}>
       <header className="flex items-start gap-3">
-        <Link href={post.authorId === "u-me" ? "/me" : `/u/${author.handle}`} aria-label={`โปรไฟล์ ${name}`}>
-          <Avatar name={name} tone={author.tone} size={40} />
+        <Link href={`/u/${author.handle}`} aria-label={`โปรไฟล์ ${name}`}>
+          <Avatar name={name} tone={author.tone} size={40} src={author.pictureUrl} />
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
-            <Link href={post.authorId === "u-me" ? "/me" : `/u/${author.handle}`} className="font-semibold hover:underline">{name}</Link>
+            <Link href={`/u/${author.handle}`} className="font-semibold hover:underline">{name}</Link>
             {author.badge === "moderator" && <span className="rounded bg-night px-1.5 py-px text-[10px] font-bold text-on-night">MOD</span>}
             {author.badge === "local-guide" && <span className="rounded bg-gold-soft px-1.5 py-px text-[10px] font-bold text-[#7a5a14] dark:text-gold">Local Guide</span>}
             {author.badge === "business" && <span className="rounded bg-jade-soft px-1.5 py-px text-[10px] font-bold text-jade">ธุรกิจ</span>}
             {author.badge === "founder" && <span className="rounded bg-night px-1.5 py-px text-[10px] font-bold text-gold">SISE</span>}
           </div>
           <p className="flex flex-wrap items-center gap-x-1.5 text-xs text-muted">
-            {showRoom && room && (
+            {showRoom && (
               <>
                 <Link href={`/rooms/${room.slug}`} className="inline-flex items-center gap-1 font-medium text-ink-2 hover:text-gold">
                   <RoomIcon name={room.icon} className="h-3 w-3" /> {room.name}
@@ -166,7 +164,7 @@ export function PostCard({ post, showRoom = true, index = 0 }: { post: Post; sho
         {!post.photos?.length && post.images && post.images.length > 0 && (
           <Link href={`/post/${post.id}`} className={cx("mt-3 grid gap-1.5 overflow-hidden rounded-2xl", post.images.length > 1 ? "grid-cols-2" : "grid-cols-1")} aria-label="ดูรูปภาพ">
             {post.images.slice(0, 2).map((tone, i) => (
-              <Cover key={i} tone={tone} icon={room?.icon} className={cx("w-full", post.images!.length > 1 ? "aspect-square" : "aspect-[16/9]")} />
+              <Cover key={i} tone={tone} icon={room.icon} className={cx("w-full", post.images!.length > 1 ? "aspect-square" : "aspect-[16/9]")} />
             ))}
           </Link>
         )}

@@ -4,10 +4,11 @@ import { BookOpen } from "lucide-react";
 import { DealCard, EventCard, ListingCard, PlaceCard } from "@/components/cards";
 import { RoomIcon } from "@/components/icons";
 import { Cover, SectionHeader } from "@/components/ui";
-import { PLACE_CATEGORIES, businesses, deals, guides, listings, places, userById } from "@/lib/data";
+import { PLACE_CATEGORIES, guides } from "@/lib/data";
+import { listBusinesses, listDeals, listEvents, listListings, listPlaces } from "@/lib/server/repo";
 import { eventsFor, upcomingEvents } from "@/lib/queries";
 
-export const revalidate = 900;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "ค้นพบศรีสะเกษ — ที่เที่ยว ร้านเด็ด งาน ดีล ธุรกิจ",
@@ -26,9 +27,10 @@ const CATS = [
   { href: "#business", label: "Business", th: "ธุรกิจ", icon: "business" },
 ];
 
-export default function DiscoverPage() {
-  const today = eventsFor("today");
-  const events = today.length ? today : upcomingEvents(3);
+export default async function DiscoverPage() {
+  const [allEvents, places, deals, listings, businesses] = await Promise.all([listEvents(), listPlaces(), listDeals(), listListings(), listBusinesses()]);
+  const today = eventsFor(allEvents, "today");
+  const events = today.length ? today : upcomingEvents(allEvents, 3);
   return (
     <div className="space-y-10">
       <header>
@@ -68,7 +70,7 @@ export default function DiscoverPage() {
 
       <section>
         <SectionHeader eyebrow="Local" title="ของดีจากคนในพื้นที่" href="/market" />
-        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">{listings.filter((l) => l.promoted || l.category === "local-products").slice(0, 4).map((l) => <ListingCard key={l.id} listing={l} sellerName={userById(l.sellerId)?.name ?? ""} />)}</div>
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">{listings.filter((l) => l.promoted || l.category === "local-products").slice(0, 4).map((l) => <ListingCard key={l.id} listing={l} sellerName={l.sellerName} />)}</div>
       </section>
 
       <section id="business" className="scroll-mt-24">

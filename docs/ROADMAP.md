@@ -1,8 +1,8 @@
 # ขั้นต่อไปสู่ production
 
-1. **Backend + Auth** — PostgreSQL (Neon) + Prisma ตาม `docs/DATA_MODEL.md`; ล็อกอินด้วย LINE Login / เบอร์โทร OTP (คนศรีสะเกษใช้ LINE มากที่สุด); แทน `lib/store.ts` ด้วย Server Actions / Route Handlers
-2. **รูปภาพ** — อัปโหลดขึ้น object storage (Vercel Blob / R2), ย่อรูปฝั่งเซิร์ฟเวอร์, `next/image`
-3. **Moderation จริง** — ย้าย `lib/moderation.ts` ไปรันฝั่งเซิร์ฟเวอร์, rate limit ด้วย Redis, คิวตรวจสอบ, สิทธิ์ ADMIN/MODERATOR ให้ `/admin`
+1. ~~Backend + Auth~~ ✅ PostgreSQL + Prisma + LINE Login
+2. **รูปภาพ** — ย้ายจากเก็บในฐานข้อมูลไป object storage (Vercel Blob / R2), ย่อรูปฝั่งเซิร์ฟเวอร์, `next/image`, ลบรูปที่ไม่ถูกใช้ (โพสต์ไม่สำเร็จ)
+3. **Moderation ขั้นต่อไป** — คำต้องห้ามแก้ไขได้ในหลังบ้าน, ประวัติการเตือน/ระงับ, อุทธรณ์, คะแนน reputation คำนวณจริง
 4. **Share card** — `opengraph-image` ต่อโพสต์ (ต้องฝังฟอนต์ไทยลง ImageResponse) เพื่อให้ลิงก์บน Facebook/LINE สวย
 5. **แจ้งเตือน** — Web Push + LINE Notify/Messaging API เมื่อมีคนตอบหรืองานที่ติดตามใกล้เริ่ม
 6. **เนื้อหาจริง** — ร่วมมือกับร้าน/ผู้จัดงาน/ช่างภาพท้องถิ่น (seed community) ก่อนเปิดกว้าง; ขออนุญาตใช้รูปและชื่อ

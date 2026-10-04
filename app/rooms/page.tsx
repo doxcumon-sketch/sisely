@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Flame } from "lucide-react";
 import { RoomCard } from "@/components/cards";
 import { SectionHeader } from "@/components/ui";
-import { ROOM_GROUPS, rooms } from "@/lib/data";
+import { ROOM_GROUPS } from "@/lib/data";
+import { listRooms } from "@/lib/server/repo";
 
 export const metadata: Metadata = {
   title: "ห้องทั้งหมด — พูดคุยกับคนศรีสะเกษ",
@@ -10,7 +11,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/rooms" },
 };
 
-export default function RoomsPage() {
+export const revalidate = 60;
+
+export default async function RoomsPage() {
+  const rooms = await listRooms();
   const trending = rooms.filter((r) => r.trending);
   return (
     <div className="space-y-10">

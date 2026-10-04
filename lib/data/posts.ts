@@ -1,6 +1,6 @@
-import type { Post, Comment } from "@/lib/types";
+import type { SeedPost, SeedComment } from "@/lib/types";
 
-type P = Omit<Post, "stats"> & { stats: Omit<Post["stats"], "comments"> };
+type P = Omit<SeedPost, "stats"> & { stats: Omit<SeedPost["stats"], "comments"> };
 
 // stats.comments is derived from `seedComments` below so counts never drift from content.
 const raw: P[] = [
@@ -183,7 +183,7 @@ const raw: P[] = [
 ];
 
 // Comments with a parentId are replies (one level deep).
-export const seedComments: Comment[] = [
+export const seedComments: SeedComment[] = [
   { id: "c1", postId: "p1", authorId: "u-nampueng", ageMin: 30, likes: 41, best: true, body: "ลำดวนคอฟฟี่ค่ะ ชั้นสองเงียบมาก มีปลั๊กทุกโต๊ะ ไวไฟแรง ดริปเริ่ม 90 บาท ไปวันธรรมดาจะได้ที่ริมหน้าต่าง" },
   { id: "c2", postId: "p1", parentId: "c1", authorId: "u-ning", ageMin: 26, likes: 6, body: "ขอบคุณค่ะ เดี๋ยวบ่ายนี้ไปลองเลย" },
   { id: "c3", postId: "p1", authorId: "u-krit", ageMin: 22, likes: 18, body: "ผมก็นั่งที่ลำดวนบ่อย แต่เสาร์อาทิตย์คนเยอะ มาก่อนเที่ยงจะดีกว่า" },
@@ -235,4 +235,4 @@ export const seedComments: Comment[] = [
 
 const commentCount = (postId: string) => seedComments.filter((c) => c.postId === postId).length;
 
-export const seedPosts: Post[] = raw.map((p) => ({ ...p, stats: { ...p.stats, comments: commentCount(p.id) } }));
+export const seedPosts: SeedPost[] = raw.map((p) => ({ ...p, stats: { ...p.stats, comments: commentCount(p.id) } }));

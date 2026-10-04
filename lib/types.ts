@@ -18,6 +18,7 @@ export type ReactionKind = "like" | "love" | "helpful" | "wow";
 
 export interface User {
   id: string;
+  pictureUrl?: string | null;
   handle: string;
   name: string;
   bio: string;
@@ -50,7 +51,7 @@ export interface PollOption {
   votes: number;
 }
 
-export interface Post {
+export interface SeedPost {
   id: string;
   type: PostType;
   roomSlug: string;
@@ -60,7 +61,6 @@ export interface Post {
   ageMin: number; // minutes since posted (seed data)
   createdAt?: number; // epoch ms (user-created posts)
   images?: Tone[]; // generated art stand-ins for seed content
-  photos?: string[]; // user-uploaded, downscaled data URLs (prototype storage)
   poll?: { options: PollOption[]; endsInHours: number };
   placeSlug?: string;
   eventSlug?: string;
@@ -79,7 +79,7 @@ export interface Post {
   };
 }
 
-export interface Comment {
+export interface SeedComment {
   id: string;
   postId: string;
   parentId?: string;
@@ -266,4 +266,75 @@ export interface Report {
   ageMin: number;
   status: "open" | "resolved" | "dismissed";
   note?: string;
+}
+
+// ---------------------------------------------------------------------------
+// View models returned by the server (lib/server/repo.ts) and consumed by components.
+// ---------------------------------------------------------------------------
+
+export interface AuthorLite {
+  id: string;
+  handle: string;
+  name: string;
+  tone: Tone;
+  pictureUrl?: string | null;
+  badge?: User["badge"];
+}
+
+export interface Post {
+  id: string;
+  type: PostType;
+  roomSlug: string;
+  room: { slug: string; name: string; icon: string };
+  authorId: string;
+  author: AuthorLite;
+  title: string;
+  body: string;
+  ageMin: number; // computed when the server rendered it
+  createdAt: number; // epoch ms; clients recompute age from this
+  images?: Tone[]; // generated art stand-ins for seeded content
+  photos?: string[]; // uploaded photo URLs
+  poll?: { options: PollOption[]; endsInHours: number };
+  placeRef?: { slug: string; name: string };
+  eventRef?: { slug: string; title: string };
+  dealId?: string;
+  listingId?: string;
+  location?: string;
+  pinned?: boolean;
+  featured?: boolean;
+  solved?: boolean;
+  status?: "PUBLISHED" | "PENDING_REVIEW" | "HIDDEN";
+  stats: {
+    views: number;
+    comments: number;
+    reactions: number;
+    saves: number;
+    shares: number;
+    velocity: number;
+  };
+}
+
+export interface Comment {
+  id: string;
+  postId: string;
+  parentId?: string;
+  authorId: string;
+  author: AuthorLite;
+  body: string;
+  ageMin: number;
+  createdAt: number;
+  likes: number;
+  best?: boolean;
+}
+
+export interface Viewer {
+  user: { id: string; handle: string; name: string; pictureUrl: string | null; role: "MEMBER" | "MODERATOR" | "ADMIN" };
+  reactions: Record<string, ReactionKind>;
+  saves: { posts: string[]; places: string[]; events: string[]; listings: string[] };
+  follows: { rooms: string[]; users: string[]; places: string[]; events: string[] };
+  votes: Record<string, string>;
+  commentLikes: string[];
+  blocked: string[];
+  muted: string[];
+  unread: number;
 }

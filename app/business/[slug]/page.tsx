@@ -6,25 +6,25 @@ import { FollowButton } from "@/components/buttons";
 import { DealCard } from "@/components/cards";
 import { Feed } from "@/components/feed";
 import { Cover, SectionHeader } from "@/components/ui";
-import { PLAN_LABEL, businessBySlug, businesses, deals } from "@/lib/data";
+import { PLAN_LABEL } from "@/lib/data";
+import { getBusiness, listDeals, queryPosts } from "@/lib/server/repo";
 import { formatCount } from "@/lib/format";
 
-export function generateStaticParams() {
-  return businesses.map((b) => ({ slug: b.slug }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const b = businessBySlug(slug);
+  const b = await getBusiness(slug);
   if (!b) return {};
   return { title: `${b.name} — ${b.category} ศรีสะเกษ`, description: `${b.tagline} ${b.description.slice(0, 110)}`, alternates: { canonical: `/business/${b.slug}` } };
 }
 
 export default async function BusinessPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const b = businessBySlug(slug);
+  const b = await getBusiness(slug);
   if (!b) notFound();
-  const bDeals = deals.filter((d) => d.businessSlug === b.slug || d.placeSlug === b.placeSlug);
+  const [deals, initialPosts] = await Promise.all([listDeals(), b.placeSlug ? queryPosts({ mode: "new", placeSlug: b.placeSlug, limit: 3 }) : null]);
+  const bDeals = deals.filter((d) => d.businessSlug === b.slug || (b.placeSlug && d.placeSlug === b.placeSlug));
 
   return (
     <div className="space-y-8">
@@ -54,7 +54,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
             </ul>
           </section>
           {bDeals.length > 0 && <section><SectionHeader title="โปรโมชัน" href="/deals" /><div className="space-y-3">{bDeals.map((d) => <DealCard key={d.id} deal={d} />)}</div></section>}
-          {b.placeSlug && <section><SectionHeader eyebrow="Community" title="คนพูดถึงธุรกิจนี้" /><Feed filter={{ mode: "new", placeSlug: b.placeSlug }} pageSize={3} emptyTitle="ยังไม่มีใครพูดถึง" /></section>}
+          {b.placeSlug && <section><SectionHeader eyebrow="Community" title="คนพูดถึงธุรกิจนี้" /><Feed filter={{ mode: "new", placeSlug: b.placeSlug }} initial={initialPosts ?? undefined} pageSize={3} emptyTitle="ยังไม่มีใครพูดถึง" /></section>}
         </div>
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           <section className="surface space-y-3 p-5 text-[0.95rem]">
