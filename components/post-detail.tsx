@@ -12,6 +12,7 @@ import { ReportMenu } from "@/components/report-menu";
 import { RoomIcon } from "@/components/icons";
 import { toast } from "@/components/toast";
 import { formatAge, formatCount } from "@/lib/format";
+import { postPhotos } from "@/lib/covers";
 import { ageOf, useNow } from "@/lib/hooks";
 import { api, actions, requireLogin, syncPosts, useSise } from "@/lib/store";
 import type { Comment, Deal, Listing, Place, Post, SiseEvent } from "@/lib/types";
@@ -242,7 +243,7 @@ export function PostDetail({ post, comments, related, place, event, deal, listin
           )}
           {!post.photos?.length && post.images && post.images.length > 0 && (
             <div className={cx("mt-4 grid gap-2 overflow-hidden rounded-2xl", post.images.length > 1 && "sm:grid-cols-2")}>
-              {post.images.map((tone, i) => <Cover key={i} tone={tone} icon={post.room.icon} className="aspect-[16/10] w-full" />)}
+              {post.images.map((tone, i) => <Cover key={i} tone={tone} icon={post.room.icon} photo={postPhotos(post.room.slug, post.id, post.images!.length)[i]} className="aspect-[16/10] w-full" />)}
             </div>
           )}
 

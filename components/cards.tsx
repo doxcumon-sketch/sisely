@@ -6,13 +6,14 @@ import { EVENT_CATEGORY_LABEL } from "@/lib/data/events";
 import { placeCategoryLabel } from "@/lib/data/places";
 import { formatBaht, formatCount, formatDateTh, weekdayShort } from "@/lib/format";
 import { CONDITION_LABEL } from "@/lib/data/commerce";
+import { placePhoto, roomPhoto } from "@/lib/covers";
 import type { Deal, Listing, Place, Room, SiseEvent } from "@/lib/types";
 
 
 export function RoomCard({ room, compact }: { room: Room; compact?: boolean }) {
   return (
     <Link href={`/rooms/${room.slug}`} className="surface press group block overflow-hidden transition-shadow hover:shadow-[var(--shadow-pop)]">
-      <Cover tone={room.tone} icon={room.icon} className={compact ? "h-16" : "h-24"}>
+      <Cover tone={room.tone} icon={room.icon} photo={roomPhoto(room.slug)} className={compact ? "h-16" : "h-24"}>
         <span className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-sm">
           <RoomIcon name={room.icon} className="h-5 w-5" />
         </span>
@@ -37,7 +38,7 @@ export function RoomCard({ room, compact }: { room: Room; compact?: boolean }) {
 export function PlaceCard({ place, className }: { place: Place; className?: string }) {
   return (
     <Link href={`/places/${place.slug}`} className={cx("surface press group block overflow-hidden transition-shadow hover:shadow-[var(--shadow-pop)]", className)}>
-      <Cover tone={place.tone} icon={place.category === "restaurant" ? "food" : place.category === "cafe" ? "cafe" : place.category === "attraction" ? "travel" : place.category === "hotel" ? "hotel" : place.category === "shopping" ? "shopping" : place.category === "nightlife" ? "nightlife" : place.category === "service" ? "service" : "activity"} className="aspect-[16/10]">
+      <Cover tone={place.tone} photo={placePhoto(place.slug)} icon={place.category === "restaurant" ? "food" : place.category === "cafe" ? "cafe" : place.category === "attraction" ? "travel" : place.category === "hotel" ? "hotel" : place.category === "shopping" ? "shopping" : place.category === "nightlife" ? "nightlife" : place.category === "service" ? "service" : "activity"} className="aspect-[16/10]">
         <span className="absolute left-3 top-3 rounded-sm bg-black/35 px-2.5 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">{placeCategoryLabel(place.category)}</span>
       </Cover>
       <div className="p-4">

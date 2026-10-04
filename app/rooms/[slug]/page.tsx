@@ -9,6 +9,7 @@ import { Cover, SectionHeader } from "@/components/ui";
 import { RoomCard } from "@/components/cards";
 import { getRoom, listRooms, queryPosts } from "@/lib/server/repo";
 import { formatCount } from "@/lib/format";
+import { roomPhoto } from "@/lib/covers";
 
 export const revalidate = 60;
 
@@ -38,7 +39,7 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
       </nav>
 
       <header className="surface overflow-hidden">
-        <Cover tone={room.tone} icon={room.icon} className="h-32 sm:h-44" />
+        <Cover tone={room.tone} icon={room.icon} photo={roomPhoto(room.slug)} className="h-36 sm:h-56" />
         <div className="relative px-5 pb-5">
           <span className="-mt-9 mb-3 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl border-4 border-card bg-night text-gold shadow-lg">
             <RoomIcon name={room.icon} className="h-8 w-8" />

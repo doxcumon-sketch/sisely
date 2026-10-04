@@ -191,7 +191,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <footer className="hidden border-t border-line bg-card lg:block">
         <div className="mx-auto flex max-w-[1360px] items-center justify-between gap-6 px-8 py-8 text-sm text-muted">
           <div className="flex items-center gap-4"><Wordmark /><span>ศรีสะเกษในแบบของเรา · Local stories. Local places. Local people.</span></div>
-          <p>ข้อมูลร้านและงานบางส่วนเป็นตัวอย่างระหว่างช่วงทดลอง</p>
+          <p>ข้อมูลร้านและงานบางส่วนเป็นตัวอย่างระหว่างช่วงทดลอง · <Link href="/credits" className="underline hover:text-ink">เครดิตภาพ</Link></p>
         </div>
       </footer>
 

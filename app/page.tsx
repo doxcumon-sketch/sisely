@@ -10,6 +10,7 @@ import { getPulse, listDeals, listEvents, listPlaces, listRooms, queryPosts } fr
 import { ActivityTicker } from "@/components/activity-ticker";
 import { Cover } from "@/components/ui";
 import { formatCount } from "@/lib/format";
+import { postPhotos, roomPhoto } from "@/lib/covers";
 import { dayLabel } from "@/lib/format";
 import { eventsFor, upcomingEvents } from "@/lib/queries";
 import { HomeFeedTabs } from "@/components/home-feed";
@@ -82,7 +83,7 @@ export default async function HomePage() {
           <div className="hidden gap-3 lg:grid lg:grid-cols-2" aria-label="ไฮไลต์วันนี้">
             {topPost && (
               <Link href={`/post/${topPost.id}`} className="press group relative col-span-2 flex min-h-[13rem] flex-col justify-end overflow-hidden border border-line shadow-[var(--shadow-card)]">
-                <div className="absolute inset-0"><Cover tone={topPost.images?.[0] ?? "jade"} icon={topPost.room.icon} className="h-full w-full" /></div>
+                <div className="absolute inset-0"><Cover tone={topPost.images?.[0] ?? "jade"} icon={topPost.room.icon} photo={postPhotos(topPost.room.slug, topPost.id, 1)[0] ?? roomPhoto(topPost.room.slug)} className="h-full w-full" /></div>
                 <div className="relative bg-gradient-to-t from-black/75 via-black/30 to-transparent p-5 pt-14 text-white">
                   <p className="mb-1 flex items-center gap-2 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[#f3d68a]"><span className="live-dot h-1.5 w-1.5 rounded-full bg-[#ff6a4d]" /> กำลังเป็นกระแส · {topPost.room.name}</p>
                   <p className="font-editorial text-xl font-semibold leading-snug group-hover:underline">{topPost.title}</p>
