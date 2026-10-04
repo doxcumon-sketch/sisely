@@ -1,6 +1,6 @@
 # SISE — พื้นที่ออนไลน์ของคนศรีสะเกษ
 
-> ศรีสะเกษในแบบของเรา · *Discover Sisaket.* · Local stories. Local places. Local people.
+> ศรีสะเกษเด็ดกว่าที่คิด · *Discover Sisaket.* · Local stories. Local places. Local people.
 
 ชุมชนท้องถิ่น + ค้นพบเมือง (ห้องพูดคุย, สถานที่, งาน, ดีล, ซื้อขาย, ธุรกิจ, ไกด์) สำหรับคนศรีสะเกษ
 ออกแบบ mobile-first และติดตั้งเป็น PWA ได้

@@ -1,6 +1,5 @@
 "use client";
 
-import { BrandMark } from "./brand-mark";
 import { Bell, Compass, Home, Moon, PenLine, Plus, Search, Sun, User, LayoutGrid, Ticket, MapPin, Tag, ShoppingBag, BookOpen, Shield } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,10 +12,11 @@ import { actions, loadViewer, useSise } from "@/lib/store";
 
 const TOP_NAV = [
   { href: "/discover", label: "ค้นพบ", icon: Compass },
-  { href: "/rooms", label: "ห้อง", icon: LayoutGrid },
-  { href: "/events", label: "งาน", icon: Ticket },
-  { href: "/places", label: "สถานที่", icon: MapPin },
-  { href: "/deals", label: "ดีล", icon: Tag },
+  { href: "/rooms", label: "ห้องคุย", icon: LayoutGrid },
+  { href: "/events", label: "อีเวนต์", icon: Ticket },
+  { href: "/places", label: "ที่เด็ด", icon: MapPin },
+  { href: "/plan", label: "พาเที่ยว", icon: Compass },
+  { href: "/deals", label: "ดีลปัง", icon: Tag },
   { href: "/market", label: "ซื้อขาย", icon: ShoppingBag },
   { href: "/guide", label: "ไกด์เมือง", icon: BookOpen },
 ];
@@ -25,7 +25,7 @@ const TABS = [
   { href: "/", label: "หน้าแรก", icon: Home },
   { href: "/discover", label: "ค้นพบ", icon: Compass },
   { href: "/create", label: "โพสต์", icon: Plus, primary: true },
-  { href: "/rooms", label: "ห้อง", icon: LayoutGrid },
+  { href: "/rooms", label: "ห้องคุย", icon: LayoutGrid },
   { href: "/me", label: "โปรไฟล์", icon: User },
 ];
 
@@ -36,11 +36,8 @@ function isActive(pathname: string, href: string) {
 
 export function Wordmark({ className, light }: { className?: string; light?: boolean }) {
   return (
-    <span className={cx("inline-flex items-center gap-2.5", className)}>
-      <BrandMark size={30} />
-      <span className={cx("wordmark text-[1.55rem] font-bold leading-none", light ? "text-on-night" : "text-ink")}>
-        SIS<span className="text-gold">E</span>
-      </span>
+    <span className={cx("wordmark text-[1.7rem] font-bold leading-none", light ? "text-on-night" : "text-ink", className)}>
+      SIS<span className="text-gold">E</span>
     </span>
   );
 }
@@ -158,7 +155,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             className="press flex h-10 min-w-0 flex-1 items-center gap-2 rounded-sm border border-line bg-card px-3.5 text-sm text-faint hover:border-gold lg:max-w-[15rem] lg:flex-none xl:max-w-[18rem]"
           >
             <Search className="h-4 w-4 shrink-0 text-gold" />
-            <span className="truncate">วันนี้กำลังหาอะไร?</span>
+            <span className="truncate">วันนี้อยากไปไหน กินอะไรดี?</span>
           </Link>
 
           <div className="flex shrink-0 items-center gap-1">
@@ -194,7 +191,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <footer className="hidden border-t border-line bg-card lg:block">
         <div className="mx-auto flex max-w-[1360px] items-center justify-between gap-6 px-8 py-8 text-sm text-muted">
-          <div className="flex items-center gap-4"><Wordmark /><span>ศรีสะเกษในแบบของเรา · Local stories. Local places. Local people.</span></div>
+          <div className="flex items-center gap-4"><Wordmark /><span>ศรีสะเกษเด็ดกว่าที่คิด · Local stories. Local places. Local people.</span></div>
           <p>ข้อมูลร้านและงานบางส่วนเป็นตัวอย่างระหว่างช่วงทดลอง · <Link href="/credits" className="underline hover:text-ink">เครดิตภาพ</Link></p>
         </div>
       </footer>

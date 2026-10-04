@@ -98,7 +98,7 @@ export function Composer({ rooms, places }: { rooms: RoomOpt[]; places: { slug: 
   return (
     <div className="mx-auto max-w-2xl pb-28">
       <header className="mb-5 flex items-center justify-between">
-        <h1 className="font-editorial text-2xl font-bold sm:text-3xl">กำลังคิดอะไรอยู่?</h1>
+        <h1 className="font-editorial text-2xl font-bold sm:text-3xl">มีอะไรอยากเม้าท์?</h1>
         <Link href="/" className="press rounded-sm p-2 text-muted hover:bg-paper-2" aria-label="ยกเลิก"><X className="h-5 w-5" /></Link>
       </header>
 

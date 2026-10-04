@@ -29,8 +29,8 @@ export function LoginView({ returnTo, error, line, dev }: { returnTo: string; er
     <div className="mx-auto max-w-md py-10">
       <div className="surface p-7 text-center sm:p-9">
         <Wordmark className="text-4xl" />
-        <h1 className="font-editorial mt-5 text-2xl font-bold">เข้าร่วมพื้นที่ของคนศรีสะเกษ</h1>
-        <p className="mt-2 text-muted">ล็อกอินเพื่อโพสต์ ตอบ บันทึก และติดตามห้องที่คุณสนใจ</p>
+        <h1 className="font-editorial mt-5 text-2xl font-bold">มาแจมกับคนศรีสะเกษ</h1>
+        <p className="mt-2 text-muted">ล็อกอินด้วย LINE แป๊บเดียว แล้วโพสต์ ตอบ เซฟของเด็ด และติดตามห้องที่ชอบได้เลย</p>
 
         {error && <p role="alert" className="mt-5 rounded-xl bg-laterite-soft p-3 text-sm text-laterite">{ERRORS[error] ?? ERRORS.failed}</p>}
 
@@ -56,7 +56,7 @@ export function LoginView({ returnTo, error, line, dev }: { returnTo: string; er
           เราเก็บเฉพาะชื่อและรูปโปรไฟล์จาก LINE เพื่อแสดงในโพสต์ของคุณ ไม่เห็นรหัสผ่านหรือข้อความใน LINE ของคุณ
         </p>
       </div>
-      <p className="mt-4 text-center text-sm"><Link href="/" className="text-muted hover:text-ink">← กลับไปเดินเล่นก่อน</Link></p>
+      <p className="mt-4 text-center text-sm"><Link href="/" className="text-muted hover:text-ink">← ขอเดินดูก่อน</Link></p>
     </div>
   );
 }
