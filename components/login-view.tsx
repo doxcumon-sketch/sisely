@@ -49,6 +49,7 @@ export function LoginView({ returnTo, error, line, dev }: { returnTo: string; er
         <p className="mt-6 text-xs leading-relaxed text-muted">
           เราเก็บเฉพาะชื่อและรูปโปรไฟล์จาก LINE เพื่อแสดงในโพสต์ของคุณ ไม่เห็นรหัสผ่านหรือข้อความใน LINE ของคุณ
         </p>
+        <p className="mt-3 text-xs text-muted">การเข้าสู่ระบบถือว่าคุณยอมรับ <Link href="/terms" className="underline">ข้อกำหนดการใช้งาน</Link> และ <Link href="/privacy" className="underline">นโยบายความเป็นส่วนตัว</Link></p>
       </div>
       <p className="mt-4 text-center text-sm"><Link href="/" className="text-muted hover:text-ink">← ขอเดินดูก่อน</Link></p>
     </div>
