@@ -54,7 +54,7 @@ const EMPTY: Omit<SiseState, "theme" | "recentSearches" | "installDismissed" | "
   loginPrompt: false,
 };
 
-export const DEFAULT_STATE: SiseState = { ...EMPTY, theme: "light", recentSearches: [], installDismissed: false, onboardingDismissed: false };
+export const DEFAULT_STATE: SiseState = { ...EMPTY, theme: "dark", recentSearches: [], installDismissed: false, onboardingDismissed: false };
 
 const PREFS_KEY = "sise:prefs";
 let state: SiseState = DEFAULT_STATE;
@@ -70,7 +70,7 @@ function loadPrefs() {
       const p = JSON.parse(raw) as Partial<Pick<SiseState, "theme" | "recentSearches" | "installDismissed" | "onboardingDismissed">>;
       state = {
         ...state,
-        theme: p.theme === "dark" ? "dark" : "light",
+        theme: p.theme === "light" ? "light" : "dark",
         recentSearches: Array.isArray(p.recentSearches) ? p.recentSearches.slice(0, 6) : [],
         installDismissed: !!p.installDismissed,
         onboardingDismissed: !!p.onboardingDismissed,
