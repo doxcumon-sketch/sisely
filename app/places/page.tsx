@@ -13,10 +13,11 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-export default async function PlacesPage({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
-  const { cat } = await searchParams;
+export default async function PlacesPage({ searchParams }: { searchParams: Promise<{ cat?: string; district?: string }> }) {
+  const { cat, district } = await searchParams;
   const active = PLACE_CATEGORIES.find((c) => c.key === cat)?.key;
-  const list = await listPlaces(active);
+  const all = await listPlaces(active);
+  const list = district ? all.filter((p) => p.district === district) : all;
 
   return (
     <div className="space-y-6">
@@ -26,7 +27,8 @@ export default async function PlacesPage({ searchParams }: { searchParams: Promi
         <p className="mt-2 max-w-xl text-muted">ไม่ใช่แค่ที่อยู่และเบอร์โทร แต่คือสิ่งที่คนในพื้นที่พูดถึง รูป ดีล งาน และคำถามที่เกี่ยวข้องกับที่นั่น</p>
       </header>
       <div className="scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
-        <Chip href="/places" active={!active}>ทั้งหมด</Chip>
+        <Chip href="/places" active={!active && !district}>ทั้งหมด</Chip>
+        {district && <Chip href={`/places?district=${encodeURIComponent(district)}`} active>{district} ✕</Chip>}
         {PLACE_CATEGORIES.map((c) => (
           <Chip key={c.key} href={`/places?cat=${c.key}`} active={active === c.key}><RoomIcon name={c.icon} className="h-4 w-4" /> {c.label}</Chip>
         ))}
