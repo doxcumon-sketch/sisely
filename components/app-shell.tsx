@@ -233,7 +233,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <footer className="hidden border-t border-line bg-card lg:block">
         <div className="mx-auto flex max-w-[1360px] items-center justify-between gap-6 px-8 py-8 text-sm text-muted">
           <div className="flex items-center gap-4"><Wordmark /><span>ศรีสะเกษ เมืองเล็ก ไม่ธรรมดา · Local stories. Local places. Local people.</span></div>
-          <p>ข้อมูลร้านและงานบางส่วนเป็นตัวอย่างระหว่างช่วงทดลอง · <Link href="/credits" className="underline hover:text-ink">เครดิตภาพ</Link></p>
+          <p>ข้อมูลร้านและงานบางส่วนเป็นตัวอย่างระหว่างช่วงทดลอง · <Link href="/privacy" className="underline hover:text-ink">ความเป็นส่วนตัว</Link> · <Link href="/terms" className="underline hover:text-ink">ข้อกำหนด</Link> · <Link href="/credits" className="underline hover:text-ink">เครดิตภาพ</Link></p>
         </div>
       </footer>
 
