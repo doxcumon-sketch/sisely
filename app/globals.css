@@ -345,12 +345,6 @@ html[data-scrolled="1"] .site-header {
 .text-emerald-gradient { background-size: 200% 100%; animation: sheen 7s ease-in-out infinite alternate; }
 @keyframes sheen { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
 
-/* giant ticker of topics */
-.word-strip { border-block: 1px solid var(--line); overflow: hidden; }
-.word-strip .marquee { animation-duration: 42s; }
-.word-strip span { font-family: var(--font-display), sans-serif; font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 700; letter-spacing: 0.04em; padding: 0.9rem 1.6rem; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px var(--faint); }
-.word-strip span:nth-child(even) { -webkit-text-stroke: 0; color: var(--ink); }
-.word-strip span.dot { color: var(--jade); -webkit-text-stroke: 0; }
 
 /* reveal on scroll, no JS: browsers without scroll-driven animations just show everything */
 @keyframes reveal { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }

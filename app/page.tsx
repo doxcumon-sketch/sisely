@@ -10,12 +10,13 @@ import { getPulse, listDeals, listEvents, listPlaces, listRooms, queryPosts } fr
 import { ActivityTicker } from "@/components/activity-ticker";
 import { Cover } from "@/components/ui";
 import { formatCount } from "@/lib/format";
-import { eventPhoto, postPhotos, roomPhoto } from "@/lib/covers";
+import { eventPhoto, placePhoto, postPhotos, roomPhoto } from "@/lib/covers";
 import { dayLabel } from "@/lib/format";
 import { eventsFor, upcomingEvents } from "@/lib/queries";
 import { HomeFeedTabs } from "@/components/home-feed";
 import { InstallBanner } from "@/components/install-banner";
 import { Onboarding } from "@/components/onboarding";
+import { Highlights, type Highlight } from "@/components/highlights";
 import { QuickCompose } from "@/components/quick-compose";
 import { ShareButton } from "@/components/share";
 
@@ -53,6 +54,16 @@ export default async function HomePage() {
   const upcoming = today.length ? today : upcomingEvents(events, 3);
   const heroEvent = upcoming[0];
   const hotRooms = rooms.filter((r) => r.trending);
+  const bestPlace = [...places].filter((p) => p.reviews > 0).sort((a, b) => b.rating * Math.log(b.reviews + 2) - a.rating * Math.log(a.reviews + 2))[0];
+  const dealPlace = heroDeal?.placeSlug ? places.find((p) => p.slug === heroDeal.placeSlug) : undefined;
+  const dealPhoto = (dealPlace && placePhoto(dealPlace.slug)) || roomPhoto(dealPlace?.category === "cafe" ? "cafe" : dealPlace?.category === "restaurant" ? "food" : "market");
+  const spotlightRaw: (Highlight | false | undefined)[] = [
+    heroEvent && { kind: "งานปัง", title: heroEvent.title, meta: `${dayLabel(heroEvent.dayOffset)} · ${heroEvent.startTime} · ${heroEvent.venue}`, href: `/events/${heroEvent.slug}`, tone: heroEvent.tone, photo: eventPhoto(heroEvent.category) },
+    heroDeal && { kind: "ดีลปัง", title: heroDeal.title, meta: `${heroDeal.discount} · ${heroDeal.businessName}`, href: "/deals", tone: heroDeal.tone, photo: dealPhoto },
+    { kind: "จัดทริป", title: "ไม่รู้ไปไหน? เดี๋ยวจัดทริปให้", meta: "บอกสไตล์ งบ แล้วรอรับแผนได้เลย", href: "/plan", tone: "jade" as const, photo: roomPhoto("talk") },
+    bestPlace && { kind: "ต้องเช็คอิน", title: bestPlace.name, meta: `${bestPlace.tagline}`, href: `/places/${bestPlace.slug}`, tone: bestPlace.tone, photo: placePhoto(bestPlace.slug) || roomPhoto(bestPlace.category === "cafe" ? "cafe" : "food") },
+  ];
+  const spotlight = spotlightRaw.filter((x): x is Highlight => !!x);
   const foodPlaces = places.filter((p) => p.category === "restaurant" || p.category === "cafe").slice(0, 4);
 
   return (
@@ -135,15 +146,7 @@ export default async function HomePage() {
       <InstallBanner />
 
       {/* THREE QUESTIONS */}
-      <div className="word-strip" aria-hidden="true">
-        <div className="marquee">
-          {[0, 1].map((k) => (
-            <div key={k} className="flex shrink-0 items-center">
-              {["EAT", "EXPLORE", "EVENTS", "TALK", "SHOP", "PLAN"].flatMap((w, i) => [<span key={`${k}${i}w`}>{w}</span>, <span key={`${k}${i}d`} className="dot">✦</span>])}
-            </div>
-          ))}
-        </div>
-      </div>
+      <Highlights items={spotlight} />
 
       <section data-reveal aria-label="สามคำถามของเมือง" className="grid gap-3 sm:grid-cols-3">
         {[
